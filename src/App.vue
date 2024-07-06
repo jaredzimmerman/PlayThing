@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <TouchScreen v-if="mode !== 'settings'" @openSettings="openSettings" />
+    <TouchScreen
+      v-if="mode !== 'settings' && currentComponent != 'Authorise'"
+      @openSettings="openSettings"
+    />
     <Component
       v-if="true"
       :is="getCurrentComponent"
