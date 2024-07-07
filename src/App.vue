@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <TouchScreen
-      v-if="mode !== 'settings' && currentComponent != 'Authorise'"
-      @openSettings="openSettings"
+      v-if="showTouchScreen"
+      @showSettingButton="displaySettingButton"
     />
     <Component
       v-if="true"
@@ -18,9 +18,10 @@
     </Component>
     <RecentScreen v-if="false" />
     <div
-      v-if="showSetting && false"
-      class="settings-container"
-      @click="openSettings"
+      v-if="showTouchScreen && showSettingButton"
+      @click.stop="openSettings"
+      class="settings-container fade-slide-up"
+      ref="settingButton"
     >
       <img src="SettingIcon.svg" />
       <span>SETTINGS</span>
@@ -57,11 +58,11 @@ export default {
 
   data() {
     return {
-      mode: '',
       previousComponent: '',
       storedAuth: '',
       test: 'hello, world',
       displaySplashScreen: true,
+      showSettingButton: false,
       auth: {
         status: false,
         clientId: process.env.VUE_APP_SP_CLIENT_ID,
@@ -101,13 +102,8 @@ export default {
       // return this.auth.status === false ? 'Authorise' : 'NowPlaying'
     },
 
-    /**
-     * Display the settings button on some pages
-     * @return {Boolean}
-     */
-    showSetting() {
-      return ['NowPlaying'].includes(this.currentComponent)
-      // return this.auth.status === false ? 'Authorise' : 'NowPlaying'
+    showTouchScreen() {
+      return !['Authorise', 'SettingScreen'].includes(this.currentComponent)
     }
   },
 
@@ -125,6 +121,8 @@ export default {
   },
 
   mounted() {},
+
+  beforeDestroy() {},
 
   methods: {
     /**
@@ -164,12 +162,24 @@ export default {
      * Open settings page.
      */
     openSettings() {
+      this.showSettingButton = false
       this.onPageChange('SettingScreen')
-      this.mode = 'settings'
     },
     closeSettings() {
       this.currentComponent = this.previousComponent
-      this.mode = ''
+    },
+    displaySettingButton() {
+      // const settingButton = this.$refs.settingButton
+      if (!this.showSettingButton) {
+        this.showSettingButton = true
+        clearTimeout(this.showSettingButtonInterval)
+        this.showSettingButtonInterval = setTimeout(() => {
+          this.showSettingButton = false
+        }, 15 * 1000)
+      } else {
+        this.showSettingButton = false
+        clearTimeout(this.showSettingButtonInterval)
+      }
     }
   },
 
@@ -183,7 +193,7 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss">
 * {
   user-select: none;
 }
@@ -204,6 +214,21 @@ export default {
   letter-spacing: 0.1em;
   text-align: left;
   gap: 10px;
-  z-index: 10;
+
+  /*transition: opacity 0.5s ease, transform 0.5s ease;*/
+
+  &.fade-slide-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeSlideUp 0.5s forwards;
+    z-index: 11;
+  }
+
+  @keyframes fadeSlideUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 </style>

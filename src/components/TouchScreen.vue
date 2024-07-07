@@ -1,14 +1,14 @@
 <template>
-  <div id="screen" v-touch:tap="openSettings"></div>
+  <div id="screen" v-touch:tap="showSettingButton"></div>
 </template>
 
 <script>
 export default {
   name: 'TouchScreen',
   methods: {
-    openSettings() {
-      console.log
-      this.$emit('openSettings')
+    showSettingButton() {
+      console.log('open')
+      this.$emit('showSettingButton')
     }
   }
 }
@@ -25,5 +25,6 @@ export default {
   height: 100vh;
   overflow: hidden;
   z-index: 10;
+  pointer-events: all;
 }
 </style>

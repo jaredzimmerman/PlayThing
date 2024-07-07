@@ -1,5 +1,5 @@
 <template>
-  <div id="setting-screen" class="hidden" ref="settingScreen">
+  <div id="setting-screen">
     <div class="closeIconContainer" @click="closeSettings">
       <img src="CloseIcon.svg" />
     </div>
@@ -196,20 +196,6 @@ export default {
       this.selectedNothingPlayingOption = 'blank'
       this.selectedMiscellaneousOption = ['show-progress-bar']
     }
-
-    // listen to any events that
-    this.handleInteraction()
-    this.addEventListeners()
-  },
-  mounted() {
-    const settingScreen = this.$refs.settingScreen
-    console.log('this is the ref ', settingScreen)
-    settingScreen.classList.remove('hidden')
-    settingScreen.classList.add('fade-slide-in')
-  },
-  beforeDestroy() {
-    clearTimeout(this.closeTimeout)
-    this.removeEventListeners()
   },
   computed: {
     settings() {
@@ -265,38 +251,6 @@ export default {
     closeSettings() {
       // this.$emit('pageChange', 'Authorise')
       this.$emit('closeSettings')
-    },
-    addEventListeners() {
-      const events = [
-        'mousemove',
-        'mousedown',
-        'click',
-        'keypress',
-        'touchstart'
-      ]
-      events.forEach(event => {
-        document.addEventListener(event, this.handleInteraction)
-      })
-    },
-    removeEventListeners() {
-      const events = [
-        'mousemove',
-        'mousedown',
-        'click',
-        'keypress',
-        'touchstart'
-      ]
-      events.forEach(event => {
-        document.removeEventListener(event, this.handleInteraction)
-      })
-    },
-    handleInteraction() {
-      if (this.closeTimeout != null) {
-        clearTimeout(this.closeTimeout)
-      }
-      this.closeTimeout = setTimeout(() => {
-        this.$emit('closeSettings')
-      }, 15 * 1000)
     }
   }
 }
@@ -310,19 +264,6 @@ export default {
   align-items: center;
   padding: 20px;
   overflow-x: hidden;
-  opacity: 0;
-  transition: opacity 0.5s ease, transform 0.5s ease;
-
-  &.fade-slide-in {
-    opacity: 1;
-    /* Fade in */
-    transform: translateY(0);
-    /* Slide up to its final position */
-  }
-
-  &.hidden {
-    display: none;
-  }
 }
 
 .container {
