@@ -201,7 +201,7 @@ export default {
       )
       searchParams.append(
         'scope',
-        'user-read-currently-playing user-modify-playback-state'
+        'user-read-currently-playing user-modify-playback-state user-read-playback-state'
       )
 
       return `${this.endpoints.auth}?${searchParams.toString()}`

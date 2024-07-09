@@ -20,7 +20,7 @@
           <h2 class="now-playing__artists" v-text="getTrackArtists"></h2>
         </div>
         <div class="now-playing__controls">
-          <Controls :player="player" />
+          <Controls :player="player" :playerResponse="playerResponse" />
         </div>
       </div>
     </div>
@@ -192,7 +192,7 @@ export default {
   &__artists {
     opacity: 0.8;
 
-    white-space: nowrap;
+    // white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     max-width: 100%;

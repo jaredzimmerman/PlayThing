@@ -4,23 +4,45 @@
       <TouchScreen />
     </div>
     <div class="controls">
-      <span @click="shuffle" class="shuffleButton">
+      <span v-show="!shuffle" @click="sendShuffle" style="opacity: 0.5;">
         <SimpleSVG src="/controls/Shuffle.svg" />
       </span>
-      <span @click="back" ref="backButton" class="backButton">
+      <span v-show="shuffle" @click="sendShuffle" style="opacity: 1">
+        <SimpleSVG src="/controls/Shuffle-1.svg" />
+      </span>
+
+      <span @click="sendBack" ref="backButton" class="backButton">
         <SimpleSVG src="/controls/Back.svg" />
       </span>
-      <span @click="pause" v-show="isPlaying">
+      <span @click="sendPause" v-show="isPlaying">
         <SimpleSVG src="/controls/Pause.svg" />
       </span>
-      <span @click="play" v-show="!isPlaying">
+      <span @click="sendPlay" v-show="!isPlaying">
         <SimpleSVG src="/controls/Play.svg" />
       </span>
-      <span @click="next" ref="nextButton" class="nextButton">
+      <span @click="sendNext" ref="nextButton" class="nextButton">
         <SimpleSVG src="/controls/Next.svg" />
       </span>
-      <span @click="shuffle1" class="repeatButton">
-        <SimpleSVG src="/controls/Shuffle-1.svg" />
+      <span
+        v-show="repeat === 'off'"
+        @click="sendRepeat('context')"
+        style="opacity: 0.5;"
+      >
+        <SimpleSVG src="/controls/Repeat.svg" />
+      </span>
+      <span
+        v-show="repeat === 'context'"
+        @click="sendRepeat('track')"
+        style="opacity: 1;"
+      >
+        <SimpleSVG src="/controls/Repeat-1.svg" />
+      </span>
+      <span
+        v-show="repeat === 'track'"
+        @click="sendRepeat('off')"
+        style="opacity: 1"
+      >
+        <SimpleSVG src="/controls/Repeat-2.svg" />
       </span>
     </div>
   </div>
@@ -40,11 +62,17 @@ export default {
     player: {
       type: Object,
       default: null
+    },
+    playerResponse: {
+      type: Object,
+      default: null
     }
   },
   data() {
     return {
-      playing: false
+      playing: false,
+      repeat: 'off',
+      shuffle: false
     }
   },
   mounted() {
@@ -59,44 +87,53 @@ export default {
     }
   },
   watch: {
-    player(value) {
-      console.log('watching :', value)
-      this.playing = value.playing
+    playerResponse(value) {
+      this.playing = value.is_playing
+      this.repeat = value.repeat_state
+      this.shuffle = value.shuffle_state
       // if (value.playing != this.playing) {}
     }
   },
   methods: {
-    play() {
-      document.dispatchEvent(new Event('PlayThingPlay'))
+    sendPlay() {
+      document.dispatchEvent(new CustomEvent('PlayThingPlay'))
       this.playing = true
       console.log(this.playing)
-      // this.playing = !this.playing
     },
-    pause() {
-      document.dispatchEvent(new Event('PlayThingPause'))
+    sendPause() {
+      document.dispatchEvent(new CustomEvent('PlayThingPause'))
       this.playing = false
       console.log(this.playing)
-      // this.playing = !this.playing
     },
-    next() {
-      document.dispatchEvent(new Event('PlayThingNext'))
+    sendNext() {
+      document.dispatchEvent(new CustomEvent('PlayThingNext'))
       this.$refs.nextButton.style.opacity = 1
       setTimeout(() => {
-        this.$refs.nextButton.style.opacity = 0.5
+        this.$refs.nextButton.style.opacity = 0.75
       }, 200)
     },
-    back() {
-      document.dispatchEvent(new Event('PlayThingBack'))
+    sendBack() {
+      document.dispatchEvent(new CustomEvent('PlayThingBack'))
       this.$refs.backButton.style.opacity = 1
       setTimeout(() => {
-        this.$refs.backButton.style.opacity = 0.5
+        this.$refs.backButton.style.opacity = 0.75
       }, 200)
     },
-    shuffle() {
-      document.dispatchEvent(new Event('PlayThingShuffle'))
+    sendShuffle() {
+      this.shuffle = !this.shuffle
+      document.dispatchEvent(
+        new CustomEvent('PlayThingShuffle', {
+          detail: { state: this.shuffle }
+        })
+      )
     },
-    shuffle1() {
-      document.dispatchEvent(new Event('PlayThingRepeat'))
+    sendRepeat(state) {
+      this.repeat = state
+      document.dispatchEvent(
+        new CustomEvent('PlayThingRepeat', {
+          detail: { state }
+        })
+      )
     }
   }
 }
@@ -124,7 +161,7 @@ export default {
 <style lang="scss">
 .controls-container {
   position: relative;
-  background-color: blue;
+  background-color: black;
 }
 
 .controls {

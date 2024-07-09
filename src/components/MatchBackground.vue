@@ -1,5 +1,5 @@
 <template>
-  <div id="app"></div>
+  <div id="app" class="scrim"></div>
 </template>
 
 <script>
@@ -18,5 +18,13 @@ export default {
   width: 100%;
   height: 100vh;
   overflow: hidden;
+}
+
+.scrim {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
 }
 </style>

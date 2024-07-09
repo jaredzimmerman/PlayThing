@@ -170,6 +170,10 @@ export default {
         {
           title: 'Autohide playback controls',
           value: 'autohide-playback-controls'
+        },
+        {
+          title: 'Animate Blur & Spotlight themes',
+          value: 'animate-blur-spotlight'
         }
       ],
       selectedNothingPlayingOption: 'blank',

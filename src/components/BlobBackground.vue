@@ -19,29 +19,34 @@
 <script>
 import { spline } from '@georgedoescode/spline'
 import SimplexNoise from 'simplex-noise'
+import { getPlayThingSettings } from '@/utils/utils'
 
 export default {
   name: 'BlobBackground',
-  props: {
-    swatches: {
-      type: Array,
-      default: () => []
-    }
-  },
   data() {
     return {
       animationRunning: false,
       startColor: '',
       stopColor: '',
-      blobBackgroundColor: ''
+      blobBackgroundColor: '',
+      settings: '',
+      animate: false
     }
+  },
+  created() {
+    const settings = getPlayThingSettings()
+    // const backgroundSettings = settings.miscellaneousOption;
+    if (settings.miscellaneousOption.includes('animate-blur-spotlight')) {
+      this.animate = true
+    }
+  },
+  mounted() {
+    this.run()
+    document.addEventListener('BlobBackgroundColorChanged', this.run)
   },
   beforeDestroy() {
     this.animationRunning = false
-  },
-  mounted() {
-    console.log('show spotlight')
-    this.run()
+    document.removeEventListener('BlobBackgroundColorChanged', this.run)
   },
   methods: {
     run() {
@@ -65,10 +70,10 @@ export default {
         // Define your primary and secondary colors in hex
         const primaryColor = getComputedStyle(
           document.documentElement
-        ).getPropertyValue('--primary-color')
+        ).getPropertyValue('--start-color')
         const secondaryColor = getComputedStyle(
           document.documentElement
-        ).getPropertyValue('--secondary-color')
+        ).getPropertyValue('--end-color')
 
         // Convert hex colors to HSL
         const startHsl = hexToHsl(primaryColor)
@@ -89,13 +94,6 @@ export default {
         this.stopColor = stopColor
         this.blobBackgroundColor = `hsl(${currentHue + 60}, 75%, 5%)`
 
-        /*root.style.setProperty('--startColor', startColor)
-        root.style.setProperty('--stopColor', stopColor)
-        root.style.setProperty(
-          '--blobBackgroundColor',
-          `hsl(${currentHue + 60}, 75%, 5%)`
-        )*/
-
         hueNoiseOffset += noiseStep / 6
 
         // Update points for animation
@@ -109,12 +107,11 @@ export default {
 
           point.x = x
           point.y = y
-
           point.noiseOffsetX += noiseStep
           point.noiseOffsetY += noiseStep
         }
 
-        requestAnimationFrame(animate)
+        if (this.animate) requestAnimationFrame(animate)
       }
       animate()
 

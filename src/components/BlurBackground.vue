@@ -10,7 +10,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 #app {
   display: flex;
   justify-content: center;
@@ -25,7 +25,7 @@ export default {
   /*transform: rotate(180deg);*/
   /*filter: blur(500px);*/
   filter: blur(100px);
-  transform: scale(1.3) rotate(180deg);
+  transform: scale(120%) rotate(180deg);
 }
 
 .scrim {

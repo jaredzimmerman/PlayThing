@@ -14,7 +14,7 @@ export default {
   justify-content: center;
   align-items: center;
   position: relative;
-  background-color: var(--text-color);
+  background-color: var(--primary-color);
   width: 100%;
   height: 100vh;
   overflow: hidden;

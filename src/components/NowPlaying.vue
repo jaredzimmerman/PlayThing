@@ -16,7 +16,6 @@
 import props from '@/utils/props.js'
 // import Clock from './Clock.vue'
 import Playback from './Playback.vue'
-import * as Vibrant from 'node-vibrant'
 import * as ColorThief from 'color-thief-browser'
 import { getPlayThingSettings } from '@/utils/utils'
 
@@ -58,7 +57,6 @@ export default {
     this.setDataInterval()
     this.setAppColours()
     this.getNowPlaying()
-    console.log(this.player)
   },
 
   beforeDestroy() {
@@ -126,19 +124,36 @@ export default {
         console.log(err)
       }
     },
-    async handleShuffle() {
+    async handleShuffle(event) {
       try {
-        await fetch(`${this.endpoints.base}/${this.endpoints.shuffle}`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${this.auth.accessToken}`
+        await fetch(
+          `${this.endpoints.base}/${this.endpoints.shuffle}?state=${event.detail.state}`,
+          {
+            method: 'PUT',
+            headers: {
+              Authorization: `Bearer ${this.auth.accessToken}`
+            }
           }
-        })
+        )
       } catch (err) {
         console.log(err)
       }
     },
-    async handleRepeat() {},
+    async handleRepeat(event) {
+      try {
+        await fetch(
+          `${this.endpoints.base}/${this.endpoints.repeat}?state=${event.detail.state}`,
+          {
+            method: 'PUT',
+            headers: {
+              Authorization: `Bearer ${this.auth.accessToken}`
+            }
+          }
+        )
+      } catch (err) {
+        console.log(err)
+      }
+    },
     /**
      * Make the network request to Spotify to
      * get the current played track.
@@ -148,7 +163,8 @@ export default {
 
       try {
         const response = await fetch(
-          `${this.endpoints.base}/${this.endpoints.nowPlaying}`,
+          // `${this.endpoints.base}/${this.endpoints.nowPlaying}`,
+          `${this.endpoints.base}/${this.endpoints.playbackState}`,
           {
             headers: {
               Authorization: `Bearer ${this.auth.accessToken}`
@@ -179,7 +195,6 @@ export default {
         }
 
         data = await response.json()
-        console.log('response : ', data)
         this.playerResponse = data
       } catch (error) {
         this.handleExpiredToken()
@@ -242,19 +257,19 @@ export default {
       /**
        * Player is active, but user has paused.
        */
-      /*if (this.playerResponse.is_playing === false) {
+      if (this.playerResponse.is_playing === false) {
         this.playerData = this.getEmptyPlayer()
 
         return
-      }*/
+      }
 
       /**
        * The newly fetched track is the same as our stored
        * one, we don't want to update the DOM yet.
        */
-      /*if (this.playerResponse.item?.id === this.playerData.trackId) {
+      if (this.playerResponse.item?.id === this.playerData.trackId) {
         return
-      }*/
+      }
 
       /**
        * Store the current active track.
@@ -279,11 +294,14 @@ export default {
       /**
        * No image (rare).
        */
-      if (!this.player.trackAlbum?.image) {
+      //if (!this.player.trackAlbum?.image) {
+      if (!this.playerData.trackAlbum?.image) {
         return
       }
 
-      const isColorTooCloseToBlack = (rgb, tolerance) => {
+      this.setAppColours()
+
+      /*const isColorTooCloseToBlack = (rgb, tolerance) => {
         const [r, g, b] = rgb
         const blackDistance = Math.sqrt(r * r + g * g + b * b)
         return blackDistance < tolerance
@@ -298,9 +316,6 @@ export default {
         return whiteDistance < tolerance
       }
 
-      /**
-       * Run node-vibrant to get colours.
-       */
       Vibrant.from(this.player.trackAlbum.image)
         .quality(1)
         .clearFilters()
@@ -353,14 +368,14 @@ export default {
           }
 
           this.handleAlbumPalette(filteredPalette)
-        })
+        })*/
     },
     /**
      * Handle newly stored colour palette:
      * - Map data to readable format
      * - Get and store random colour combination.
      */
-    handleAlbumPalette(palette) {
+    /*handleAlbumPalette(palette) {
       let albumColours = Object.keys(palette)
         .filter(item => {
           return item === null ? null : item
@@ -386,62 +401,244 @@ export default {
       this.$nextTick(() => {
         this.setAppColours()
       })
-    },
+    },*/
     /**
      * Set the stylings of the app based on received colours.
      */
-    async setAppColours() {
-      const textColor = '#fff'
-      // let backgroundColor = this.colourPalette.background
-
-      const response = await fetch(this.player.trackAlbum.image)
-      const blob = await response.blob()
-
+    getMatchColors(imageBlob) {
+      //const img = document.getElementById('albumCover');
+      const colorThief = new ColorThief()
       const img = new Image()
-      const blobUrl = URL.createObjectURL(blob)
+      img.src = imageBlob
 
-      img.src = blobUrl
-
-      img.onload = () => {
-        const colorThief = new ColorThief()
-        const dominantColor = colorThief.getColor(img)
-
-        URL.revokeObjectURL(blobUrl)
-        document.documentElement.style.setProperty(
-          '--primary-color',
-          `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
-        )
-
-        document.documentElement.style.setProperty(
-          '--controls-color',
-          `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
-        )
-
+      img.onload = function() {
+        const colors = colorThief.getPalette(img, 10)
+        const suitableColor = getSuitableColor(colors)
+        document.documentElement.style.setProperty('--controls-color', `#fff`)
         document.documentElement.style.setProperty(
           '--color-text-primary',
           '#fff'
         )
+        if (suitableColor) {
+          document.documentElement.style.setProperty(
+            '--primary-color',
+            `rgb(${suitableColor.join(',')})`
+          )
+        } else {
+          document.documentElement.style.setProperty('--primary-color', `#000`)
+        }
+      }
 
+      function getSuitableColor(colors) {
+        return colors.find(color => !isNearBlackOrWhite(color))
+      }
+
+      function isNearBlackOrWhite(color) {
+        const [r, g, b] = color
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000
+        return brightness < 30 || brightness > 220
+      }
+
+      if (img.complete) {
+        img.onload()
+      }
+    },
+    getMatchContrastColors(imageBlob) {
+      console.log('finding contrast color')
+      const colorThief = new ColorThief()
+      const img = new Image()
+      img.src = imageBlob
+
+      img.onload = function() {
+        const colors = colorThief.getPalette(img, 10)
+        const backgroundColor = getComplementaryOrThirdColor(colors)
+        console.log('background is ', backgroundColor)
+        document.documentElement.style.setProperty('--controls-color', `#fff`)
         document.documentElement.style.setProperty(
-          '--colour-background-now-playing',
-          `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
-          //backgroundColor
+          '--color-text-primary',
+          '#fff'
+        )
+        if (backgroundColor) {
+          document.documentElement.style.setProperty(
+            '--primary-color',
+            `rgb(${backgroundColor.join(',')})`
+          )
+        } else {
+          document.documentElement.style.setProperty('--primary-color', `#000`)
+        }
+      }
+
+      function getComplementaryOrThirdColor(colors) {
+        const prominentColor = colors[0]
+        const complementaryColor = getComplementaryColor(prominentColor)
+
+        if (
+          complementaryColor &&
+          !isNearBlackOrWhite(complementaryColor) &&
+          isColorInPalette(colors, complementaryColor)
+        ) {
+          return complementaryColor
+        } else {
+          const thirdColor = colors[2]
+          if (thirdColor && !isNearBlackOrWhite(thirdColor)) {
+            return thirdColor
+          }
+        }
+        return null
+      }
+
+      function getComplementaryColor([r, g, b]) {
+        // Calculate complementary color
+        const compColor = [255 - r, 255 - g, 255 - b]
+        return compColor
+      }
+
+      function isColorInPalette(colors, color) {
+        return colors.some(
+          c => color[0] === c[0] && color[1] === c[1] && color[2] === c[2]
         )
       }
 
-      if (
-        this.settings?.backgroundOption === 'black-oled' &&
-        this.settings?.textOption !== 'text-only'
-      ) {
-        // controlsColor = this.colourPalette.background
+      function isNearBlackOrWhite(color) {
+        const [r, g, b] = color
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000
+        return brightness < 30 || brightness > 220
       }
+
+      // Trigger image load if it is cached
+      if (img.complete) {
+        img.onload()
+      }
+    },
+    getSpotlightColors(imageBlob) {
+      const colorThief = new ColorThief()
+      const img = new Image()
+      img.src = imageBlob
+
+      img.onload = function() {
+        const colors = colorThief.getPalette(img, 10)
+        const backgroundColors = getDominantColors(colors)
+        document.documentElement.style.setProperty('--controls-color', `#fff`)
+        document.documentElement.style.setProperty(
+          '--color-text-primary',
+          '#fff'
+        )
+        if (backgroundColors) {
+          const startColor = rgbToHex(backgroundColors[0])
+          const stopColor = rgbToHex(backgroundColors[1])
+          document.documentElement.style.setProperty(
+            '--start-color',
+            startColor
+          )
+          document.documentElement.style.setProperty('--end-color', stopColor)
+          document.dispatchEvent(new CustomEvent('BlobBackgroundColorChanged'))
+        }
+      }
+
+      function getDominantColors(colors) {
+        const filteredColors = colors.filter(
+          color => !isNearBlackOrWhite(color)
+        )
+        if (filteredColors.length >= 2) {
+          return [filteredColors[0], filteredColors[1]]
+        }
+        return null
+      }
+
+      function isNearBlackOrWhite(color) {
+        const [r, g, b] = color
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000
+        return brightness < 30 || brightness > 220
+      }
+
+      function rgbToHex([r, g, b]) {
+        const toHex = value => value.toString(16).padStart(2, '0')
+        return `#${toHex(r)}${toHex(g)}${toHex(b)}`
+      }
+
+      // Trigger image load if it is cached
+      if (img.complete) {
+        img.onload()
+      }
+    },
+    async setAppColours() {
+      //const textColor = '#fff'
+      // let backgroundColor = this.colourPalette.background
+      const response = await fetch(this.playerData.trackAlbum.image)
+      const blob = await response.blob()
+
+      const blobUrl = URL.createObjectURL(blob)
+      document.documentElement.style.setProperty(
+        '--album-image',
+        `url(${this.player.trackAlbum.image})`
+      )
+      document.documentElement.style.setProperty('--controls-color', `#fff`)
+      document.documentElement.style.setProperty('--color-text-primary', '#fff')
+      document.documentElement.style.setProperty('--primary-color', `#fff`)
+
+      const settings = getPlayThingSettings()
+      console.log(settings?.backgroundOption)
+      if (['match', 'match-dark'].includes(settings?.backgroundOption))
+        this.getMatchColors(blobUrl)
+      else if (['contrast'].includes(settings?.backgroundOption))
+        this.getMatchContrastColors(blobUrl)
+      else if (['spotlight'].includes(settings?.backgroundOption)) {
+        this.$nextTick(() => {
+          this.getSpotlightColors(blobUrl)
+        })
+      }
+
+      /*img.onload = () => {
+        const colorThief = new ColorThief()
+        const dominantColor = colorThief.getColor(img)
+        URL.revokeObjectURL(blobUrl)
+        console.log("looking for dominant color ", dominantColor)
+
+        if (
+          this.settings?.backgroundOption !== 'black-oled'
+        ) {
+
+          document.documentElement.style.setProperty(
+            '--controls-color',
+            `#fff`
+          )
+
+          document.documentElement.style.setProperty(
+            '--color-text-primary',
+            '#fff'
+          )
+          document.documentElement.style.setProperty(
+            '--primary-color',
+            `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
+          )
+        } else {
+          //console.log("dominent color is ", dominantColor)
+          document.documentElement.style.setProperty(
+            '--controls-color',
+            `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
+          )
+
+          document.documentElement.style.setProperty(
+            '--color-text-primary',
+            '#fff'
+          )
+
+          document.documentElement.style.setProperty(
+            '--colour-background-now-playing',
+            `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
+            //backgroundColor
+          )
+        }
+      }
+
+
 
       document.documentElement.style.setProperty(
         '--album-image',
         `url(${this.player.trackAlbum.image})`
       )
 
-      document.documentElement.style.setProperty('--secondary-color', textColor)
+      document.documentElement.style.setProperty('--secondary-color', textColor)*/
     }
   },
   watch: {
@@ -465,7 +662,8 @@ export default {
      */
     playerData: function() {
       this.$emit('spotifyTrackUpdated', this.playerData)
-
+      //this.getAlbumColours()
+      // console.log("image ", this.playerResponse)
       this.$nextTick(() => {
         this.getAlbumColours()
       })
