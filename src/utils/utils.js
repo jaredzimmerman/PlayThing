@@ -36,18 +36,26 @@ export function getPlayThingSettings() {
   let settings = {}
   try {
     settings = JSON.parse(settingsString)
+    if (settings == null)
+      settings = {
+        backgroundOption: 'black-oled',
+        textOption: 'none',
+        nothingPlayingOption: 'blank',
+        miscellaneousOption: ['show-progress-bar']
+      }
     settings.selectedBackgroundOption = settings?.backgroundOption ?? 'blank'
     settings.selectedTextOption = settings?.textOption ?? 'none'
     settings.selectedNothingPlayingOption =
       settings?.nothingPlayingOption ?? 'black-oled'
-    settings.selectedMiscellaneousOption =
-      settings?.miscellaneousOption ?? 'show-progress-bar'
+    settings.selectedMiscellaneousOption = settings?.miscellaneousOption ?? [
+      'show-progress-bar'
+    ]
   } catch (e) {
     // default values
     settings.selectedBackgroundOption = 'blank'
     settings.selectedTextOption = 'none'
     settings.selectedNothingPlayingOption = 'black-oled'
-    settings.selectedMiscellaneousOption = 'show-progress-bar'
+    settings.selectedMiscellaneousOption = ['show-progress-bar']
   }
 
   return settings

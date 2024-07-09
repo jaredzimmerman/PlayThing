@@ -1,22 +1,23 @@
 <template>
   <div id="app">
     <Playback
-      v-if="player.playing"
+      v-if="player.playing || true"
       :player="player"
       :playerResponse="playerResponse"
       :playerData="playerData"
     />
-    <div v-else>
+    <!--<div v-else>
       <Clock format="12" />
-    </div>
+    </div>-->
   </div>
 </template>
 
 <script>
 import props from '@/utils/props.js'
-import Clock from './Clock.vue'
+// import Clock from './Clock.vue'
 import Playback from './Playback.vue'
 import * as Vibrant from 'node-vibrant'
+import * as ColorThief from 'color-thief-browser'
 import { getPlayThingSettings } from '@/utils/utils'
 
 export default {
@@ -29,7 +30,7 @@ export default {
   },
 
   components: {
-    Clock,
+    // Clock,
     Playback
   },
 
@@ -46,18 +47,98 @@ export default {
   },
   created() {
     this.settings = getPlayThingSettings()
+    document.addEventListener('PlayThingPlay', this.handlePlay)
+    document.addEventListener('PlayThingPause', this.handlePause)
+    document.addEventListener('PlayThingNext', this.handleNext)
+    document.addEventListener('PlayThingBack', this.handleBack)
+    document.addEventListener('PlayThingShuffle', this.handleShuffle)
+    document.addEventListener('PlayThingRepeat', this.handleRepeat)
   },
   mounted() {
     this.setDataInterval()
     this.setAppColours()
     this.getNowPlaying()
+    console.log(this.player)
   },
 
   beforeDestroy() {
     clearInterval(this.pollPlaying)
+    document.removeEventListener('PlayThingPlay', this.handlePlay)
+    document.removeEventListener('PlayThingPause', this.handlePause)
+    document.removeEventListener('PlayThingNext', this.handleNext)
+    document.removeEventListener('PlayThingBack', this.handleBack)
+    document.removeEventListener('PlayThingShuffle', this.handleShuffle)
+    document.removeEventListener('PlayThingRepeat', this.handleRepeat)
   },
 
   methods: {
+    async handlePlay() {
+      try {
+        await fetch(`${this.endpoints.base}/${this.endpoints.play}`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${this.auth.accessToken}`
+          }
+        })
+
+        this.getNowPlaying()
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    async handlePause() {
+      try {
+        await fetch(`${this.endpoints.base}/${this.endpoints.pause}`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${this.auth.accessToken}`
+          }
+        })
+
+        this.getNowPlaying()
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    async handleNext() {
+      try {
+        await fetch(`${this.endpoints.base}/${this.endpoints.next}`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.auth.accessToken}`
+          }
+        })
+        this.getNowPlaying()
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    async handleBack() {
+      try {
+        await fetch(`${this.endpoints.base}/${this.endpoints.back}`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.auth.accessToken}`
+          }
+        })
+        this.getNowPlaying()
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    async handleShuffle() {
+      try {
+        await fetch(`${this.endpoints.base}/${this.endpoints.shuffle}`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.auth.accessToken}`
+          }
+        })
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    async handleRepeat() {},
     /**
      * Make the network request to Spotify to
      * get the current played track.
@@ -98,7 +179,7 @@ export default {
         }
 
         data = await response.json()
-        // console.log('response : ', data)
+        console.log('response : ', data)
         this.playerResponse = data
       } catch (error) {
         this.handleExpiredToken()
@@ -119,7 +200,8 @@ export default {
       clearInterval(this.pollPlaying)
       this.pollPlaying = setInterval(() => {
         this.getNowPlaying()
-      }, 2500)
+      }, 3000)
+      //}, 2500)
     },
 
     /**
@@ -160,19 +242,19 @@ export default {
       /**
        * Player is active, but user has paused.
        */
-      if (this.playerResponse.is_playing === false) {
+      /*if (this.playerResponse.is_playing === false) {
         this.playerData = this.getEmptyPlayer()
 
         return
-      }
+      }*/
 
       /**
        * The newly fetched track is the same as our stored
        * one, we don't want to update the DOM yet.
        */
-      if (this.playerResponse.item?.id === this.playerData.trackId) {
+      /*if (this.playerResponse.item?.id === this.playerData.trackId) {
         return
-      }
+      }*/
 
       /**
        * Store the current active track.
@@ -308,54 +390,58 @@ export default {
     /**
      * Set the stylings of the app based on received colours.
      */
-    setAppColours() {
-      //let textColor = this.colourPalette.text
+    async setAppColours() {
       const textColor = '#fff'
-      let controlsColor = '#fff'
-      let backgroundColor = this.colourPalette.background
+      // let backgroundColor = this.colourPalette.background
 
-      console.log('background color is ', this.colourPalette.background)
+      const response = await fetch(this.player.trackAlbum.image)
+      const blob = await response.blob()
+
+      const img = new Image()
+      const blobUrl = URL.createObjectURL(blob)
+
+      img.src = blobUrl
+
+      img.onload = () => {
+        const colorThief = new ColorThief()
+        const dominantColor = colorThief.getColor(img)
+
+        URL.revokeObjectURL(blobUrl)
+        document.documentElement.style.setProperty(
+          '--primary-color',
+          `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
+        )
+
+        document.documentElement.style.setProperty(
+          '--controls-color',
+          `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
+        )
+
+        document.documentElement.style.setProperty(
+          '--color-text-primary',
+          '#fff'
+        )
+
+        document.documentElement.style.setProperty(
+          '--colour-background-now-playing',
+          `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
+          //backgroundColor
+        )
+      }
+
       if (
         this.settings?.backgroundOption === 'black-oled' &&
         this.settings?.textOption !== 'text-only'
       ) {
-        controlsColor = this.colourPalette.background
+        // controlsColor = this.colourPalette.background
       }
-
-      /* if (this.settings?.backgroundOption !== 'black-oled') {
-         // textColor = '#fff'
-         backgroundColor = '#000'
-       }*/
-
-      document.documentElement.style.setProperty(
-        '--controls-color',
-        controlsColor
-      )
 
       document.documentElement.style.setProperty(
         '--album-image',
         `url(${this.player.trackAlbum.image})`
       )
 
-      if (backgroundColor) {
-        console.log('setting primary color to ', backgroundColor)
-        document.documentElement.style.setProperty(
-          '--primary-color',
-          backgroundColor
-        )
-      }
-
       document.documentElement.style.setProperty('--secondary-color', textColor)
-
-      document.documentElement.style.setProperty(
-        '--color-text-primary',
-        textColor
-      )
-
-      document.documentElement.style.setProperty(
-        '--colour-background-now-playing',
-        backgroundColor
-      )
     }
   },
   watch: {

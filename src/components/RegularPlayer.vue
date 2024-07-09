@@ -20,7 +20,7 @@
           <h2 class="now-playing__artists" v-text="getTrackArtists"></h2>
         </div>
         <div class="now-playing__controls">
-          <Controls />
+          <Controls :player="player" />
         </div>
       </div>
     </div>
@@ -129,7 +129,7 @@ export default {
   justify-content: center;
   // flex-flow: column nowrap;
   height: 100vh;
-  padding: var(--spacing-l);
+  // padding: var(--spacing-l);
   width: 100%;
   overflow: hidden;
 
@@ -141,18 +141,19 @@ export default {
   }
 
   &__cover {
-    max-width: 400px;
+    // max-width: 400px;
   }
 
   &__image {
     box-shadow: 1px 1px 16px -2px rgba(0, 0, 0, 0.3);
-    height: auto;
-    max-width: 60vw;
+    aspect-ratio: 1;
+    max-width: 640px;
     width: 100%;
   }
 
   &__details {
-    text-align: center;
+    // text-align: center;
+    text-align: left;
     // display: var(--display-text);
 
     display: flex;
@@ -168,8 +169,9 @@ export default {
   }*/
 
   &__controls {
-    margin-top: 10%;
-    width: 100%;
+    margin-bottom: 10%;
+    width: 80%;
+    position: relative;
   }
 
   &__cover {
@@ -207,13 +209,13 @@ export default {
     justify-content: center;
   }
 
-  @media only screen and (min-width: 767px) {
+  /*@media only screen and (min-width: 767px) {
     flex-flow: row nowrap;
     padding: 10%;
 
     &__cover,
     &__details {
-      width: 50%;
+      // width: 50%;
       max-width: 495px;
     }
 
@@ -225,11 +227,13 @@ export default {
       // margin-top: 15%;
       width: 70%;
     }
-  }
+  }*/
 }
 
 .container {
-  display: flex;
-  height: 50vh;
+  display: grid;
+  gap: 110px;
+  //height: 50vh;
+  grid-template-columns: repeat(2, 1fr);
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="player">
     <TextOnlyPlayer
       v-if="textOption === 'text-only'"
       :player="player"
@@ -93,4 +93,10 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+#player {
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+</style>

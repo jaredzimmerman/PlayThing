@@ -1,7 +1,17 @@
 <template>
-  <div id="app">
+  <div
+    id="app"
+    :style="
+      `position: relative;
+  width: 100vw !important;
+  height: 100vh !important;
+  overflow-x: hidden !important;
+  overflow-y: ${showTouchScreen ? 'hidden !important' : 'auto'};
+  `
+    "
+  >
     <TouchScreen
-      v-if="showTouchScreen"
+      v-if="showTouchScreen && false"
       @showSettingButton="displaySettingButton"
     />
     <Component
@@ -14,6 +24,7 @@
       @requestRefreshToken="requestRefreshTokens"
       @pageChange="onPageChange"
       @closeSettings="closeSettings"
+      v-on:showSettingButton="displaySettingButton"
     >
     </Component>
     <RecentScreen v-if="false" />
@@ -76,9 +87,13 @@ export default {
         token: 'https://accounts.spotify.com/api/token',
         base: 'https://api.spotify.com/v1',
         nowPlaying: 'me/player/currently-playing',
-        startOrResume: 'me/player/play',
-        skipToNext: 'me/player/next',
-        skipToPrevious: 'me/player/previous'
+        play: 'me/player/play',
+        pause: 'me/player/pause',
+        next: 'me/player/next',
+        back: 'me/player/previous',
+        previous: 'me/player/previous',
+        shuffle: 'me/player/shuffle',
+        repeat: 'me/player/repeat'
       },
       player: {
         playing: false,
@@ -120,9 +135,13 @@ export default {
     }, 3000)
   },
 
-  mounted() {},
+  mounted() {
+    document.addEventListener('showSettingButton', this.displaySettingButton)
+  },
 
-  beforeDestroy() {},
+  beforeDestroy() {
+    document.removeEventListener('showSettingButton', this.displaySettingButton)
+  },
 
   methods: {
     /**
@@ -198,6 +217,9 @@ export default {
   user-select: none;
 }
 
+#app {
+}
+
 .settings-container {
   position: absolute;
   bottom: 10px;
@@ -222,6 +244,7 @@ export default {
     transform: translateY(20px);
     animation: fadeSlideUp 0.5s forwards;
     z-index: 11;
+    overflow: hidden;
   }
 
   @keyframes fadeSlideUp {

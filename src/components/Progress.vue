@@ -52,7 +52,7 @@ export default {
     },
     simulateProgress() {
       this.interval = setInterval(() => {
-        this.progress += 1000
+        if (this.player.playing) this.progress += 1000
       }, 1000)
     }
   },
@@ -71,6 +71,9 @@ export default {
   border-radius: 5px;
   overflow: hidden;
   height: 5px;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .progress-container::before {

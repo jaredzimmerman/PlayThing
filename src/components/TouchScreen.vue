@@ -5,10 +5,12 @@
 <script>
 export default {
   name: 'TouchScreen',
+  emits: ['show-setting-button'],
   methods: {
     showSettingButton() {
-      console.log('open')
-      this.$emit('showSettingButton')
+      // console.log('open')
+      // this.$emit('show-setting-button')
+      document.dispatchEvent(new Event('showSettingButton'))
     }
   }
 }
@@ -22,9 +24,8 @@ export default {
   position: absolute;
   background-color: transparent;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
-  z-index: 10;
   pointer-events: all;
 }
 </style>
