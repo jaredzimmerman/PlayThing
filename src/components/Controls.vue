@@ -76,8 +76,12 @@ export default {
     }
   },
   mounted() {
-    if (this.player) {
-      this.playing = this.player.playing
+    const value = this.playerResponse
+    if (value) {
+      //this.playing = this.player.playing
+      this.playing = value.is_playing
+      this.repeat = value.repeat_state
+      this.shuffle = value.shuffle_state
     }
   },
   computed: {
@@ -86,23 +90,23 @@ export default {
       return this.playing
     }
   },
-  watch: {
+  /*watch: {
     playerResponse(value) {
       this.playing = value.is_playing
       this.repeat = value.repeat_state
       this.shuffle = value.shuffle_state
       // if (value.playing != this.playing) { }
     }
-  },
+  },*/
   methods: {
     sendPlay() {
       document.dispatchEvent(new CustomEvent('PlayThingPlay'))
-      //this.playing = true
+      this.playing = true
       console.log(this.playing)
     },
     sendPause() {
       document.dispatchEvent(new CustomEvent('PlayThingPause'))
-      //this.playing = false
+      this.playing = false
       console.log(this.playing)
     },
     sendNext() {
@@ -120,15 +124,15 @@ export default {
       }, 200)
     },
     sendShuffle() {
-      //this.shuffle = !this.shuffle
       document.dispatchEvent(
         new CustomEvent('PlayThingShuffle', {
           detail: { state: !this.shuffle }
         })
       )
+      this.shuffle = !this.shuffle
     },
     sendRepeat(state) {
-      //this.repeat = state
+      this.repeat = state
       document.dispatchEvent(
         new CustomEvent('PlayThingRepeat', {
           detail: { state }
