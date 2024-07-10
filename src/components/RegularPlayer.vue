@@ -2,24 +2,16 @@
   <div class="now-playing" :class="getNowPlayingClass()">
     <div class="container">
       <div class="now-playing__cover">
-        <img
-          :src="player.trackAlbum.image"
-          :alt="player.trackTitle"
-          class="now-playing__image"
-        />
-        <Progress
-          v-if="miscellaneousOptions.includes('show-progress-bar')"
-          :player="player"
-          :playerResponse="playerResponse"
-          :playerData="playerData"
-        />
+        <img :src="player.trackAlbum.image" :alt="player.trackTitle" class="now-playing__image" />
+        <Progress v-if="miscellaneousOptions.includes('show-progress-bar')" :player="player"
+          :playerResponse="playerResponse" :playerData="playerData" />
       </div>
       <div class="now-playing__details">
         <div>
           <h1 class="now-playing__track" v-text="player.trackTitle"></h1>
           <h2 class="now-playing__artists" v-text="getTrackArtists"></h2>
         </div>
-        <div class="now-playing__controls">
+        <div class="now-playing__controls" v-show="!hideControls">
           <Controls :player="player" :playerResponse="playerResponse" />
         </div>
       </div>
@@ -36,7 +28,7 @@ export default {
   name: 'RegularPlayer',
   components: {
     Controls,
-    Progress
+    Progress,
   },
   props: {
     player: {
@@ -50,11 +42,15 @@ export default {
     playerData: {
       type: Object,
       default: null
+    },
+    hideControls: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      settings: null
+      settings: null,
     }
   },
   created() {
@@ -114,7 +110,7 @@ export default {
     getNowPlayingClass() {
       const playerClass = this.player.playing ? 'active' : 'idle'
       return `now-playing--${playerClass}`
-    }
+    },
   }
 }
 </script>
@@ -145,10 +141,11 @@ export default {
   }
 
   &__image {
-    box-shadow: 1px 1px 16px -2px rgba(0, 0, 0, 0.3);
+    //box-shadow: 1px 1px 16px -2px rgba(0, 0, 0, 0.3);
     aspect-ratio: 1;
     max-width: 640px;
     width: 100%;
+    border-radius: 10px;
   }
 
   &__details {
@@ -172,6 +169,7 @@ export default {
     margin-bottom: 10%;
     width: 80%;
     position: relative;
+    transition: all 1s ease-out;
   }
 
   &__cover {
@@ -235,5 +233,6 @@ export default {
   gap: 110px;
   //height: 50vh;
   grid-template-columns: repeat(2, 1fr);
+  max-width: 1280px;
 }
 </style>

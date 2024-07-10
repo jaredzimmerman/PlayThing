@@ -1,11 +1,7 @@
 <template>
   <div id="app">
-    <Playback
-      v-if="player.playing || true"
-      :player="player"
-      :playerResponse="playerResponse"
-      :playerData="playerData"
-    />
+    <Playback v-if="player.playing || true" :player="player" :playerResponse="playerResponse"
+      :playerData="playerData" />
     <!--<div v-else>
       <Clock format="12" />
     </div>-->
@@ -411,7 +407,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function() {
+      img.onload = function () {
         const colors = colorThief.getPalette(img, 10)
         const suitableColor = getSuitableColor(colors)
         document.documentElement.style.setProperty('--controls-color', `#fff`)
@@ -449,7 +445,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function() {
+      img.onload = function () {
         const colors = colorThief.getPalette(img, 10)
         const backgroundColor = getComplementaryOrThirdColor(colors)
         console.log('background is ', backgroundColor)
@@ -515,7 +511,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function() {
+      img.onload = function () {
         const colors = colorThief.getPalette(img, 10)
         const backgroundColors = getDominantColors(colors)
         document.documentElement.style.setProperty('--controls-color', `#fff`)
@@ -561,6 +557,43 @@ export default {
         img.onload()
       }
     },
+    getBlackOledColors(imageBlob) {
+      //const img = document.getElementById('albumCover');
+      const colorThief = new ColorThief()
+      const img = new Image()
+      img.src = imageBlob
+
+      img.onload = function () {
+        const colors = colorThief.getPalette(img, 10)
+        const suitableColor = getSuitableColor(colors)
+        document.documentElement.style.setProperty(
+          '--color-text-primary',
+          '#fff'
+        )
+        if (suitableColor) {
+          document.documentElement.style.setProperty('--controls-color',
+            `rgb(${suitableColor.join(',')})`
+          )
+        } else {
+          document.documentElement.style.setProperty('--primary-color', `#ff`)
+        }
+      }
+
+      function getSuitableColor(colors) {
+        return colors.find(color => !isNearBlackOrWhite(color))
+      }
+
+      function isNearBlackOrWhite(color) {
+        const [r, g, b] = color
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000
+        return brightness < 30 || brightness > 220
+      }
+
+      if (img.complete) {
+        img.onload()
+      }
+
+    },
     async setAppColours() {
       //const textColor = '#fff'
       // let backgroundColor = this.colourPalette.background
@@ -583,9 +616,9 @@ export default {
       else if (['contrast'].includes(settings?.backgroundOption))
         this.getMatchContrastColors(blobUrl)
       else if (['spotlight'].includes(settings?.backgroundOption)) {
-        this.$nextTick(() => {
-          this.getSpotlightColors(blobUrl)
-        })
+        this.getSpotlightColors(blobUrl)
+      } else if (['black-oled'].includes(settings?.backgroundOption)) {
+        this.getBlackOledColors(blobUrl)
       }
 
       /*img.onload = () => {
@@ -645,7 +678,7 @@ export default {
     /**
      * Watch the auth object returned from Spotify.
      */
-    auth: function(oldVal, newVal) {
+    auth: function (oldVal, newVal) {
       if (newVal.status === false) {
         clearInterval(this.pollPlaying)
       }
@@ -654,13 +687,13 @@ export default {
     /**
      * Watch the returned track object.
      */
-    playerResponse: function() {
+    playerResponse: function () {
       this.handleNowPlaying()
     },
     /**
      * Watch our locally stored track data.
      */
-    playerData: function() {
+    playerData: function () {
       this.$emit('spotifyTrackUpdated', this.playerData)
       //this.getAlbumColours()
       // console.log("image ", this.playerResponse)

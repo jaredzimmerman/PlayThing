@@ -1,39 +1,19 @@
 <template>
-  <div
-    id="app"
-    :style="
-      `position: relative;
+  <div id="app" :style="`position: relative;
   width: 100vw !important;
   height: 100vh !important;
   overflow-x: hidden !important;
   overflow-y: ${showTouchScreen ? 'hidden !important' : 'auto'};
   `
-    "
-  >
-    <TouchScreen
-      v-if="showTouchScreen && false"
-      @showSettingButton="displaySettingButton"
-    />
-    <Component
-      v-if="true"
-      :is="getCurrentComponent"
-      :auth="auth"
-      :endpoints="endpoints"
-      :player="player"
-      @spotifyTrackUpdated="updateCurrentTrack"
-      @requestRefreshToken="requestRefreshTokens"
-      @pageChange="onPageChange"
-      @closeSettings="closeSettings"
-      v-on:showSettingButton="displaySettingButton"
-    >
+    ">
+    <TouchScreen v-if="showTouchScreen && false" @showSettingButton="displaySettingButton" />
+    <Component v-if="true" :is="getCurrentComponent" :auth="auth" :endpoints="endpoints" :player="player"
+      @spotifyTrackUpdated="updateCurrentTrack" @requestRefreshToken="requestRefreshTokens" @pageChange="onPageChange"
+      @closeSettings="closeSettings" v-on:showSettingButton="displaySettingButton">
     </Component>
     <RecentScreen v-if="false" />
-    <div
-      v-if="showTouchScreen && showSettingButton"
-      @click.stop="openSettings"
-      class="settings-container fade-slide-up"
-      ref="settingButton"
-    >
+    <div v-if="showTouchScreen && showSettingButton" @click.stop="openSettings" class="settings-container fade-slide-up"
+      ref="settingButton">
       <img src="SettingIcon.svg" />
       <span>SETTINGS</span>
     </div>
@@ -207,7 +187,7 @@ export default {
     /**
      * Watch the authorisation status.
      */
-    'auth.status': function() {
+    'auth.status': function () {
       setStoredAuth(this.auth)
     }
   }
@@ -218,31 +198,43 @@ export default {
   user-select: none;
 }
 
-#app {
-}
+#app {}
 
 .settings-container {
   position: absolute;
-  bottom: 10px;
+  // bottom: 10px;
+  //bottom: 7.4074074074074066%;
+  bottom: 1.8518518518518516vh;
   color: white;
   display: flex;
   justify-content: center;
-  justify-items: center;
-  left: 50%;
+  align-items: center;
+  left: 45%;
   transform: translate(-50%, -50%);
   font-family: Inter;
-  font-size: 1.5rem;
+  //font-size: 1.5rem;
+  // font-size: 187.5%;
+  //font-size: 2.4vw;
+  font-size: 1.5625vw;
   font-weight: 600;
   line-height: 30px;
   letter-spacing: 0.1em;
   text-align: left;
   gap: 10px;
 
+
+  img {
+    width: 1.4432291666666668vw;
+    height: 2.8712962962962965vh;
+  }
+
   /*transition: opacity 0.5s ease, transform 0.5s ease;*/
 
   &.fade-slide-up {
     opacity: 0;
     transform: translateY(20px);
+    //transform: translateY(1.8518518518518516vh);
+    //transform: translateY(5px);
     animation: fadeSlideUp 0.5s forwards;
     z-index: 11;
     overflow: hidden;

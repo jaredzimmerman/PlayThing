@@ -5,19 +5,12 @@
       <h2 class="now-playing__artists" v-text="getTrackArtists"></h2>
     </div>
 
-    <div class="bottom-controls">
+    <div class="bottom-controls" v-show="!hideControls">
       <Controls />
     </div>
 
-    <div
-      class="bottom-progress"
-      v-if="miscellaneousOptions.includes('show-progress-bar')"
-    >
-      <Progress
-        :player="player"
-        :playerResponse="playerResponse"
-        :playerData="playerData"
-      />
+    <div class="bottom-progress" v-if="miscellaneousOptions.includes('show-progress-bar')">
+      <Progress :player="player" :playerResponse="playerResponse" :playerData="playerData" />
     </div>
   </div>
 </template>
@@ -45,6 +38,10 @@ export default {
     playerData: {
       type: Object,
       default: null
+    },
+    hideControls: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -134,11 +131,25 @@ export default {
   }
 
   &__track {
-    font-weight: var(--font-weight-heading);
+    font-family: Inter;
+    font-size: 6.4453125vw;
+    font-weight: 700;
+    line-height: 17.542592592592595vh;
+    letter-spacing: 0.07em;
+    text-align: left;
+
   }
 
   &__artists {
     opacity: 0.8;
+    font-family: Inter;
+    font-size: 5.208333333333334vw;
+    font-weight: 500;
+    line-height: 13.88888888888889vh;
+    letter-spacing: 0.07em;
+    text-align: left;
+
+
   }
 
   &--active {
@@ -170,21 +181,48 @@ export default {
 
 .top-details {
   position: absolute;
-  top: 5%;
-  left: 5%;
+  width: 47.083333333333336%;
+  height: 23.98148148148148%;
+  top: 9.25925925925926vh;
+  left: 5.208333333333334%;
+  gap: 0px;
+  opacity: 0px;
+
 }
 
 .bottom-controls {
   position: absolute;
-  bottom: 15%;
-  right: 1%;
-  width: 20%;
+  width: 26vw;
+  height: 11.148148vh;
+  top: 77.5vh;
+  left: 70vw;
+
+  //width: 27.083333333333332vw;
+  //height: 8.148148148148149vh;
+  //top: 77.5vh;
+  //left: 71.1875vw;
 }
+
+/*.bottom-progress {
+  position: absolute;
+  width: 89.58333333333334vw;
+  height: 5px;
+  top: 94.9074074074074vh;
+  left: 5.208333333333334vw;
+  gap: 0px;
+  border-radius: 2px 0px 0px 0px;
+  opacity: 0px;
+}*/
 
 .bottom-progress {
   position: absolute;
-  bottom: 1%;
-  width: 100%;
-  padding: 1rem;
+  width: 89.58333333333334vw;
+  height: 5px;
+  top: 94.9074074074074vh;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: 0px;
+  border-radius: 2px 0px 0px 0px;
+  opacity: 0px;
 }
 </style>

@@ -71,7 +71,7 @@ export default {
   border-radius: 5px;
   overflow: hidden;
   height: 5px;
-  max-width: 640px;
+  //max-width: 640px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -87,6 +87,7 @@ export default {
   background: var(--controls-color);
   opacity: 0.5;
   z-index: 1;
+  width: 100%;
 }
 
 .progress-fill {

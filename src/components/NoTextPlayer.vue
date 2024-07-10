@@ -3,13 +3,9 @@
     <div>
       <div class="now-playing__cover">
         <img :src="player.trackAlbum.image" class="now-playing__image" />
-        <Progress
-          v-if="miscellaneousOptions.includes('show-progress-bar')"
-          :player="player"
-          :playerResponse="playerResponse"
-          :playerData="playerData"
-        />
-        <div class="controls">
+        <Progress v-if="miscellaneousOptions.includes('show-progress-bar')" :player="player"
+          :playerResponse="playerResponse" :playerData="playerData" />
+        <div class="controls" v-show="!hideControls">
           <Controls />
         </div>
       </div>
@@ -40,6 +36,10 @@ export default {
     playerData: {
       type: Object,
       default: null
+    },
+    hideControls: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -121,7 +121,7 @@ export default {
 
 .now-playing {
   font-size: var(--text-size);
-  background-color: var(--colour-background-now-playing);
+  //background-color: var(--colour-background-now-playing);
   /*background-color: var(--colour-background-now-playing);*/
   // color: var(--color-text-primary);
   color: #fff;
@@ -142,18 +142,19 @@ export default {
   }
 
   &__cover {
-    max-width: 400px;
-    width: 50vh;
-    aspect-ratio: 1;
     display: block;
   }
 
   &__image {
-    box-shadow: 1px 1px 16px -2px rgba(0, 0, 0, 0.3);
+    //box-shadow: 1px 1px 16px -2px rgba(0, 0, 0, 0.3);
     height: auto;
     // max-width: 640px; //60vw;
     width: 100%;
     //width: 60vw;
+    max-width: 640px;
+    width: 60vh;
+    aspect-ratio: 1;
+    border-radius: 10px;
   }
 
   &__details {
@@ -208,7 +209,22 @@ export default {
 }
 
 .controls {
-  margin-top: 10px;
+  margin-top: 8.333333333333332vh;
   width: 100%;
+  display: block;
+  position: relative;
+}
+
+.controls .controls-container {
+  display: flex;
+  justify-content: center;
+  scale: 0.884;
+}
+
+.now-playing div:first-child {
+  //background-color: red;
+  //height: 100vh;
+  //display: flex;
+  align-items: center;
 }
 </style>

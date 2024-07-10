@@ -11,6 +11,7 @@ export default {
       // console.log('open')
       // this.$emit('show-setting-button')
       document.dispatchEvent(new Event('showSettingButton'))
+      document.dispatchEvent(new Event('showPlaybackControls'))
     }
   }
 }

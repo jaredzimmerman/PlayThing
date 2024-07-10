@@ -23,25 +23,13 @@
       <span @click="sendNext" ref="nextButton" class="nextButton">
         <SimpleSVG src="/controls/Next.svg" />
       </span>
-      <span
-        v-show="repeat === 'off'"
-        @click="sendRepeat('context')"
-        style="opacity: 0.5;"
-      >
+      <span v-show="repeat === 'off'" @click="sendRepeat('context')" style="opacity: 0.5;">
         <SimpleSVG src="/controls/Repeat.svg" />
       </span>
-      <span
-        v-show="repeat === 'context'"
-        @click="sendRepeat('track')"
-        style="opacity: 1;"
-      >
+      <span v-show="repeat === 'context'" @click="sendRepeat('track')" style="opacity: 1;">
         <SimpleSVG src="/controls/Repeat-1.svg" />
       </span>
-      <span
-        v-show="repeat === 'track'"
-        @click="sendRepeat('off')"
-        style="opacity: 1"
-      >
+      <span v-show="repeat === 'track'" @click="sendRepeat('off')" style="opacity: 1">
         <SimpleSVG src="/controls/Repeat-2.svg" />
       </span>
     </div>

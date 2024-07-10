@@ -12,39 +12,19 @@
         <section>
           <h3>Nothing playing</h3>
           <ul>
-            <li
-              v-for="option in nothingPlayingOptions"
-              :key="option.value"
-              @click="onSelectNothingPlaying(option.value)"
-            >
-              <span v-if="selectedNothingPlayingOption.includes(option.value)"
-                ><img src="CaretIcon.svg"
-              /></span>
-              <span
-                v-if="option.value != 'regular-clock'"
-                :class="
-                  option.value === selectedNothingPlayingOption ? 'active' : ''
-                "
-              >
+            <li v-for="option in nothingPlayingOptions" :key="option.value"
+              @click="onSelectNothingPlaying(option.value)">
+              <span v-if="selectedNothingPlayingOption.includes(option.value)"><img src="CaretIcon.svg" /></span>
+              <span v-if="option.value != 'regular-clock'" :class="option.value === selectedNothingPlayingOption ? 'active' : ''
+      ">
                 {{ option.title }}
               </span>
-              <span
-                class="colorless-active"
-                v-else-if="selectedNothingPlayingOption === 'regular-clock-12'"
-                ><span style="color: #fff">Clock</span>&nbsp;<span
-                  style="color: #fff"
-                  class="clock"
-                  >12h</span
-                >&nbsp;/&nbsp;24h</span
-              >
-              <span
-                class="colorless-active"
-                v-else-if="selectedNothingPlayingOption === 'regular-clock-24'"
-                ><span style="color: #fff">Clock</span
-                >&nbsp;12h&nbsp;/&nbsp;<span style="color: #fff" class="clock"
-                  >24h</span
-                ></span
-              >
+              <span class="colorless-active" v-else-if="selectedNothingPlayingOption === 'regular-clock-12'"><span
+                  style="color: #fff">Clock</span>&nbsp;<span style="color: #fff"
+                  class="clock">12h</span>&nbsp;/&nbsp;24h</span>
+              <span class="colorless-active" v-else-if="selectedNothingPlayingOption === 'regular-clock-24'"><span
+                  style="color: #fff">Clock</span>&nbsp;12h&nbsp;/&nbsp;<span style="color: #fff"
+                  class="clock">24h</span></span>
               <span v-else>Clock&nbsp;12h&nbsp;/&nbsp;24h</span>
             </li>
           </ul>
@@ -52,60 +32,32 @@
         <section>
           <h3>Background</h3>
           <ul>
-            <li
-              v-for="option in backgroundOptions"
-              :key="option.value"
-              @click="onSelectBackgroundOption(option.value)"
-            >
-              <span v-if="option.value === selectedBackgroundOption"
-                ><img src="CaretIcon.svg"
-              /></span>
-              <span
-                :class="
-                  option.value === selectedBackgroundOption ? 'active' : ''
-                "
-                >{{ option.title }}</span
-              >
+            <li v-for="option in backgroundOptions" :key="option.value" @click="onSelectBackgroundOption(option.value)">
+              <span v-if="option.value === selectedBackgroundOption"><img src="CaretIcon.svg" /></span>
+              <span :class="option.value === selectedBackgroundOption ? 'active' : ''
+      ">{{ option.title }}</span>
             </li>
           </ul>
         </section>
         <section>
           <h3>Text Size & Album Art</h3>
           <ul>
-            <li
-              v-for="option in textOptions"
-              :key="option.value"
-              @click="onSelectTextOption(option.value)"
-            >
-              <span v-if="option.value === selectedTextOption"
-                ><img src="CaretIcon.svg"
-              /></span>
-              <span
-                :class="option.value === selectedTextOption ? 'active' : ''"
-                >{{ option.title }}</span
-              >
+            <li v-for="option in textOptions" :key="option.value" @click="onSelectTextOption(option.value)">
+              <span v-if="option.value === selectedTextOption"><img src="CaretIcon.svg" /></span>
+              <span :class="option.value === selectedTextOption ? 'active' : ''">{{ option.title }}</span>
             </li>
           </ul>
         </section>
         <section>
           <h3>Miscellaneous</h3>
           <ul>
-            <li
-              v-for="option in miscellaneousOptions"
-              :key="option.value"
-              @click="onSelectMiscellaneousOption(option.value)"
-            >
-              <span v-if="selectedMiscellaneousOption.includes(option.value)"
-                ><img src="CaretIcon.svg"
-              /></span>
-              <span
-                :class="
-                  selectedMiscellaneousOption.includes(option.value)
-                    ? 'active'
-                    : ''
-                "
-                >{{ option.title }}</span
-              >
+            <li v-for="option in miscellaneousOptions" :key="option.value"
+              @click="onSelectMiscellaneousOption(option.value)">
+              <span v-if="selectedMiscellaneousOption.includes(option.value)"><img src="CaretIcon.svg" /></span>
+              <span :class="selectedMiscellaneousOption.includes(option.value)
+      ? 'active'
+      : ''
+      ">{{ option.title }}</span>
             </li>
           </ul>
         </section>
@@ -254,6 +206,7 @@ export default {
     },
     closeSettings() {
       // this.$emit('pageChange', 'Authorise')
+
       this.$emit('closeSettings')
     }
   }
@@ -268,6 +221,8 @@ export default {
   align-items: center;
   padding: 20px;
   overflow-x: hidden;
+  height: 100vh;
+  width: 100vw;
 }
 
 .container {
@@ -309,6 +264,9 @@ export default {
   display: flex;
   justify-content: right;
   padding: 5px;
+  position: fixed;
+  top: 10px;
+  right: 10px;
 }
 
 .setting-container ul {
