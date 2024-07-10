@@ -1,39 +1,19 @@
 <template>
-  <div
-    id="app"
-    :style="
-      `position: relative;
+  <div id="app" :style="`position: relative;
   width: 100vw !important;
   height: 100vh !important;
   overflow-x: hidden !important;
   overflow-y: ${showTouchScreen ? 'hidden !important' : 'auto'};
   `
-    "
-  >
-    <TouchScreen
-      v-if="showTouchScreen && false"
-      @showSettingButton="displaySettingButton"
-    />
-    <Component
-      v-if="true"
-      :is="getCurrentComponent"
-      :auth="auth"
-      :endpoints="endpoints"
-      :player="player"
-      @spotifyTrackUpdated="updateCurrentTrack"
-      @requestRefreshToken="requestRefreshTokens"
-      @pageChange="onPageChange"
-      @closeSettings="closeSettings"
-      v-on:showSettingButton="displaySettingButton"
-    >
+    ">
+    <TouchScreen v-if="showTouchScreen && false" @showSettingButton="displaySettingButton" />
+    <Component v-if="true" :is="getCurrentComponent" :auth="auth" :endpoints="endpoints" :player="player"
+      @spotifyTrackUpdated="updateCurrentTrack" @requestRefreshToken="requestRefreshTokens" @pageChange="onPageChange"
+      @closeSettings="closeSettings" v-on:showSettingButton="displaySettingButton">
     </Component>
     <RecentScreen v-if="false" />
-    <div
-      v-if="showTouchScreen && showSettingButton"
-      @click.stop="openSettings"
-      class="settings-container fade-slide-up"
-      ref="settingButton"
-    >
+    <div v-if="showTouchScreen && showSettingButton" @click.stop="openSettings" class="settings-container fade-slide-up"
+      ref="settingButton">
       <img src="SettingIcon.svg" />
       <span>SETTINGS</span>
     </div>
@@ -157,6 +137,7 @@ export default {
      */
     requestRefreshTokens() {
       this.auth.status = false
+      this.currentComponent = 'Authorise'
     },
 
     /**
@@ -207,7 +188,7 @@ export default {
     /**
      * Watch the authorisation status.
      */
-    'auth.status': function() {
+    'auth.status': function () {
       setStoredAuth(this.auth)
     }
   }
@@ -218,7 +199,9 @@ export default {
   user-select: none;
 }
 
-#app {
+.fade-effect {
+  filter: brightness(0.5);
+  transition: filter 0.5s ease;
 }
 
 .settings-container {

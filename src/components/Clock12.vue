@@ -1,10 +1,15 @@
 <template>
   <div id="app">
     <div class="container">
-      <span class="time-text">{{ hours }}</span>
-      <span class="colon">:</span>
-      <span class="time-text">{{ minutes }}</span>
-      <span v-if="meridian !== ''" class="meridian">{{ meridian }}</span>
+      <span class="time-text grid-item">{{ hours }}</span>
+      <span class="colon grid-item">:</span>
+      <span class="time-text grid-item">{{ minutes }}</span>
+      <span class="meridian grid-item">{{ meridian }}</span>
+
+      <!--<span class="time-text grid-item">99</span>
+      <span class="colon grid-item">:</span>
+      <span class="time-text grid-item">99</span>
+      <span class="meridian grid-item">AM</span>-->
     </div>
   </div>
 </template>
@@ -43,7 +48,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 #app {
   font-family: Inter;
   background-color: #000;
@@ -56,21 +61,20 @@ export default {
   overflow: hidden;
 }
 
-.container {
-}
-
 .time-text {
-  /*font-size: 280px;*/
-  font-size: 20vw;
+  font-size: 14vw;
   font-weight: 100;
   line-height: 338.86px;
   letter-spacing: 0.15em;
-  text-align: center;
+  text-align: start;
+}
+
+.container span:first-child {
+  text-align: end !important;
 }
 
 .colon {
-  /*font-size: 280px;*/
-  font-size: 20vw;
+  font-size: 14vw;
   font-weight: 100;
   line-height: 338.86px;
   letter-spacing: 0.15em;
@@ -79,12 +83,22 @@ export default {
 }
 
 .meridian {
-  /*font-size: 140px;*/
-  font-size: 10vw;
+  font-size: 7vw;
   font-weight: 100;
   line-height: 169.43px;
   letter-spacing: 0.15em;
-  text-align: center;
+  text-align: left;
   color: #666666;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 4fr 1fr 2fr 2fr;
+  align-items: baseline;
+}
+
+.grid-item {
+  overflow: hidden;
+  word-wrap: break-word;
 }
 </style>

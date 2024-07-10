@@ -23,25 +23,13 @@
       <span @click="sendNext" ref="nextButton" class="nextButton">
         <SimpleSVG src="/controls/Next.svg" />
       </span>
-      <span
-        v-show="repeat === 'off'"
-        @click="sendRepeat('context')"
-        style="opacity: 0.5;"
-      >
+      <span v-show="repeat === 'off'" @click="sendRepeat('context')" style="opacity: 0.5;">
         <SimpleSVG src="/controls/Repeat.svg" />
       </span>
-      <span
-        v-show="repeat === 'context'"
-        @click="sendRepeat('track')"
-        style="opacity: 1;"
-      >
+      <span v-show="repeat === 'context'" @click="sendRepeat('track')" style="opacity: 1;">
         <SimpleSVG src="/controls/Repeat-1.svg" />
       </span>
-      <span
-        v-show="repeat === 'track'"
-        @click="sendRepeat('off')"
-        style="opacity: 1"
-      >
+      <span v-show="repeat === 'track'" @click="sendRepeat('off')" style="opacity: 1">
         <SimpleSVG src="/controls/Repeat-2.svg" />
       </span>
     </div>
@@ -91,18 +79,18 @@ export default {
       this.playing = value.is_playing
       this.repeat = value.repeat_state
       this.shuffle = value.shuffle_state
-      // if (value.playing != this.playing) {}
+      // if (value.playing != this.playing) { }
     }
   },
   methods: {
     sendPlay() {
       document.dispatchEvent(new CustomEvent('PlayThingPlay'))
-      this.playing = true
+      //this.playing = true
       console.log(this.playing)
     },
     sendPause() {
       document.dispatchEvent(new CustomEvent('PlayThingPause'))
-      this.playing = false
+      //this.playing = false
       console.log(this.playing)
     },
     sendNext() {
@@ -120,7 +108,7 @@ export default {
       }, 200)
     },
     sendShuffle() {
-      this.shuffle = !this.shuffle
+      //this.shuffle = !this.shuffle
       document.dispatchEvent(
         new CustomEvent('PlayThingShuffle', {
           detail: { state: this.shuffle }
@@ -128,7 +116,7 @@ export default {
       )
     },
     sendRepeat(state) {
-      this.repeat = state
+      //this.repeat = state
       document.dispatchEvent(
         new CustomEvent('PlayThingRepeat', {
           detail: { state }

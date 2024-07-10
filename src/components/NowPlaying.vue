@@ -1,12 +1,9 @@
 <template>
   <div id="app">
-    <Playback
-      v-if="player.playing || true"
-      :player="player"
-      :playerResponse="playerResponse"
-      :playerData="playerData"
-      :key="playbackKey"
-    />
+    <Playback v-if="isNowPlaying" :player="player" :playerResponse="playerResponse" :playerData="playerData"
+      :key="playbackKey" />
+    <TouchScreen v-if="!isNowPlaying" />
+    <Clock v-if="!isNowPlaying" />
     <!--<div v-else>
       <Clock format="12" />
     </div>-->
@@ -15,10 +12,11 @@
 
 <script>
 import props from '@/utils/props.js'
-// import Clock from './Clock.vue'
+import Clock from './Clock.vue'
 import Playback from './Playback.vue'
 import * as ColorThief from 'color-thief-browser'
 import { getPlayThingSettings } from '@/utils/utils'
+import TouchScreen from './TouchScreen.vue'
 
 export default {
   name: 'NowPlaying',
@@ -30,8 +28,9 @@ export default {
   },
 
   components: {
-    // Clock,
-    Playback
+    Clock,
+    Playback,
+    TouchScreen
   },
 
   data() {
@@ -43,7 +42,10 @@ export default {
       colourPalette: {},
       swatches: [],
       settings: null,
-      playbackKey: 0
+      playbackKey: 0,
+      isNowPlaying: false,
+      fadeTimeout: null,
+      nothingPlayingTimeout: null
     }
   },
   created() {
@@ -72,7 +74,6 @@ export default {
     document.removeEventListener('PlayThingRepeat', this.handleRepeat)
     document.removeEventListener('keydown', this.onKeyDown)
   },
-
   methods: {
     onKeyDown(event) {
       switch (event.key) {
@@ -147,8 +148,8 @@ export default {
           break
         case ' ':
           // Play/pause functionality
-          console.log('here space', this.playerData)
-          if (this.playerData.playing) {
+          //console.log('here space', this.playerData)
+          if (this.playerResponse.is_playing) {
             this.handlePause()
           } else {
             this.handlePlay()
@@ -315,6 +316,7 @@ export default {
          * The connection was successful but there's no content to return.
          */
         if (response.status === 204) {
+          this.isNowPlaying = false
           data = this.getEmptyPlayer()
           this.playerData = data
 
@@ -325,6 +327,7 @@ export default {
           return
         }
 
+        //this.isNowPlaying = true
         data = await response.json()
         this.playerResponse = data
       } catch (error) {
@@ -389,7 +392,8 @@ export default {
        * Player is active, but user has paused.
        */
       if (this.playerResponse.is_playing === false) {
-        this.playerData = this.getEmptyPlayer()
+        this.playerData.playing = false
+        //this.playerData = this.getEmptyPlayer()
 
         return
       }
@@ -542,7 +546,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function() {
+      img.onload = function () {
         const colors = colorThief.getPalette(img, 10)
         const suitableColor = getSuitableColor(colors)
         document.documentElement.style.setProperty('--controls-color', `#fff`)
@@ -580,7 +584,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function() {
+      img.onload = function () {
         const colors = colorThief.getPalette(img, 10)
         const backgroundColor = getComplementaryOrThirdColor(colors)
         console.log('background is ', backgroundColor)
@@ -646,7 +650,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function() {
+      img.onload = function () {
         const colors = colorThief.getPalette(img, 10)
         const backgroundColors = getDominantColors(colors)
         document.documentElement.style.setProperty('--controls-color', `#fff`)
@@ -698,7 +702,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function() {
+      img.onload = function () {
         const colors = colorThief.getPalette(img, 10)
         const suitableColor = getSuitableColor(colors)
         document.documentElement.style.setProperty(
@@ -813,7 +817,7 @@ export default {
     /**
      * Watch the auth object returned from Spotify.
      */
-    auth: function(oldVal, newVal) {
+    auth: function (oldVal, newVal) {
       if (newVal.status === false) {
         clearInterval(this.pollPlaying)
       }
@@ -822,13 +826,33 @@ export default {
     /**
      * Watch the returned track object.
      */
-    playerResponse: function() {
+    playerResponse: function (newVal, oldVal) {
       this.handleNowPlaying()
+      if (oldVal == null || newVal == null) return;
+      if (oldVal.is_playing && !newVal.is_playing && this.fadeTimeout == null) {
+        clearTimeout(this.nothingPlayingTimeout)
+        clearTimeout(this.fadeTimeout)
+        this.fadeTimeout = setTimeout(() => {
+          console.log('starting pause logic')
+          document.body.classList.add('fade-effect')
+          this.nothingPlayingTimeout = setTimeout(() => {
+            this.isNowPlaying = false
+            document.body.classList.remove('fade-effect')
+          }, 30 * 1000)
+        }, 30 * 1000)
+      } else if (!oldVal.is_playing && newVal.is_playing) {
+        clearTimeout(this.nothingPlayingTimeout)
+        clearTimeout(this.fadeTimeout)
+        this.nothingPlayingTimeout = null;
+        this.fadeTimeout = null
+        this.isNowPlaying = true
+        document.body.classList.remove('fade-effect')
+      }
     },
     /**
      * Watch our locally stored track data.
      */
-    playerData: function() {
+    playerData: function () {
       this.$emit('spotifyTrackUpdated', this.playerData)
       //this.getAlbumColours()
       // console.log("image ", this.playerResponse)
@@ -836,7 +860,7 @@ export default {
         this.getAlbumColours()
       })
     },
-    playbackKey: function() {
+    playbackKey: function () {
       this.setAppColours()
     }
   }
