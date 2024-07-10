@@ -2,7 +2,7 @@
   <div id="app">
     <div class="timestamp">
       <span class="time-text">{{ hours }}</span>
-      <span class="colon">:</span>
+      <span class="colon" v-show="hours != ''">:</span>
       <span class="time-text">{{ minutes }}</span>
     </div>
   </div>
@@ -52,8 +52,7 @@ export default {
   overflow: hidden;
 }
 
-.container {
-}
+.container {}
 
 .time-text {
   /*font-size: 280px;*/

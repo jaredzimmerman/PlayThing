@@ -2,7 +2,7 @@
   <div id="app">
     <div class="container">
       <span class="time-text grid-item">{{ hours }}</span>
-      <span class="colon grid-item">:</span>
+      <span class="colon grid-item" v-show="hours != ''">:</span>
       <span class="time-text grid-item">{{ minutes }}</span>
       <span class="meridian grid-item">{{ meridian }}</span>
 

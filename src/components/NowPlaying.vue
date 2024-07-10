@@ -58,14 +58,24 @@ export default {
     document.addEventListener('PlayThingShuffle', this.handleShuffle)
     document.addEventListener('PlayThingRepeat', this.handleRepeat)
     document.addEventListener('keydown', this.onKeyDown)
+    const started = document.documentElement.dataset.started
+    if (started != null) this.displaySplashScreen = false;
   },
   mounted() {
     this.setDataInterval()
     this.setAppColours()
     this.getNowPlaying()
-    setTimeout(() => {
+
+    const started = document.documentElement.dataset.started
+    console.log("started", started)
+    if (started == null) {
+      setTimeout(() => {
+        this.displaySplashScreen = false
+      }, 2000)
+      document.documentElement.dataset.started = '1'
+    } else {
       this.displaySplashScreen = false
-    }, 2000)
+    }
   },
 
   beforeDestroy() {
@@ -831,7 +841,7 @@ export default {
      */
     playerResponse: function (newVal, oldVal) {
       this.handleNowPlaying()
-      if (oldVal == null || newVal == null) return;
+      if (oldVal == null || newVal == null) return
       if (oldVal.is_playing && !newVal.is_playing && this.fadeTimeout == null) {
         clearTimeout(this.nothingPlayingTimeout)
         clearTimeout(this.fadeTimeout)
@@ -845,7 +855,7 @@ export default {
       } else if (!oldVal.is_playing && newVal.is_playing) {
         clearTimeout(this.nothingPlayingTimeout)
         clearTimeout(this.fadeTimeout)
-        this.nothingPlayingTimeout = null;
+        this.nothingPlayingTimeout = null
         this.fadeTimeout = null
         this.isNowPlaying = true
         document.body.classList.remove('fade-effect')
