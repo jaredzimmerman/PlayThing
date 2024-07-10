@@ -1,11 +1,26 @@
 <template>
   <div id="player">
-    <TextOnlyPlayer v-if="textOption === 'text-only'" :player="player" :playerResponse="playerResponse"
-      :playerData="playerData" :hide-controls="hideControls" />
-    <NoTextPlayer v-else-if="textOption === 'none'" :player="player" :playerResponse="playerResponse"
-      :playerData="playerData" :hide-controls="hideControls" />
-    <RegularPlayer v-else :player="player" :playerResponse="playerResponse" :playerData="playerData"
-      :hide-controls="hideControls" />
+    <TextOnlyPlayer
+      v-if="textOption === 'text-only'"
+      :player="player"
+      :playerResponse="playerResponse"
+      :playerData="playerData"
+      :hide-controls="hideControls"
+    />
+    <NoTextPlayer
+      v-else-if="textOption === 'none'"
+      :player="player"
+      :playerResponse="playerResponse"
+      :playerData="playerData"
+      :hide-controls="hideControls"
+    />
+    <RegularPlayer
+      v-else
+      :player="player"
+      :playerResponse="playerResponse"
+      :playerData="playerData"
+      :hide-controls="hideControls"
+    />
 
     <div class="touch-screen" v-if="hideControls">
       <TouchScreen />
@@ -47,7 +62,7 @@ export default {
       textOption: '',
       hideControls: false,
       hideControlsTimeout: null,
-      settings: null,
+      settings: null
     }
   },
   created() {
@@ -90,24 +105,29 @@ export default {
   },
   mounted() {
     // console.log('options', this.settings.miscellaneousOption)
-    if (this.settings.miscellaneousOption.includes('autohide-playback-controls')) {
+    if (
+      this.settings.miscellaneousOption.includes('autohide-playback-controls')
+    ) {
       console.log('hide controls')
       document.addEventListener('showPlaybackControls', this.hideOrShowControls)
       this.hideOrShowControls()
     }
   },
   beforeDestroy() {
-    document.removeEventListener('showPlaybackControls', this.hideOrShowControls)
+    document.removeEventListener(
+      'showPlaybackControls',
+      this.hideOrShowControls
+    )
   },
   methods: {
     hideOrShowControls() {
       console.log('hide or show')
       if (this.hideControls) {
-        this.hideControls = false;
+        this.hideControls = false
       }
-      clearTimeout(this.hideControlsTimeout);
+      clearTimeout(this.hideControlsTimeout)
       this.hideControlsTimeout = setTimeout(() => {
-        this.hideControls = true;
+        this.hideControls = true
       }, 15 * 1000)
     }
   }

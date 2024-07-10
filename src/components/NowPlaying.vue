@@ -1,7 +1,12 @@
 <template>
   <div id="app">
-    <Playback v-if="player.playing || true" :player="player" :playerResponse="playerResponse" :playerData="playerData"
-      :key="playbackKey" />
+    <Playback
+      v-if="player.playing || true"
+      :player="player"
+      :playerResponse="playerResponse"
+      :playerData="playerData"
+      :key="playbackKey"
+    />
     <!--<div v-else>
       <Clock format="12" />
     </div>-->
@@ -38,7 +43,7 @@ export default {
       colourPalette: {},
       swatches: [],
       settings: null,
-      playbackKey: 0,
+      playbackKey: 0
     }
   },
   created() {
@@ -75,34 +80,40 @@ export default {
           if (event.ctrlKey) {
             let backgroundOption = this.settings.backgroundOption
             if (backgroundOption === 'black-oled') backgroundOption = 'match'
-            else if (backgroundOption === 'match') backgroundOption = 'match-dark'
-            else if (backgroundOption === 'match-dark') backgroundOption = 'contrast'
+            else if (backgroundOption === 'match')
+              backgroundOption = 'match-dark'
+            else if (backgroundOption === 'match-dark')
+              backgroundOption = 'contrast'
             else if (backgroundOption === 'contrast') backgroundOption = 'blur'
             else if (backgroundOption === 'blur') backgroundOption = 'spotlight'
             else backgroundOption = 'black-oled'
             this.settings.backgroundOption = backgroundOption
-            this.updateSettings(this.settings);
+            this.updateSettings(this.settings)
             this.playbackKey++
           } else {
             this.handleNext()
           }
-          break;
+          break
         case 'ArrowLeft':
           if (event.ctrlKey) {
             let backgroundOption = this.settings.backgroundOption
-            if (backgroundOption === 'black-oled') backgroundOption = 'spotlight'
-            else if (backgroundOption === 'match') backgroundOption = 'black-oled'
-            else if (backgroundOption === 'match-dark') backgroundOption = 'match'
-            else if (backgroundOption === 'contrast') backgroundOption = 'match-dark'
+            if (backgroundOption === 'black-oled')
+              backgroundOption = 'spotlight'
+            else if (backgroundOption === 'match')
+              backgroundOption = 'black-oled'
+            else if (backgroundOption === 'match-dark')
+              backgroundOption = 'match'
+            else if (backgroundOption === 'contrast')
+              backgroundOption = 'match-dark'
             else if (backgroundOption === 'blur') backgroundOption = 'contrast'
             else backgroundOption = 'blur'
             this.settings.backgroundOption = backgroundOption
-            this.updateSettings(this.settings);
+            this.updateSettings(this.settings)
             this.playbackKey++
           } else {
             this.handleBack()
           }
-          break;
+          break
         case 'ArrowUp':
           if (event.ctrlKey) {
             let textOption = this.settings.textOption
@@ -110,15 +121,15 @@ export default {
             else if (textOption === 'small') textOption = 'none'
             else if (textOption === 'medium') textOption = 'small'
             else if (textOption === 'large') textOption = 'medium'
-            else textOption = 'large';
-            console.log("herex ", textOption)
+            else textOption = 'large'
+            console.log('herex ', textOption)
             this.settings.textOption = textOption
-            this.updateSettings(this.settings);
+            this.updateSettings(this.settings)
             this.playbackKey++
           } else {
             document.dispatchEvent(new Event('showPlaybackControls'))
           }
-          break;
+          break
         case 'ArrowDown':
           if (event.ctrlKey) {
             let textOption = this.settings.textOption
@@ -126,54 +137,58 @@ export default {
             else if (textOption === 'small') textOption = 'medium'
             else if (textOption === 'medium') textOption = 'large'
             else if (textOption === 'large') textOption = 'text-only'
-            else textOption = 'none';
+            else textOption = 'none'
             this.settings.textOption = textOption
-            this.updateSettings(this.settings);
+            this.updateSettings(this.settings)
             this.playbackKey++
-
           } else {
             console.log('recent screen')
           }
-          break;
+          break
         case ' ':
           // Play/pause functionality
           console.log('here space', this.playerData)
           if (this.playerData.playing) {
-            this.handlePause();
+            this.handlePause()
           } else {
             this.handlePlay()
           }
-          event.preventDefault();
-          break;
-        case 'P': {
-          let miscellaneousOption = this.settings.miscellaneousOption
-          if (miscellaneousOption.includes('show-progress-bar')) {
-            miscellaneousOption = miscellaneousOption.filter((option) => option != 'show-progress-bar');
-          } else {
-            miscellaneousOption.push('show-progress-bar')
+          event.preventDefault()
+          break
+        case 'P':
+          {
+            let miscellaneousOption = this.settings.miscellaneousOption
+            if (miscellaneousOption.includes('show-progress-bar')) {
+              miscellaneousOption = miscellaneousOption.filter(
+                option => option != 'show-progress-bar'
+              )
+            } else {
+              miscellaneousOption.push('show-progress-bar')
+            }
+            console.log('new : ', miscellaneousOption)
+            this.settings.miscellaneousOption = miscellaneousOption
+            this.updateSettings(this.settings)
+            this.playbackKey++
           }
-          console.log('new : ', miscellaneousOption)
-          this.settings.miscellaneousOption = miscellaneousOption
-          this.updateSettings(this.settings);
-          this.playbackKey++
-        }
-          break;
+          break
         case 'A':
           {
             let miscellaneousOption = this.settings.miscellaneousOption
             if (miscellaneousOption.includes('animate-blur-spotlight')) {
-              miscellaneousOption = miscellaneousOption.filter((option) => option != 'animate-blur-spotlight');
+              miscellaneousOption = miscellaneousOption.filter(
+                option => option != 'animate-blur-spotlight'
+              )
             } else {
               miscellaneousOption.push('animate-blur-spotlight')
             }
             console.log('new : ', miscellaneousOption)
             this.settings.miscellaneousOption = miscellaneousOption
-            this.updateSettings(this.settings);
+            this.updateSettings(this.settings)
             this.playbackKey++
           }
-          break;
+          break
         default:
-          break;
+          break
       }
     },
 
@@ -527,7 +542,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function () {
+      img.onload = function() {
         const colors = colorThief.getPalette(img, 10)
         const suitableColor = getSuitableColor(colors)
         document.documentElement.style.setProperty('--controls-color', `#fff`)
@@ -565,7 +580,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function () {
+      img.onload = function() {
         const colors = colorThief.getPalette(img, 10)
         const backgroundColor = getComplementaryOrThirdColor(colors)
         console.log('background is ', backgroundColor)
@@ -631,7 +646,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function () {
+      img.onload = function() {
         const colors = colorThief.getPalette(img, 10)
         const backgroundColors = getDominantColors(colors)
         document.documentElement.style.setProperty('--controls-color', `#fff`)
@@ -683,7 +698,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function () {
+      img.onload = function() {
         const colors = colorThief.getPalette(img, 10)
         const suitableColor = getSuitableColor(colors)
         document.documentElement.style.setProperty(
@@ -691,7 +706,8 @@ export default {
           '#fff'
         )
         if (suitableColor) {
-          document.documentElement.style.setProperty('--controls-color',
+          document.documentElement.style.setProperty(
+            '--controls-color',
             `rgb(${suitableColor.join(',')})`
           )
         } else {
@@ -712,7 +728,6 @@ export default {
       if (img.complete) {
         img.onload()
       }
-
     },
     async setAppColours() {
       //const textColor = '#fff'
@@ -798,7 +813,7 @@ export default {
     /**
      * Watch the auth object returned from Spotify.
      */
-    auth: function (oldVal, newVal) {
+    auth: function(oldVal, newVal) {
       if (newVal.status === false) {
         clearInterval(this.pollPlaying)
       }
@@ -807,13 +822,13 @@ export default {
     /**
      * Watch the returned track object.
      */
-    playerResponse: function () {
+    playerResponse: function() {
       this.handleNowPlaying()
     },
     /**
      * Watch our locally stored track data.
      */
-    playerData: function () {
+    playerData: function() {
       this.$emit('spotifyTrackUpdated', this.playerData)
       //this.getAlbumColours()
       // console.log("image ", this.playerResponse)
@@ -821,7 +836,7 @@ export default {
         this.getAlbumColours()
       })
     },
-    playbackKey: function () {
+    playbackKey: function() {
       this.setAppColours()
     }
   }

@@ -2,9 +2,24 @@
   <div class="now-playing" :class="getNowPlayingClass()">
     <div class="container">
       <div class="now-playing__cover">
-        <img :src="player.trackAlbum.image" :alt="player.trackTitle" class="now-playing__image" />
-        <Progress v-if="miscellaneousOptions.includes('show-progress-bar')" :player="player"
-          :playerResponse="playerResponse" :playerData="playerData" />
+        <img
+          :src="player.trackAlbum.image"
+          :alt="player.trackTitle"
+          class="now-playing__image"
+          :style="
+            `margin-bottom: ${
+              miscellaneousOptions.includes('show-progress-bar')
+                ? '15px'
+                : '0px'
+            }`
+          "
+        />
+        <Progress
+          v-if="miscellaneousOptions.includes('show-progress-bar')"
+          :player="player"
+          :playerResponse="playerResponse"
+          :playerData="playerData"
+        />
       </div>
       <div class="now-playing__details">
         <div>
@@ -28,7 +43,7 @@ export default {
   name: 'RegularPlayer',
   components: {
     Controls,
-    Progress,
+    Progress
   },
   props: {
     player: {
@@ -50,7 +65,7 @@ export default {
   },
   data() {
     return {
-      settings: null,
+      settings: null
     }
   },
   created() {
@@ -110,7 +125,7 @@ export default {
     getNowPlayingClass() {
       const playerClass = this.player.playing ? 'active' : 'idle'
       return `now-playing--${playerClass}`
-    },
+    }
   }
 }
 </script>
@@ -178,11 +193,6 @@ export default {
 
   &__track {
     font-weight: var(--font-weight-heading);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
     max-height: 195px;
     max-width: 100%;
   }
@@ -191,8 +201,6 @@ export default {
     opacity: 0.8;
 
     // white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
     max-width: 100%;
   }
 

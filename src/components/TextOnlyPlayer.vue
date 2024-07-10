@@ -9,8 +9,15 @@
       <Controls :player="player" :playerResponse="playerResponse" />
     </div>
 
-    <div class="bottom-progress" v-if="miscellaneousOptions.includes('show-progress-bar')">
-      <Progress :player="player" :playerResponse="playerResponse" :playerData="playerData" />
+    <div
+      class="bottom-progress"
+      v-if="miscellaneousOptions.includes('show-progress-bar')"
+    >
+      <Progress
+        :player="player"
+        :playerResponse="playerResponse"
+        :playerData="playerData"
+      />
     </div>
   </div>
 </template>
@@ -137,7 +144,6 @@ export default {
     line-height: 17.542592592592595vh;
     letter-spacing: 0.07em;
     text-align: left;
-
   }
 
   &__artists {
@@ -148,8 +154,6 @@ export default {
     line-height: 13.88888888888889vh;
     letter-spacing: 0.07em;
     text-align: left;
-
-
   }
 
   &--active {
@@ -187,7 +191,6 @@ export default {
   left: 5.208333333333334%;
   gap: 0px;
   opacity: 0px;
-
 }
 
 .bottom-controls {
