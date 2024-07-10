@@ -6,7 +6,7 @@
   overflow-y: ${showTouchScreen ? 'hidden !important' : 'auto'};
   `
     ">
-    <TouchScreen v-if="showTouchScreen && false" @showSettingButton="displaySettingButton" />
+    <!--<TouchScreen v-if="showTouchScreen && false" @showSettingButton="displaySettingButton" />-->
     <Component v-if="true" :is="getCurrentComponent" :auth="auth" :endpoints="endpoints" :player="player"
       @spotifyTrackUpdated="updateCurrentTrack" @requestRefreshToken="requestRefreshTokens" @pageChange="onPageChange"
       @closeSettings="closeSettings" v-on:showSettingButton="displaySettingButton">
@@ -52,7 +52,7 @@ export default {
       previousComponent: '',
       storedAuth: '',
       test: 'hello, world',
-      displaySplashScreen: true,
+      //displaySplashScreen: true,
       showSettingButton: false,
       auth: {
         status: false,
@@ -83,7 +83,7 @@ export default {
         trackAlbum: []
       },
       storedId: '',
-      currentComponent: 'SplashScreen'
+      currentComponent: 'NowPlaying'
     }
   },
 
@@ -110,10 +110,10 @@ export default {
       ...getStoredAuth()
     }
     // this.onPageChange('SpashScreen');
-    setTimeout(() => {
+    /*setTimeout(() => {
       this.onPageChange('Authorise')
       //this.displaySplashScreen = false
-    }, 3000)
+    }, 3000)*/
   },
 
   mounted() {

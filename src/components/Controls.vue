@@ -111,7 +111,7 @@ export default {
       //this.shuffle = !this.shuffle
       document.dispatchEvent(
         new CustomEvent('PlayThingShuffle', {
-          detail: { state: this.shuffle }
+          detail: { state: !this.shuffle }
         })
       )
     },

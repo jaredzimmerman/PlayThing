@@ -1,12 +1,10 @@
 <template>
   <div id="app">
-    <Playback v-if="isNowPlaying" :player="player" :playerResponse="playerResponse" :playerData="playerData"
-      :key="playbackKey" />
-    <TouchScreen v-if="!isNowPlaying" />
-    <Clock v-if="!isNowPlaying" />
-    <!--<div v-else>
-      <Clock format="12" />
-    </div>-->
+    <Playback v-if="!displaySplashScreen && isNowPlaying" :player="player" :playerResponse="playerResponse"
+      :playerData="playerData" :key="playbackKey" />
+    <TouchScreen v-if="!displaySplashScreen && !isNowPlaying" />
+    <Clock v-if="!displaySplashScreen && !isNowPlaying" />
+    <SplashScreen v-if="displaySplashScreen" />
   </div>
 </template>
 
@@ -17,6 +15,7 @@ import Playback from './Playback.vue'
 import * as ColorThief from 'color-thief-browser'
 import { getPlayThingSettings } from '@/utils/utils'
 import TouchScreen from './TouchScreen.vue'
+import SplashScreen from './SplashScreen.vue'
 
 export default {
   name: 'NowPlaying',
@@ -30,7 +29,8 @@ export default {
   components: {
     Clock,
     Playback,
-    TouchScreen
+    TouchScreen,
+    SplashScreen
   },
 
   data() {
@@ -45,7 +45,8 @@ export default {
       playbackKey: 0,
       isNowPlaying: false,
       fadeTimeout: null,
-      nothingPlayingTimeout: null
+      nothingPlayingTimeout: null,
+      displaySplashScreen: true
     }
   },
   created() {
@@ -62,6 +63,9 @@ export default {
     this.setDataInterval()
     this.setAppColours()
     this.getNowPlaying()
+    setTimeout(() => {
+      this.displaySplashScreen = false
+    }, 2000)
   },
 
   beforeDestroy() {
@@ -579,7 +583,6 @@ export default {
       }
     },
     getMatchContrastColors(imageBlob) {
-      console.log('finding contrast color')
       const colorThief = new ColorThief()
       const img = new Image()
       img.src = imageBlob
@@ -833,7 +836,6 @@ export default {
         clearTimeout(this.nothingPlayingTimeout)
         clearTimeout(this.fadeTimeout)
         this.fadeTimeout = setTimeout(() => {
-          console.log('starting pause logic')
           document.body.classList.add('fade-effect')
           this.nothingPlayingTimeout = setTimeout(() => {
             this.isNowPlaying = false
