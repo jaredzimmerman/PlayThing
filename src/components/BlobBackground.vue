@@ -50,12 +50,13 @@ export default {
   },
   methods: {
     run() {
-      this.animationRunning = true
-      // our <path> element
-      const path = document.querySelector('path')
-      // used to set our custom property values
-      // const root = document.documentElement
+      let lastTime = 0
+      const fps = 60 // Original frames per second
+      const slowDownFactor = 2 // Slowing down by 50%
+      const frameInterval = 1000 / (fps / slowDownFactor) // Calculate new interval
 
+      this.animationRunning = true
+      const path = document.querySelector('path')
       let hueNoiseOffset = 0
       let noiseStep = 0.005
 
@@ -63,52 +64,57 @@ export default {
 
       const points = createPoints()
 
-      const animate = () => {
+      const animate = currentTime => {
         if (!this.animationRunning) return
-        path.setAttribute('d', spline(points, 1, true))
 
-        // Define your primary and secondary colors in hex
-        const primaryColor = getComputedStyle(
-          document.documentElement
-        ).getPropertyValue('--start-color')
-        const secondaryColor = getComputedStyle(
-          document.documentElement
-        ).getPropertyValue('--end-color')
+        if (currentTime - lastTime >= frameInterval) {
+          lastTime = currentTime
 
-        // Convert hex colors to HSL
-        const startHsl = hexToHsl(primaryColor)
-        const endHsl = hexToHsl(secondaryColor)
+          path.setAttribute('d', spline(points, 1, true))
 
-        // Interpolate hues between the primary and secondary colors based on hueNoiseOffset
-        const hueOffset = (Math.sin(hueNoiseOffset) + 1) / 2 // oscillates between 0 and 1
-        const startHue = startHsl.h
-        const endHue = endHsl.h
+          // Define your primary and secondary colors in hex
+          const primaryColor = getComputedStyle(
+            document.documentElement
+          ).getPropertyValue('--start-color')
+          const secondaryColor = getComputedStyle(
+            document.documentElement
+          ).getPropertyValue('--end-color')
 
-        const currentHue = interpolateHue(startHue, endHue, hueOffset)
-        const startColor = `hsl(${currentHue}, ${startHsl.s}%, ${startHsl.l}%)`
-        const stopColor = `hsl(${currentHue + 60}, ${startHsl.s}%, ${
-          startHsl.l
-        }%)`
+          // Convert hex colors to HSL
+          const startHsl = hexToHsl(primaryColor)
+          const endHsl = hexToHsl(secondaryColor)
 
-        this.startColor = startColor
-        this.stopColor = stopColor
-        this.blobBackgroundColor = `hsl(${currentHue + 60}, 75%, 5%)`
+          // Interpolate hues between the primary and secondary colors based on hueNoiseOffset
+          const hueOffset = (Math.sin(hueNoiseOffset) + 1) / 2 // oscillates between 0 and 1
+          const startHue = startHsl.h
+          const endHue = endHsl.h
 
-        hueNoiseOffset += noiseStep / 6
+          const currentHue = interpolateHue(startHue, endHue, hueOffset)
+          const startColor = `hsl(${currentHue}, ${startHsl.s}%, ${startHsl.l}%)`
+          const stopColor = `hsl(${currentHue + 60}, ${startHsl.s}%, ${
+            startHsl.l
+          }%)`
 
-        // Update points for animation
-        for (let i = 0; i < points.length; i++) {
-          const point = points[i]
+          this.startColor = startColor
+          this.stopColor = stopColor
+          this.blobBackgroundColor = `hsl(${currentHue + 60}, 75%, 5%)`
 
-          const nX = noise(point.noiseOffsetX, point.noiseOffsetX)
-          const nY = noise(point.noiseOffsetY, point.noiseOffsetY)
-          const x = map(nX, -1, 1, point.originX - 20, point.originX + 20)
-          const y = map(nY, -1, 1, point.originY - 20, point.originY + 20)
+          hueNoiseOffset += noiseStep / 6
 
-          point.x = x
-          point.y = y
-          point.noiseOffsetX += noiseStep
-          point.noiseOffsetY += noiseStep
+          // Update points for animation
+          for (let i = 0; i < points.length; i++) {
+            const point = points[i]
+
+            const nX = noise(point.noiseOffsetX, point.noiseOffsetX)
+            const nY = noise(point.noiseOffsetY, point.noiseOffsetY)
+            const x = map(nX, -1, 1, point.originX - 20, point.originX + 20)
+            const y = map(nY, -1, 1, point.originY - 20, point.originY + 20)
+
+            point.x = x
+            point.y = y
+            point.noiseOffsetX += noiseStep
+            point.noiseOffsetY += noiseStep
+          }
         }
 
         if (this.animate) requestAnimationFrame(animate)
