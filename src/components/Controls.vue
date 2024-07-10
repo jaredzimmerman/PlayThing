@@ -90,23 +90,23 @@ export default {
       return this.playing
     }
   },
-  /*watch: {
+  watch: {
     playerResponse(value) {
       this.playing = value.is_playing
-      this.repeat = value.repeat_state
-      this.shuffle = value.shuffle_state
+      //this.repeat = value.repeat_state
+      // this.shuffle = value.shuffle_state
       // if (value.playing != this.playing) { }
     }
-  },*/
+  },
   methods: {
     sendPlay() {
       document.dispatchEvent(new CustomEvent('PlayThingPlay'))
-      this.playing = true
+      //this.playing = true
       console.log(this.playing)
     },
     sendPause() {
       document.dispatchEvent(new CustomEvent('PlayThingPause'))
-      this.playing = false
+      //this.playing = false
       console.log(this.playing)
     },
     sendNext() {
