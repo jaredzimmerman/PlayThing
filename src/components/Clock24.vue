@@ -52,7 +52,8 @@ export default {
   overflow: hidden;
 }
 
-.container {}
+.container {
+}
 
 .time-text {
   /*font-size: 280px;*/

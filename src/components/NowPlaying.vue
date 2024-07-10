@@ -1,7 +1,12 @@
 <template>
   <div id="app">
-    <Playback v-if="!displaySplashScreen && isNowPlaying" :player="player" :playerResponse="playerResponse"
-      :playerData="playerData" :key="playbackKey" />
+    <Playback
+      v-if="!displaySplashScreen && isNowPlaying"
+      :player="player"
+      :playerResponse="playerResponse"
+      :playerData="playerData"
+      :key="playbackKey"
+    />
     <TouchScreen v-if="!displaySplashScreen && !isNowPlaying" />
     <Clock v-if="!displaySplashScreen && !isNowPlaying" />
     <SplashScreen v-if="displaySplashScreen" />
@@ -59,7 +64,7 @@ export default {
     document.addEventListener('PlayThingRepeat', this.handleRepeat)
     document.addEventListener('keydown', this.onKeyDown)
     const started = document.documentElement.dataset.started
-    if (started != null) this.displaySplashScreen = false;
+    if (started != null) this.displaySplashScreen = false
   },
   mounted() {
     this.setDataInterval()
@@ -67,7 +72,7 @@ export default {
     this.getNowPlaying()
 
     const started = document.documentElement.dataset.started
-    console.log("started", started)
+    console.log('started', started)
     if (started == null) {
       setTimeout(() => {
         this.displaySplashScreen = false
@@ -560,7 +565,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function () {
+      img.onload = function() {
         const colors = colorThief.getPalette(img, 10)
         const suitableColor = getSuitableColor(colors)
         document.documentElement.style.setProperty('--controls-color', `#fff`)
@@ -597,7 +602,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function () {
+      img.onload = function() {
         const colors = colorThief.getPalette(img, 10)
         const backgroundColor = getComplementaryOrThirdColor(colors)
         console.log('background is ', backgroundColor)
@@ -663,7 +668,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function () {
+      img.onload = function() {
         const colors = colorThief.getPalette(img, 10)
         const backgroundColors = getDominantColors(colors)
         document.documentElement.style.setProperty('--controls-color', `#fff`)
@@ -715,7 +720,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function () {
+      img.onload = function() {
         const colors = colorThief.getPalette(img, 10)
         const suitableColor = getSuitableColor(colors)
         document.documentElement.style.setProperty(
@@ -830,7 +835,7 @@ export default {
     /**
      * Watch the auth object returned from Spotify.
      */
-    auth: function (oldVal, newVal) {
+    auth: function(oldVal, newVal) {
       if (newVal.status === false) {
         clearInterval(this.pollPlaying)
       }
@@ -839,7 +844,7 @@ export default {
     /**
      * Watch the returned track object.
      */
-    playerResponse: function (newVal, oldVal) {
+    playerResponse: function(newVal, oldVal) {
       this.handleNowPlaying()
       if (oldVal == null || newVal == null) return
       if (oldVal.is_playing && !newVal.is_playing && this.fadeTimeout == null) {
@@ -864,7 +869,7 @@ export default {
     /**
      * Watch our locally stored track data.
      */
-    playerData: function () {
+    playerData: function() {
       this.$emit('spotifyTrackUpdated', this.playerData)
       //this.getAlbumColours()
       // console.log("image ", this.playerResponse)
@@ -872,7 +877,7 @@ export default {
         this.getAlbumColours()
       })
     },
-    playbackKey: function () {
+    playbackKey: function() {
       this.setAppColours()
     }
   }
