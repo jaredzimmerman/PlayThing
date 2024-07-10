@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <Playback v-if="player.playing || true" :player="player" :playerResponse="playerResponse"
-      :playerData="playerData" />
+    <Playback v-if="player.playing || true" :player="player" :playerResponse="playerResponse" :playerData="playerData"
+      :key="playbackKey" />
     <!--<div v-else>
       <Clock format="12" />
     </div>-->
@@ -37,7 +37,8 @@ export default {
       //colourPalette: '',
       colourPalette: {},
       swatches: [],
-      settings: null
+      settings: null,
+      playbackKey: 0,
     }
   },
   created() {
@@ -48,6 +49,7 @@ export default {
     document.addEventListener('PlayThingBack', this.handleBack)
     document.addEventListener('PlayThingShuffle', this.handleShuffle)
     document.addEventListener('PlayThingRepeat', this.handleRepeat)
+    document.addEventListener('keydown', this.onKeyDown)
   },
   mounted() {
     this.setDataInterval()
@@ -63,9 +65,127 @@ export default {
     document.removeEventListener('PlayThingBack', this.handleBack)
     document.removeEventListener('PlayThingShuffle', this.handleShuffle)
     document.removeEventListener('PlayThingRepeat', this.handleRepeat)
+    document.removeEventListener('keydown', this.onKeyDown)
   },
 
   methods: {
+    onKeyDown(event) {
+      switch (event.key) {
+        case 'ArrowRight':
+          if (event.ctrlKey) {
+            let backgroundOption = this.settings.backgroundOption
+            if (backgroundOption === 'black-oled') backgroundOption = 'match'
+            else if (backgroundOption === 'match') backgroundOption = 'match-dark'
+            else if (backgroundOption === 'match-dark') backgroundOption = 'contrast'
+            else if (backgroundOption === 'contrast') backgroundOption = 'blur'
+            else if (backgroundOption === 'blur') backgroundOption = 'spotlight'
+            else backgroundOption = 'black-oled'
+            this.settings.backgroundOption = backgroundOption
+            this.updateSettings(this.settings);
+            this.playbackKey++
+          } else {
+            this.handleNext()
+          }
+          break;
+        case 'ArrowLeft':
+          if (event.ctrlKey) {
+            let backgroundOption = this.settings.backgroundOption
+            if (backgroundOption === 'black-oled') backgroundOption = 'spotlight'
+            else if (backgroundOption === 'match') backgroundOption = 'black-oled'
+            else if (backgroundOption === 'match-dark') backgroundOption = 'match'
+            else if (backgroundOption === 'contrast') backgroundOption = 'match-dark'
+            else if (backgroundOption === 'blur') backgroundOption = 'contrast'
+            else backgroundOption = 'blur'
+            this.settings.backgroundOption = backgroundOption
+            this.updateSettings(this.settings);
+            this.playbackKey++
+          } else {
+            this.handleBack()
+          }
+          break;
+        case 'ArrowUp':
+          if (event.ctrlKey) {
+            let textOption = this.settings.textOption
+            if (textOption === 'none') textOption = 'text-only'
+            else if (textOption === 'small') textOption = 'none'
+            else if (textOption === 'medium') textOption = 'small'
+            else if (textOption === 'large') textOption = 'medium'
+            else textOption = 'large';
+            console.log("herex ", textOption)
+            this.settings.textOption = textOption
+            this.updateSettings(this.settings);
+            this.playbackKey++
+          } else {
+            document.dispatchEvent(new Event('showPlaybackControls'))
+          }
+          break;
+        case 'ArrowDown':
+          if (event.ctrlKey) {
+            let textOption = this.settings.textOption
+            if (textOption === 'none') textOption = 'small'
+            else if (textOption === 'small') textOption = 'medium'
+            else if (textOption === 'medium') textOption = 'large'
+            else if (textOption === 'large') textOption = 'text-only'
+            else textOption = 'none';
+            this.settings.textOption = textOption
+            this.updateSettings(this.settings);
+            this.playbackKey++
+
+          } else {
+            console.log('recent screen')
+          }
+          break;
+        case ' ':
+          // Play/pause functionality
+          console.log('here space', this.playerData)
+          if (this.playerData.playing) {
+            this.handlePause();
+          } else {
+            this.handlePlay()
+          }
+          event.preventDefault();
+          break;
+        case 'P': {
+          let miscellaneousOption = this.settings.miscellaneousOption
+          if (miscellaneousOption.includes('show-progress-bar')) {
+            miscellaneousOption = miscellaneousOption.filter((option) => option != 'show-progress-bar');
+          } else {
+            miscellaneousOption.push('show-progress-bar')
+          }
+          console.log('new : ', miscellaneousOption)
+          this.settings.miscellaneousOption = miscellaneousOption
+          this.updateSettings(this.settings);
+          this.playbackKey++
+        }
+          break;
+        case 'A':
+          {
+            let miscellaneousOption = this.settings.miscellaneousOption
+            if (miscellaneousOption.includes('animate-blur-spotlight')) {
+              miscellaneousOption = miscellaneousOption.filter((option) => option != 'animate-blur-spotlight');
+            } else {
+              miscellaneousOption.push('animate-blur-spotlight')
+            }
+            console.log('new : ', miscellaneousOption)
+            this.settings.miscellaneousOption = miscellaneousOption
+            this.updateSettings(this.settings);
+            this.playbackKey++
+          }
+          break;
+        default:
+          break;
+      }
+    },
+
+    updateSettings(newSettings) {
+      /*const settings = {
+        nothingPlayingOption: this.selectedNothingPlayingOption,
+        backgroundOption: this.selectedBackgroundOption,
+        textOption: this.selectedTextOption,
+        miscellaneousOption: this.selectedMiscellaneousOption
+      }*/
+      localStorage.setItem('playThingSettings', JSON.stringify(newSettings))
+    },
     async handlePlay() {
       try {
         await fetch(`${this.endpoints.base}/${this.endpoints.play}`, {
@@ -700,6 +820,9 @@ export default {
       this.$nextTick(() => {
         this.getAlbumColours()
       })
+    },
+    playbackKey: function () {
+      this.setAppColours()
     }
   }
 }

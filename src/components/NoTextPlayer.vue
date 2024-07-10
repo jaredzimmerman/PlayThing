@@ -6,7 +6,7 @@
         <Progress v-if="miscellaneousOptions.includes('show-progress-bar')" :player="player"
           :playerResponse="playerResponse" :playerData="playerData" />
         <div class="controls" v-show="!hideControls">
-          <Controls />
+          <Controls :player="player" :playerResponse="playerResponse" />
         </div>
       </div>
     </div>

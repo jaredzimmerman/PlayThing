@@ -6,7 +6,7 @@
     </div>
 
     <div class="bottom-controls" v-show="!hideControls">
-      <Controls />
+      <Controls :player="player" :playerResponse="playerResponse" />
     </div>
 
     <div class="bottom-progress" v-if="miscellaneousOptions.includes('show-progress-bar')">
