@@ -7,10 +7,11 @@
       <div class="img-container">
         <div>
           <img src="text-logo.svg" class="logo" />
+          <div class="seperator"></div>
         </div>
       </div>
       <div class="setting-container">
-        <h2 class="mainTitle">Settings</h2>
+        <h2 class="mainTitle">SETTINGS</h2>
         <section>
           <h3>Nothing playing</h3>
           <ul>
@@ -242,12 +243,19 @@ export default {
 .logo {
   //position: fixed;
   aspect-ratio: 1;
-  width: 80%;
+  width: 100%;
   max-width: 603px;
   max-height: 362.45px;
   top: 10%;
   left: 10%;
   //width: 30%;
+}
+
+.seperator {
+  height: 715px;
+  width: 1px;
+  background-color: #fff;
+  margin-left: 140px;
 }
 
 .img-container>div {
@@ -260,11 +268,11 @@ export default {
   justify-content: center;
 }
 
-
-
 .setting-container {
   width: 50%;
   padding: 5px;
+  position: relative;
+  margin-top: 228px;
 }
 
 .mainTitle {
@@ -275,6 +283,14 @@ export default {
   line-height: 82.5px;
   letter-spacing: 0.1em;
   text-align: left;
+  position: fixed;
+  width: 100%;
+  height: 228px;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: end;
+  background-color: #000;
 }
 
 .closeIconContainer {
@@ -282,8 +298,11 @@ export default {
   justify-content: right;
   padding: 5px;
   position: fixed;
-  top: 10px;
-  right: 10px;
+  top: 50px;
+  right: 50px;
+  width: 42px;
+  aspect-ratio: 1;
+  z-index: 3;
 }
 
 .setting-container ul {
