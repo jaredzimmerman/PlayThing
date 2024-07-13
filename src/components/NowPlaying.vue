@@ -851,8 +851,7 @@ export default {
       } catch {
         localStorage.setItem('firstTime', 'false')
       }
-      console.log(firstTime)
-      return true
+      return firstTime
     },
     toggleRecentScreen() {
       if (this.component === 'RecentScreen') {
@@ -913,8 +912,10 @@ export default {
       this.setAppColours()
     },
     isNowPlaying(newVal) {
-      if (newVal) this.component = 'Playback';
-      else this.component = 'Clock';
+      if (this.component !== 'SplashScreen') {
+        if (newVal) this.component = 'Playback';
+        else this.component = 'Clock';
+      }
     }
   }
 }

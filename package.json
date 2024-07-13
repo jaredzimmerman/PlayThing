@@ -24,6 +24,7 @@
     "simplex-noise": "^2.4.0",
     "spotify-web-api-js": "^1.5.1",
     "vue": "^2.6.11",
+    "vue-ellipsis-text": "^1.0.3",
     "vue-simple-svg": "^2.0.2",
     "vue-slick-carousel": "^1.0.6",
     "vue2-touch-events": "^3.2.3"

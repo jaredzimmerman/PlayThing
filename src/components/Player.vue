@@ -1,26 +1,11 @@
 <template>
   <div id="player">
-    <TextOnlyPlayer
-      v-if="textOption === 'text-only'"
-      :player="player"
-      :playerResponse="playerResponse"
-      :playerData="playerData"
-      :hide-controls="hideControls"
-    />
-    <NoTextPlayer
-      v-else-if="textOption === 'none'"
-      :player="player"
-      :playerResponse="playerResponse"
-      :playerData="playerData"
-      :hide-controls="hideControls"
-    />
-    <RegularPlayer
-      v-else
-      :player="player"
-      :playerResponse="playerResponse"
-      :playerData="playerData"
-      :hide-controls="hideControls"
-    />
+    <TextOnlyPlayer v-if="textOption === 'text-only'" :player="player" :playerResponse="playerResponse"
+      :playerData="playerData" :hide-controls="hideControls" />
+    <NoTextPlayer v-else-if="textOption === 'none'" :player="player" :playerResponse="playerResponse"
+      :playerData="playerData" :hide-controls="hideControls" />
+    <RegularPlayer v-else :player="player" :playerResponse="playerResponse" :playerData="playerData"
+      :hide-controls="hideControls" />
 
     <div class="touch-screen" v-if="hideControls">
       <TouchScreen />
@@ -71,47 +56,16 @@ export default {
     const value = settings.textOption
     this.textOption = value
 
-    let displayText = ''
-    let displayAlbumArt = ''
-    let textSize = ''
-
-    if (value === 'none') {
-      displayText = 'none'
-      displayAlbumArt = 'inherit'
-      textSize = '1rem'
-    } else if (value === 'small') {
-      displayText = 'inherit'
-      displayAlbumArt = 'inherit'
-      textSize = '1rem'
-    } else if (value === 'medium') {
-      displayText = 'inherit'
-      displayAlbumArt = 'inherit'
-      textSize = '2rem'
-    } else if (value === 'large') {
-      displayText = 'inherit'
-      displayAlbumArt = 'inherit'
-      textSize = '3rem'
-    } else if (value === 'text-only') {
-      displayText = 'inherit'
-      displayAlbumArt = 'none'
-    }
-
-    document.documentElement.style.setProperty('--display-text', displayText)
-    document.documentElement.style.setProperty(
-      '--display-album-art',
-      displayAlbumArt
-    )
-    document.documentElement.style.setProperty('--text-size', textSize)
   },
   mounted() {
     // console.log('options', this.settings.miscellaneousOption)
-    if (
+    /*if (
       this.settings.miscellaneousOption.includes('autohide-playback-controls')
-    ) {
-      console.log('hide controls')
-      document.addEventListener('showPlaybackControls', this.hideOrShowControls)
-      this.hideOrShowControls()
-    }
+    ) {*/
+    console.log('hide controls')
+    document.addEventListener('showPlaybackControls', this.hideOrShowControls)
+    if (this.settings.miscellaneousOption.includes('autohide-playback-controls')) this.hideOrShowControls()
+    //}
   },
   beforeDestroy() {
     document.removeEventListener(
@@ -124,11 +78,16 @@ export default {
       console.log('hide or show')
       if (this.hideControls) {
         this.hideControls = false
-      }
-      clearTimeout(this.hideControlsTimeout)
-      this.hideControlsTimeout = setTimeout(() => {
+        if (this.settings.miscellaneousOption.includes('autohide-playback-controls')) {
+          clearTimeout(this.hideControlsTimeout)
+          this.hideControlsTimeout = setTimeout(() => {
+            this.hideControls = true
+          }, 15 * 1000)
+        }
+      } else {
         this.hideControls = true
-      }, 15 * 1000)
+      }
+
     }
   }
 }

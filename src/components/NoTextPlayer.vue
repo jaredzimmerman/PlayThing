@@ -2,23 +2,13 @@
   <div class="now-playing">
     <div>
       <div class="now-playing__cover">
-        <img
-          :src="player.trackAlbum.image"
-          class="now-playing__image"
-          :style="
-            `margin-bottom: ${
-              miscellaneousOptions.includes('show-progress-bar')
-                ? '15px'
-                : '0px'
-            }`
-          "
-        />
-        <Progress
-          v-if="miscellaneousOptions.includes('show-progress-bar')"
-          :player="player"
-          :playerResponse="playerResponse"
-          :playerData="playerData"
-        />
+        <img :src="player.trackAlbum.image" class="now-playing__image" :style="`margin-bottom: ${miscellaneousOptions.includes('show-progress-bar')
+            ? '15px'
+            : '0px'
+          }`
+          " />
+        <Progress v-if="miscellaneousOptions.includes('show-progress-bar')" :player="player"
+          :playerResponse="playerResponse" :playerData="playerData" />
         <div class="controls" v-show="!hideControls">
           <Controls :player="player" :playerResponse="playerResponse" />
         </div>
@@ -150,7 +140,7 @@ export default {
 
   &__cover,
   &__details {
-    padding: var(--spacing-m);
+    //padding: var(--spacing-m);
     text-align: center;
     width: 100%;
   }
