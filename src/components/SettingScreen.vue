@@ -5,7 +5,9 @@
     </div>
     <div class="container">
       <div class="img-container">
-        <img src="text-logo.svg" class="logo" />
+        <div>
+          <img src="text-logo.svg" class="logo" />
+        </div>
       </div>
       <div class="setting-container">
         <h2 class="mainTitle">Settings</h2>
@@ -238,13 +240,27 @@ export default {
 }
 
 .logo {
-  position: fixed;
+  //position: fixed;
   aspect-ratio: 1;
-  width: 100%;
+  width: 80%;
+  max-width: 603px;
+  max-height: 362.45px;
   top: 10%;
   left: 10%;
-  width: 30%;
+  //width: 30%;
 }
+
+.img-container>div {
+  position: fixed;
+  //background-color: red;
+  width: 50%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 
 .setting-container {
   width: 50%;
