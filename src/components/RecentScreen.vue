@@ -15,8 +15,8 @@
           <VueSlickCarousel v-if="recentTracks.length > 0" v-bind="carouselSettings">
             <div v-for="item in recentTracks" :key="item.track.id" class="carousel-item" @click="play(item)">
               <img :src="item.track.album.images[0].url" />
-              <h2>{{ item.track.name }}</h2>
-              <h3>
+              <h2 class="multiline-ellipsis">{{ item.track.name }}</h2>
+              <h3 class="ellipsis">
                 {{ item.track.artists.map(artist => artist.name).join(', ') }}
               </h3>
             </div>
@@ -95,7 +95,7 @@ export default {
     this.type = settings.backgroundOption
 
     this.getRecents()
-    console.log("player : ", this.player)
+    // console.log("player : ", this.player)
   },
   methods: {
     async getRecents() {
@@ -117,14 +117,21 @@ export default {
         }
 
         const data = await response.json()
-        console.log('data: ', data)
+        // console.log('data: ', data)
         this.recentTracks = data.items
       } catch (err) {
         console.log(err)
       }
     },
     async play(item) {
-      console.log('to play: ', item)
+      console.log("to play: ", item)
+      document.dispatchEvent(new CustomEvent("PlayThingPlay", {
+        detail: { uri: item.track.uri }
+      }))
+
+      document.dispatchEvent(new Event('PlayThingRecentScreen'))
+
+      //document.removeEventListener('PlayThingPlay', this.handlePlay)
     }
   }
 }
@@ -279,5 +286,22 @@ export default {
   width: 500%;
   height: 500%;
   z-index: 5;
+}
+
+
+.multiline-ellipsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  display: block;
 }
 </style>

@@ -157,8 +157,8 @@ export default {
             else if (textOption === 'small') textOption = 'none'
             else if (textOption === 'medium') textOption = 'small'
             else if (textOption === 'large') textOption = 'medium'
-            else textOption = 'large'
-            console.log('herex ', textOption)
+            else if (textOption === 'extra-large') textOption = 'large'
+            else textOption = 'extra-large'
             this.settings.textOption = textOption
             this.updateSettings(this.settings)
             this.playbackKey++
@@ -172,7 +172,8 @@ export default {
             if (textOption === 'none') textOption = 'small'
             else if (textOption === 'small') textOption = 'medium'
             else if (textOption === 'medium') textOption = 'large'
-            else if (textOption === 'large') textOption = 'text-only'
+            else if (textOption === 'large') textOption = 'extra-large'
+            else if (textOption === 'extra-large') textOption = 'text-only'
             else textOption = 'none'
             this.settings.textOption = textOption
             this.updateSettings(this.settings)
@@ -235,13 +236,21 @@ export default {
       }*/
       localStorage.setItem('playThingSettings', JSON.stringify(newSettings))
     },
-    async handlePlay() {
+    async handlePlay(event) {
       try {
+        let body;
+        if (event.detail?.uri) {
+          body = {
+            uris: [event.detail.uri],
+            position_ms: 0
+          }
+        }
         await fetch(`${this.endpoints.base}/${this.endpoints.play}`, {
           method: 'PUT',
           headers: {
             Authorization: `Bearer ${this.auth.accessToken}`
-          }
+          },
+          body: JSON.stringify(body),
         })
 
         this.getNowPlaying()
@@ -474,7 +483,7 @@ export default {
         const blackDistance = Math.sqrt(r * r + g * g + b * b)
         return blackDistance < tolerance
       }
-
+  
       // Function to determine if a color is too close to white
       const isColorTooCloseToWhite = (rgb, tolerance) => {
         const [r, g, b] = rgb
@@ -483,16 +492,16 @@ export default {
         )
         return whiteDistance < tolerance
       }
-
+  
       Vibrant.from(this.player.trackAlbum.image)
         .quality(1)
         .clearFilters()
         .getPalette()
         .then(palette => {
           //this.handleAlbumPalette(palette)
-
+  
           const filteredPalette = {}
-
+  
           const tolerance = 50
           if (this.settings?.backgroundOption === 'black-oled') {
             for (let swatch in palette) {
@@ -503,7 +512,7 @@ export default {
                 filteredPalette[swatch] = palette[swatch]
               }
             }
-
+  
             // If the filtered palette is empty, add white as a fallback
             if (Object.keys(filteredPalette).length === 0) {
               filteredPalette['Fallback'] = {
@@ -523,7 +532,7 @@ export default {
                 filteredPalette[swatch] = palette[swatch]
               }
             }
-
+  
             // If the filtered palette is empty, add black as a fallback
             if (Object.keys(filteredPalette).length === 0) {
               filteredPalette['Fallback'] = {
@@ -534,7 +543,7 @@ export default {
               }
             }
           }
-
+  
           this.handleAlbumPalette(filteredPalette)
         })*/
     },
@@ -554,18 +563,18 @@ export default {
             background: palette[colour].getHex()
           }
         })
-
+  
       this.swatches = albumColours
       //const variant = 'Vibrant';
       const variant = 'DarkVibrant'
-
+  
       this.colourPalette = {
         text: palette[variant].getTitleTextColor(),
         background: palette[variant].getHex()
       }
       this.colourPalette =
         albumColours[Math.floor(Math.random() * albumColours.length)]
-
+  
       this.$nextTick(() => {
         this.setAppColours()
       })
@@ -797,16 +806,16 @@ export default {
         const dominantColor = colorThief.getColor(img)
         URL.revokeObjectURL(blobUrl)
         console.log("looking for dominant color ", dominantColor)
-
+  
         if (
           this.settings?.backgroundOption !== 'black-oled'
         ) {
-
+  
           document.documentElement.style.setProperty(
             '--controls-color',
             `#fff`
           )
-
+  
           document.documentElement.style.setProperty(
             '--color-text-primary',
             '#fff'
@@ -821,12 +830,12 @@ export default {
             '--controls-color',
             `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
           )
-
+  
           document.documentElement.style.setProperty(
             '--color-text-primary',
             '#fff'
           )
-
+  
           document.documentElement.style.setProperty(
             '--colour-background-now-playing',
             `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
@@ -834,14 +843,14 @@ export default {
           )
         }
       }
-
-
-
+  
+  
+  
       document.documentElement.style.setProperty(
         '--album-image',
         `url(${this.player.trackAlbum.image})`
       )
-
+  
       document.documentElement.style.setProperty('--secondary-color', textColor)*/
     },
     isFirstTime() {

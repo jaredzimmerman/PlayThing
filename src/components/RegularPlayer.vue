@@ -12,7 +12,8 @@
       </div>
       <div class="now-playing__details" :style="`justify-content: ${hideControls ? 'center' : 'space-between'}`">
         <div>
-          <h1 class="now-playing__track multiline-ellipsis" :style="`-webkit-line-clamp: ${lineNumber}`" v-html="title">
+          <h1 class="now-playing__track multiline-ellipsis" :style="`-webkit-line-clamp: ${lineNumber}`"
+            v-html="player.trackTitle">
           </h1>
           <h2 class="now-playing__artists ellipsis" v-text="getTrackArtists"></h2>
         </div>
