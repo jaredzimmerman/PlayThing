@@ -1,10 +1,10 @@
 <template>
   <div class="authorise">
-    <h1 class="authorise__heading">Nowify</h1>
+    <h1 class="authorise__heading">PlayThing</h1>
 
     <p class="authorise__copy">
-      Nowify is a simple Spotify 'Now Playing' screen designed for the Raspberry
-      Pi. Login with Spotify below and start playing some music!
+      PlaThing is a simple Spotify 'Now Playing' screen designed for the
+      Raspberry Pi. Login with Spotify below and start playing some music!
     </p>
 
     <button
@@ -201,7 +201,7 @@ export default {
       )
       searchParams.append(
         'scope',
-        'user-read-currently-playing user-modify-playback-state user-read-playback-state'
+        'user-read-currently-playing user-modify-playback-state user-read-playback-state user-read-recently-played'
       )
 
       return `${this.endpoints.auth}?${searchParams.toString()}`

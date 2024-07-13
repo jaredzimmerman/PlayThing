@@ -1,8 +1,11 @@
 <template>
   <div id="app">
     <Clock12 v-if="type === 'regular-clock-12'" />
-    <Clock24 v-if="type === 'regular-clock-24'" />
-    <WordClock v-if="type === 'word-clock'" />
+    <Clock24 v-else-if="type === 'regular-clock-24'" />
+    <WordClock v-else-if="type === 'word-clock'" />
+    <div class="touch-screen">
+      <TouchScreen />
+    </div>
   </div>
 </template>
 
@@ -11,12 +14,14 @@ import { getPlayThingSettings } from '@/utils/utils'
 import Clock12 from './Clock12.vue'
 import Clock24 from './Clock24.vue'
 import WordClock from './WordClock.vue'
+import TouchScreen from './TouchScreen.vue'
 export default {
   name: 'Clock',
   components: {
     Clock12,
     Clock24,
-    WordClock
+    WordClock,
+    TouchScreen
   },
   data() {
     return {
@@ -37,5 +42,6 @@ export default {
   height: 100vh;
   width: 100%;
   overflow: hidden;
+  position: relative;
 }
 </style>

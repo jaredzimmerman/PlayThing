@@ -1,36 +1,22 @@
 <template>
-  <div
-    id="app"
-    :style="
-      `position: relative;
+  <div id="app" :style="`position: relative;
   width: 100vw !important;
   height: 100vh !important;
   overflow-x: hidden !important;
   overflow-y: ${showTouchScreen ? 'hidden !important' : 'auto'};
   `
-    "
-  >
+    ">
     <!--<TouchScreen v-if="showTouchScreen && false" @showSettingButton="displaySettingButton" />-->
-    <Component
-      v-if="true"
-      :is="getCurrentComponent"
-      :auth="auth"
-      :endpoints="endpoints"
-      :player="player"
-      @spotifyTrackUpdated="updateCurrentTrack"
-      @requestRefreshToken="requestRefreshTokens"
-      @pageChange="onPageChange"
-      @closeSettings="closeSettings"
-      v-on:showSettingButton="displaySettingButton"
-    >
+    <Component v-if="true" :is="getCurrentComponent" :auth="auth" :endpoints="endpoints" :player="player"
+      @spotifyTrackUpdated="updateCurrentTrack" @requestRefreshToken="requestRefreshTokens" @pageChange="onPageChange"
+      @closeSettings="closeSettings" v-on:showSettingButton="displaySettingButton">
     </Component>
-    <RecentScreen v-if="false" />
-    <div
-      v-if="showTouchScreen && showSettingButton"
-      @click.stop="openSettings"
-      class="settings-container fade-slide-up"
-      ref="settingButton"
-    >
+
+    <Authorise v-if="false" :is="getCurrentComponent" :auth="auth" :endpoints="endpoints" :player="player"
+      @spotifyTrackUpdated="updateCurrentTrack" @requestRefreshToken="requestRefreshTokens" @pageChange="onPageChange"
+      @closeSettings="closeSettings" v-on:showSettingButton="displaySettingButton" />
+    <div v-if="showTouchScreen && showSettingButton" @click.stop="openSettings" class="settings-container fade-slide-up"
+      ref="settingButton">
       <img src="SettingIcon.svg" />
       <span>SETTINGS</span>
     </div>
@@ -45,7 +31,6 @@ import { getStoredAuth, setStoredAuth } from '@/utils/utils.js'
 import SplashScreen from './components/SplashScreen.vue'
 import SettingScreen from './components/SettingScreen.vue'
 import Clock from './components/Clock.vue'
-import RecentScreen from './components/RecentScreen.vue'
 // import BlankScreen from './components/BlankScreen.vue'
 import TouchScreen from './components/TouchScreen.vue'
 
@@ -58,8 +43,7 @@ export default {
     SplashScreen,
     SettingScreen,
     Clock,
-    RecentScreen,
-    TouchScreen
+    TouchScreen,
   },
 
   props: {},
@@ -91,7 +75,8 @@ export default {
         back: 'me/player/previous',
         previous: 'me/player/previous',
         shuffle: 'me/player/shuffle',
-        repeat: 'me/player/repeat'
+        repeat: 'me/player/repeat',
+        recentlyPlayed: 'me/player/recently-played'
       },
       player: {
         playing: false,
@@ -205,7 +190,7 @@ export default {
     /**
      * Watch the authorisation status.
      */
-    'auth.status': function() {
+    'auth.status': function () {
       setStoredAuth(this.auth)
     }
   }
