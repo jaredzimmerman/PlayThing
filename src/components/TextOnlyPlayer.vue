@@ -9,8 +9,15 @@
       <Controls :player="player" :playerResponse="playerResponse" />
     </div>
 
-    <div class="bottom-progress" v-if="miscellaneousOptions.includes('show-progress-bar')">
-      <Progress :player="player" :playerResponse="playerResponse" :playerData="playerData" />
+    <div
+      class="bottom-progress"
+      v-if="miscellaneousOptions.includes('show-progress-bar')"
+    >
+      <Progress
+        :player="player"
+        :playerResponse="playerResponse"
+        :playerData="playerData"
+      />
     </div>
   </div>
 </template>

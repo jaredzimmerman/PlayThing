@@ -12,8 +12,16 @@
       <div>
         <h1>Recents</h1>
         <div class="carousel-container">
-          <VueSlickCarousel v-if="recentTracks.length > 0" v-bind="carouselSettings">
-            <div v-for="item in recentTracks" :key="item.track.id" class="carousel-item" @click="play(item)">
+          <VueSlickCarousel
+            v-if="recentTracks.length > 0"
+            v-bind="carouselSettings"
+          >
+            <div
+              v-for="item in recentTracks"
+              :key="item.track.id"
+              class="carousel-item"
+              @click="play(item)"
+            >
               <img :src="item.track.album.images[0].url" />
               <h2 class="multiline-ellipsis">{{ item.track.name }}</h2>
               <h3 class="ellipsis">
@@ -33,11 +41,7 @@
         <div>
           <h2>{{ player.trackTitle }}</h2>
           <h3>
-            {{
-            player.trackArtists
-              .map(artist => artist.name)
-              .join(', ')
-          }}
+            {{ player.trackArtists.map(artist => artist.name).join(', ') }}
           </h3>
         </div>
       </div>
@@ -124,10 +128,12 @@ export default {
       }
     },
     async play(item) {
-      console.log("to play: ", item)
-      document.dispatchEvent(new CustomEvent("PlayThingPlay", {
-        detail: { uri: item.track.uri }
-      }))
+      console.log('to play: ', item)
+      document.dispatchEvent(
+        new CustomEvent('PlayThingPlay', {
+          detail: { uri: item.track.uri }
+        })
+      )
 
       document.dispatchEvent(new Event('PlayThingRecentScreen'))
 
@@ -157,7 +163,7 @@ export default {
   gap: 112px;
 }
 
-.tracks-container>div {
+.tracks-container > div {
   z-index: 5;
 }
 
@@ -217,7 +223,6 @@ export default {
   height: 318.56px;
   margin-bottom: 150.44px;
 }
-
 
 .blurred-background {
   position: absolute;
@@ -287,7 +292,6 @@ export default {
   height: 500%;
   z-index: 5;
 }
-
 
 .multiline-ellipsis {
   display: -webkit-box;

@@ -1,22 +1,48 @@
 <template>
-  <div id="app" :style="`position: relative;
+  <div
+    id="app"
+    :style="
+      `position: relative;
   width: 100vw !important;
   height: 100vh !important;
   overflow-x: hidden !important;
   overflow-y: ${showTouchScreen ? 'hidden !important' : 'auto'};
   `
-    ">
+    "
+  >
     <!--<TouchScreen v-if="showTouchScreen && false" @showSettingButton="displaySettingButton" />-->
-    <Component v-if="true" :is="getCurrentComponent" :auth="auth" :endpoints="endpoints" :player="player"
-      @spotifyTrackUpdated="updateCurrentTrack" @requestRefreshToken="requestRefreshTokens" @pageChange="onPageChange"
-      @closeSettings="closeSettings" v-on:showSettingButton="displaySettingButton">
+    <Component
+      v-if="true"
+      :is="getCurrentComponent"
+      :auth="auth"
+      :endpoints="endpoints"
+      :player="player"
+      @spotifyTrackUpdated="updateCurrentTrack"
+      @requestRefreshToken="requestRefreshTokens"
+      @pageChange="onPageChange"
+      @closeSettings="closeSettings"
+      v-on:showSettingButton="displaySettingButton"
+    >
     </Component>
 
-    <Authorise v-if="false" :is="getCurrentComponent" :auth="auth" :endpoints="endpoints" :player="player"
-      @spotifyTrackUpdated="updateCurrentTrack" @requestRefreshToken="requestRefreshTokens" @pageChange="onPageChange"
-      @closeSettings="closeSettings" v-on:showSettingButton="displaySettingButton" />
-    <div v-if="showTouchScreen && showSettingButton" @click.stop="openSettings" class="settings-container fade-slide-up"
-      ref="settingButton">
+    <Authorise
+      v-if="false"
+      :is="getCurrentComponent"
+      :auth="auth"
+      :endpoints="endpoints"
+      :player="player"
+      @spotifyTrackUpdated="updateCurrentTrack"
+      @requestRefreshToken="requestRefreshTokens"
+      @pageChange="onPageChange"
+      @closeSettings="closeSettings"
+      v-on:showSettingButton="displaySettingButton"
+    />
+    <div
+      v-if="showTouchScreen && showSettingButton"
+      @click.stop="openSettings"
+      class="settings-container fade-slide-up"
+      ref="settingButton"
+    >
       <img src="SettingIcon.svg" />
       <span>SETTINGS</span>
     </div>
@@ -43,7 +69,7 @@ export default {
     SplashScreen,
     SettingScreen,
     Clock,
-    TouchScreen,
+    TouchScreen
   },
 
   props: {},
@@ -190,7 +216,7 @@ export default {
     /**
      * Watch the authorisation status.
      */
-    'auth.status': function () {
+    'auth.status': function() {
       setStoredAuth(this.auth)
     }
   }
@@ -264,7 +290,6 @@ export default {
 }
 
 .animate-rotate-circle {
-
   animation: rotate 20s linear infinite;
 }
 </style>

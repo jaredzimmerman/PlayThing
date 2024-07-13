@@ -30,7 +30,7 @@ export default {
 }
 
 .scrim::before {
-  content: "";
+  content: '';
   //filter: blur(100px);
   backdrop-filter: blur(100px);
   position: absolute;
@@ -42,8 +42,10 @@ export default {
 .scrim {
   width: 100%;
   height: 100vh;
-  background: linear-gradient(to bottom,
-      rgba(0, 0, 0, 0.4),
-      rgba(0, 0, 0, 0.6));
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.4),
+    rgba(0, 0, 0, 0.6)
+  );
 }
 </style>

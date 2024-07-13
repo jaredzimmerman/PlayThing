@@ -1,6 +1,12 @@
 <template>
-  <div id="screen" v-touch:tap="tap" v-touch:swipe.up="swipeUp" v-touch:swipe.down="swipeDown"
-    v-touch:swipe.left="swipeLeft" v-touch:swipe.right="swipeRight"></div>
+  <div
+    id="screen"
+    v-touch:tap="tap"
+    v-touch:swipe.up="swipeUp"
+    v-touch:swipe.down="swipeDown"
+    v-touch:swipe.left="swipeLeft"
+    v-touch:swipe.right="swipeRight"
+  ></div>
 </template>
 
 <script>
@@ -12,11 +18,11 @@ export default {
       document.dispatchEvent(new Event('showSettingButton'))
     },
     swipeUp() {
-      console.log("swiping up")
+      console.log('swiping up')
       document.dispatchEvent(new Event('showPlaybackControls'))
     },
     swipeDown() {
-      console.log("swiping down")
+      console.log('swiping down')
       document.dispatchEvent(new Event('PlayThingRecentScreen'))
     },
     swipeLeft() {
@@ -24,7 +30,7 @@ export default {
     },
     swipeRight() {
       document.dispatchEvent(new Event('PlayThingNext'))
-    },
+    }
   }
 }
 </script>

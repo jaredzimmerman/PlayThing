@@ -1,12 +1,22 @@
 <template>
   <div id="app">
-    <Playback v-if="component === 'Playback'" :player="player" :playerResponse="playerResponse" :playerData="playerData"
-      :key="playbackKey" />
+    <Playback
+      v-if="component === 'Playback'"
+      :player="player"
+      :playerResponse="playerResponse"
+      :playerData="playerData"
+      :key="playbackKey"
+    />
 
     <Clock v-if="component === 'Clock'" />
 
-    <RecentScreen v-if="component === 'RecentScreen'" :endpoints="endpoints" :auth="auth"
-      @requestRefreshToken="requestRefreshTokens" :player="player" />
+    <RecentScreen
+      v-if="component === 'RecentScreen'"
+      :endpoints="endpoints"
+      :auth="auth"
+      @requestRefreshToken="requestRefreshTokens"
+      :player="player"
+    />
 
     <SplashScreen v-if="component === 'SplashScreen'" />
     <FirstTimeUsage v-if="component === 'FirstTimeUsage'" />
@@ -54,7 +64,7 @@ export default {
       fadeTimeout: null,
       nothingPlayingTimeout: null,
       displaySplashScreen: 1,
-      component: 'SplashScreen',
+      component: 'SplashScreen'
     }
   },
   created() {
@@ -70,7 +80,6 @@ export default {
 
     const started = document.documentElement.dataset.started
     if (started != null) this.displaySplashScreen = false
-
   },
   mounted() {
     this.setDataInterval()
@@ -83,17 +92,17 @@ export default {
         if (this.isFirstTime()) {
           this.component = 'FirstTimeUsage'
           setTimeout(() => {
-            if (this.isNowPlaying) this.component = 'Playback';
+            if (this.isNowPlaying) this.component = 'Playback'
             else this.component = 'Clock'
           }, 3000)
         } else {
-          if (this.isNowPlaying) this.component = 'Playback';
+          if (this.isNowPlaying) this.component = 'Playback'
           else this.component = 'Clock'
         }
       }, 2000)
       document.documentElement.dataset.started = '1'
     } else {
-      if (this.isNowPlaying) this.component = 'Playback';
+      if (this.isNowPlaying) this.component = 'Playback'
       else this.component = 'Clock'
     }
   },
@@ -106,7 +115,10 @@ export default {
     document.removeEventListener('PlayThingBack', this.handleBack)
     document.removeEventListener('PlayThingShuffle', this.handleShuffle)
     document.removeEventListener('PlayThingRepeat', this.handleRepeat)
-    document.removeEventListener('PlayThingRecentScreen', this.toggleRecentScreen)
+    document.removeEventListener(
+      'PlayThingRecentScreen',
+      this.toggleRecentScreen
+    )
     document.removeEventListener('keydown', this.onKeyDown)
   },
   methods: {
@@ -238,7 +250,7 @@ export default {
     },
     async handlePlay(event) {
       try {
-        let body;
+        let body
         if (event.detail?.uri) {
           body = {
             uris: [event.detail.uri],
@@ -250,7 +262,7 @@ export default {
           headers: {
             Authorization: `Bearer ${this.auth.accessToken}`
           },
-          body: JSON.stringify(body),
+          body: JSON.stringify(body)
         })
 
         this.getNowPlaying()
@@ -588,7 +600,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function () {
+      img.onload = function() {
         const colors = colorThief.getPalette(img, 10)
         const suitableColor = getSuitableColor(colors)
         document.documentElement.style.setProperty('--controls-color', `#fff`)
@@ -625,7 +637,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function () {
+      img.onload = function() {
         const colors = colorThief.getPalette(img, 10)
         const backgroundColor = getComplementaryOrThirdColor(colors)
         console.log('background is ', backgroundColor)
@@ -691,7 +703,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function () {
+      img.onload = function() {
         const colors = colorThief.getPalette(img, 10)
         const backgroundColors = getDominantColors(colors)
         document.documentElement.style.setProperty('--controls-color', `#fff`)
@@ -743,7 +755,7 @@ export default {
       const img = new Image()
       img.src = imageBlob
 
-      img.onload = function () {
+      img.onload = function() {
         const colors = colorThief.getPalette(img, 10)
         const suitableColor = getSuitableColor(colors)
         document.documentElement.style.setProperty(
@@ -864,7 +876,7 @@ export default {
     },
     toggleRecentScreen() {
       if (this.component === 'RecentScreen') {
-        if (this.isNowPlaying) this.component = 'Playback';
+        if (this.isNowPlaying) this.component = 'Playback'
         else this.component = 'Clock'
       } else {
         this.component = 'RecentScreen'
@@ -875,7 +887,7 @@ export default {
     /**
      * Watch the auth object returned from Spotify.
      */
-    auth: function (oldVal, newVal) {
+    auth: function(oldVal, newVal) {
       if (newVal.status === false) {
         clearInterval(this.pollPlaying)
       }
@@ -884,7 +896,7 @@ export default {
     /**
      * Watch the returned track object.
      */
-    playerResponse: function (newVal, oldVal) {
+    playerResponse: function(newVal, oldVal) {
       this.handleNowPlaying()
       if (oldVal == null || newVal == null) return
       if (oldVal.is_playing && !newVal.is_playing && this.fadeTimeout == null) {
@@ -909,7 +921,7 @@ export default {
     /**
      * Watch our locally stored track data.
      */
-    playerData: function () {
+    playerData: function() {
       this.$emit('spotifyTrackUpdated', this.playerData)
       //this.getAlbumColours()
       // console.log("image ", this.playerResponse)
@@ -917,13 +929,13 @@ export default {
         this.getAlbumColours()
       })
     },
-    playbackKey: function () {
+    playbackKey: function() {
       this.setAppColours()
     },
     isNowPlaying(newVal) {
       if (this.component !== 'SplashScreen') {
-        if (newVal) this.component = 'Playback';
-        else this.component = 'Clock';
+        if (newVal) this.component = 'Playback'
+        else this.component = 'Clock'
       }
     }
   }

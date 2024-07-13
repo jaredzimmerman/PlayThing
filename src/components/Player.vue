@@ -1,11 +1,26 @@
 <template>
   <div id="player">
-    <TextOnlyPlayer v-if="textOption === 'text-only'" :player="player" :playerResponse="playerResponse"
-      :playerData="playerData" :hide-controls="hideControls" />
-    <NoTextPlayer v-else-if="textOption === 'none'" :player="player" :playerResponse="playerResponse"
-      :playerData="playerData" :hide-controls="hideControls" />
-    <RegularPlayer v-else :player="player" :playerResponse="playerResponse" :playerData="playerData"
-      :hide-controls="hideControls" />
+    <TextOnlyPlayer
+      v-if="textOption === 'text-only'"
+      :player="player"
+      :playerResponse="playerResponse"
+      :playerData="playerData"
+      :hide-controls="hideControls"
+    />
+    <NoTextPlayer
+      v-else-if="textOption === 'none'"
+      :player="player"
+      :playerResponse="playerResponse"
+      :playerData="playerData"
+      :hide-controls="hideControls"
+    />
+    <RegularPlayer
+      v-else
+      :player="player"
+      :playerResponse="playerResponse"
+      :playerData="playerData"
+      :hide-controls="hideControls"
+    />
 
     <div class="touch-screen" v-if="hideControls">
       <TouchScreen />
@@ -55,7 +70,6 @@ export default {
     this.settings = settings
     const value = settings.textOption
     this.textOption = value
-
   },
   mounted() {
     // console.log('options', this.settings.miscellaneousOption)
@@ -64,7 +78,10 @@ export default {
     ) {*/
     console.log('hide controls')
     document.addEventListener('showPlaybackControls', this.hideOrShowControls)
-    if (this.settings.miscellaneousOption.includes('autohide-playback-controls')) this.hideOrShowControls()
+    if (
+      this.settings.miscellaneousOption.includes('autohide-playback-controls')
+    )
+      this.hideOrShowControls()
     //}
   },
   beforeDestroy() {
@@ -78,7 +95,11 @@ export default {
       console.log('hide or show')
       if (this.hideControls) {
         this.hideControls = false
-        if (this.settings.miscellaneousOption.includes('autohide-playback-controls')) {
+        if (
+          this.settings.miscellaneousOption.includes(
+            'autohide-playback-controls'
+          )
+        ) {
           clearTimeout(this.hideControlsTimeout)
           this.hideControlsTimeout = setTimeout(() => {
             this.hideControls = true
@@ -87,7 +108,6 @@ export default {
       } else {
         this.hideControls = true
       }
-
     }
   }
 }

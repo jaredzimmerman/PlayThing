@@ -55,7 +55,10 @@ export function getPlayThingSettings() {
     settings.selectedBackgroundOption = 'blank'
     settings.selectedTextOption = 'none'
     settings.selectedNothingPlayingOption = 'black-oled'
-    settings.selectedMiscellaneousOption = ['show-progress-bar']
+    settings.selectedMiscellaneousOption = [
+      'show-progress-bar',
+      'animate-blur-spotlight'
+    ]
   }
 
   return settings

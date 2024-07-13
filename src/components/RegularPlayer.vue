@@ -2,22 +2,45 @@
   <div class="now-playing" :class="getNowPlayingClass()">
     <div class="container">
       <div class="now-playing__cover">
-        <img :src="player.trackAlbum.image" :alt="player.trackTitle" :class="`now-playing__image ${miscellaneousOptions.includes('animate-blur-spotlight')
-    ? 'animate-rotate-circle'
-    : ''}`" :style="`margin-bottom: ${miscellaneousOptions.includes('show-progress-bar')
-    ? '15px'
-    : '0px'
-    }`
-    " />
-        <Progress v-if="miscellaneousOptions.includes('show-progress-bar')" :player="player"
-          :playerResponse="playerResponse" :playerData="playerData" />
+        <img
+          :src="player.trackAlbum.image"
+          :alt="player.trackTitle"
+          :class="
+            `now-playing__image ${
+              miscellaneousOptions.includes('animate-blur-spotlight')
+                ? 'animate-rotate-circle'
+                : ''
+            }`
+          "
+          :style="
+            `margin-bottom: ${
+              miscellaneousOptions.includes('show-progress-bar')
+                ? '15px'
+                : '0px'
+            }`
+          "
+        />
+        <Progress
+          v-if="miscellaneousOptions.includes('show-progress-bar')"
+          :player="player"
+          :playerResponse="playerResponse"
+          :playerData="playerData"
+        />
       </div>
-      <div class="now-playing__details" :style="`justify-content: ${hideControls ? 'center' : 'space-between'}`">
+      <div
+        class="now-playing__details"
+        :style="`justify-content: ${hideControls ? 'center' : 'space-between'}`"
+      >
         <div>
-          <h1 class="now-playing__track multiline-ellipsis" :style="`-webkit-line-clamp: ${lineNumber}`"
-            v-html="player.trackTitle">
-          </h1>
-          <h2 class="now-playing__artists ellipsis" v-text="getTrackArtists"></h2>
+          <h1
+            class="now-playing__track multiline-ellipsis"
+            :style="`-webkit-line-clamp: ${lineNumber}`"
+            v-html="player.trackTitle"
+          ></h1>
+          <h2
+            class="now-playing__artists ellipsis"
+            v-text="getTrackArtists"
+          ></h2>
         </div>
         <div class="now-playing__controls" v-show="!hideControls">
           <Controls :player="player" :playerResponse="playerResponse" />
@@ -36,7 +59,7 @@ export default {
   name: 'RegularPlayer',
   components: {
     Controls,
-    Progress,
+    Progress
   },
   props: {
     player: {
@@ -59,7 +82,7 @@ export default {
   data() {
     return {
       settings: null,
-      title: "Elderly Woman Behind the Counter in a Small Town",
+      title: 'Elderly Woman Behind the Counter in a Small Town',
       lineNumber: 10
     }
   },
@@ -97,7 +120,6 @@ export default {
       let textSize = ''
       let titleSize = ''
       let artistSize = ''
-
 
       if (value === 'none') {
         displayText = 'none'
@@ -150,12 +172,15 @@ export default {
       )
       document.documentElement.style.setProperty('--text-size', textSize)
       document.documentElement.style.setProperty('--track-text-size', titleSize)
-      document.documentElement.style.setProperty('--artist-text-size', artistSize)
+      document.documentElement.style.setProperty(
+        '--artist-text-size',
+        artistSize
+      )
     }
   },
   watch: {
-    hideControls: function () {
-      this.updateTextStyle();
+    hideControls: function() {
+      this.updateTextStyle()
     }
   }
 }
