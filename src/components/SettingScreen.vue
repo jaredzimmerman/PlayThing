@@ -337,7 +337,7 @@ export default {
   top: 0;
   z-index: 1;
   display: flex;
-  align-items: end;
+  align-items: flex-end;
   background-color: #000;
 }
 

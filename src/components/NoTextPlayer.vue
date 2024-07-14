@@ -4,13 +4,7 @@
       <div class="now-playing__cover">
         <img
           :src="player.trackAlbum.image"
-          :class="
-            `now-playing__image ${
-              miscellaneousOptions.includes('animate-blur-spotlight')
-                ? 'animate-rotate-circle'
-                : ''
-            }`
-          "
+          :class="`now-playing__image`"
           :style="
             `margin-bottom: ${
               miscellaneousOptions.includes('show-progress-bar')

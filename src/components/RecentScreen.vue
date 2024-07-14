@@ -211,7 +211,7 @@ export default {
 .logo-container {
   display: flex;
   justify-content: center;
-  align-items: end;
+  align-items: flex-end;
   height: 50vh;
   position: absolute;
   bottom: 0;
