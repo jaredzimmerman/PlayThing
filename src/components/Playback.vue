@@ -4,7 +4,11 @@
       <Background />
     </div>
     <div class="player">
-      <Player :player="player" :playerResponse="playerResponse" :playerData="playerData" />
+      <Player
+        :player="player"
+        :playerResponse="playerResponse"
+        :playerData="playerData"
+      />
     </div>
   </div>
 </template>

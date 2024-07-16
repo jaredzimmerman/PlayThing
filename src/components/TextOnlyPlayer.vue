@@ -1,8 +1,14 @@
 <template>
   <div class="now-playing" :class="getNowPlayingClass()">
     <div class="top-details">
-      <h1 class="now-playing__track" v-text="player.trackTitle"></h1>
-      <h2 class="now-playing__artists" v-text="getTrackArtists"></h2>
+      <h1
+        class="now-playing__track multiline-ellipsis"
+        v-text="player.trackTitle"
+      ></h1>
+      <h2
+        class="now-playing__artists multiline-ellipsis"
+        v-text="getTrackArtists"
+      ></h2>
     </div>
 
     <div class="bottom-controls" v-show="!hideControls">
@@ -227,5 +233,13 @@ export default {
   gap: 0px;
   border-radius: 2px 0px 0px 0px;
   opacity: 0px;
+}
+
+.multiline-ellipsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

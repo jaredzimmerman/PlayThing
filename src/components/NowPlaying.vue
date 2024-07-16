@@ -15,7 +15,7 @@
       :endpoints="endpoints"
       :auth="auth"
       @requestRefreshToken="requestRefreshTokens"
-      :player="player"
+      :playerData="playerData"
     />
 
     <SplashScreen v-if="component === 'SplashScreen'" />
@@ -55,8 +55,6 @@ export default {
       pollPlaying: '',
       playerResponse: {},
       playerData: this.getEmptyPlayer(),
-      //colourPalette: '',
-      colourPalette: {},
       swatches: [],
       settings: null,
       playbackKey: 0,
@@ -395,6 +393,9 @@ export default {
         })
       }
     },
+    requestRefreshTokens() {
+      this.$emit('requestRefreshToken')
+    },
 
     /**
      * Poll Spotify for data.
@@ -489,111 +490,7 @@ export default {
       }
 
       this.setAppColours()
-
-      /*const isColorTooCloseToBlack = (rgb, tolerance) => {
-        const [r, g, b] = rgb
-        const blackDistance = Math.sqrt(r * r + g * g + b * b)
-        return blackDistance < tolerance
-      }
-  
-      // Function to determine if a color is too close to white
-      const isColorTooCloseToWhite = (rgb, tolerance) => {
-        const [r, g, b] = rgb
-        const whiteDistance = Math.sqrt(
-          (255 - r) * (255 - r) + (255 - g) * (255 - g) + (255 - b) * (255 - b)
-        )
-        return whiteDistance < tolerance
-      }
-  
-      Vibrant.from(this.player.trackAlbum.image)
-        .quality(1)
-        .clearFilters()
-        .getPalette()
-        .then(palette => {
-          //this.handleAlbumPalette(palette)
-  
-          const filteredPalette = {}
-  
-          const tolerance = 50
-          if (this.settings?.backgroundOption === 'black-oled') {
-            for (let swatch in palette) {
-              if (
-                palette[swatch] &&
-                !isColorTooCloseToBlack(palette[swatch].getRgb(), tolerance)
-              ) {
-                filteredPalette[swatch] = palette[swatch]
-              }
-            }
-  
-            // If the filtered palette is empty, add white as a fallback
-            if (Object.keys(filteredPalette).length === 0) {
-              filteredPalette['Fallback'] = {
-                getHex: () => '#FFFFFF',
-                getRgb: () => [255, 255, 255],
-                getPopulation: () => 1,
-                getHsl: () => [0, 0, 1]
-              }
-            }
-          } else {
-            //filteredPalette = palette
-            for (let swatch in palette) {
-              if (
-                palette[swatch] &&
-                !isColorTooCloseToWhite(palette[swatch].getRgb(), tolerance)
-              ) {
-                filteredPalette[swatch] = palette[swatch]
-              }
-            }
-  
-            // If the filtered palette is empty, add black as a fallback
-            if (Object.keys(filteredPalette).length === 0) {
-              filteredPalette['Fallback'] = {
-                getHex: () => '#000000',
-                getRgb: () => [0, 0, 0],
-                getPopulation: () => 1,
-                getHsl: () => [0, 0, 0]
-              }
-            }
-          }
-  
-          this.handleAlbumPalette(filteredPalette)
-        })*/
     },
-    /**
-     * Handle newly stored colour palette:
-     * - Map data to readable format
-     * - Get and store random colour combination.
-     */
-    /*handleAlbumPalette(palette) {
-      let albumColours = Object.keys(palette)
-        .filter(item => {
-          return item === null ? null : item
-        })
-        .map(colour => {
-          return {
-            text: palette[colour].getTitleTextColor(),
-            background: palette[colour].getHex()
-          }
-        })
-  
-      this.swatches = albumColours
-      //const variant = 'Vibrant';
-      const variant = 'DarkVibrant'
-  
-      this.colourPalette = {
-        text: palette[variant].getTitleTextColor(),
-        background: palette[variant].getHex()
-      }
-      this.colourPalette =
-        albumColours[Math.floor(Math.random() * albumColours.length)]
-  
-      this.$nextTick(() => {
-        this.setAppColours()
-      })
-    },*/
-    /**
-     * Set the stylings of the app based on received colours.
-     */
     getMatchColors(imageBlob) {
       //const img = document.getElementById('albumCover');
       const colorThief = new ColorThief()
@@ -787,8 +684,6 @@ export default {
       }
     },
     async setAppColours() {
-      //const textColor = '#fff'
-      // let backgroundColor = this.colourPalette.background
       const response = await fetch(this.playerData.trackAlbum.image)
       const blob = await response.blob()
 
@@ -812,58 +707,6 @@ export default {
       } else if (['black-oled'].includes(settings?.backgroundOption)) {
         this.getBlackOledColors(blobUrl)
       }
-
-      /*img.onload = () => {
-        const colorThief = new ColorThief()
-        const dominantColor = colorThief.getColor(img)
-        URL.revokeObjectURL(blobUrl)
-        console.log("looking for dominant color ", dominantColor)
-  
-        if (
-          this.settings?.backgroundOption !== 'black-oled'
-        ) {
-  
-          document.documentElement.style.setProperty(
-            '--controls-color',
-            `#fff`
-          )
-  
-          document.documentElement.style.setProperty(
-            '--color-text-primary',
-            '#fff'
-          )
-          document.documentElement.style.setProperty(
-            '--primary-color',
-            `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
-          )
-        } else {
-          //console.log("dominent color is ", dominantColor)
-          document.documentElement.style.setProperty(
-            '--controls-color',
-            `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
-          )
-  
-          document.documentElement.style.setProperty(
-            '--color-text-primary',
-            '#fff'
-          )
-  
-          document.documentElement.style.setProperty(
-            '--colour-background-now-playing',
-            `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`
-            //backgroundColor
-          )
-        }
-      }
-  
-  
-  
-      document.documentElement.style.setProperty(
-        '--album-image',
-        `url(${this.player.trackAlbum.image})`
-      )
-  
-      document.documentElement.style.setProperty('--secondary-color', textColor)*/
     },
     isFirstTime() {
       let firstTime = true

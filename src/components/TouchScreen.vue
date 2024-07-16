@@ -18,11 +18,9 @@ export default {
       document.dispatchEvent(new Event('showSettingButton'))
     },
     swipeUp() {
-      console.log('swiping up')
       document.dispatchEvent(new Event('showPlaybackControls'))
     },
     swipeDown() {
-      console.log('swiping down')
       document.dispatchEvent(new Event('PlayThingRecentScreen'))
     },
     swipeLeft() {

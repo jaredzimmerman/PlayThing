@@ -1,9 +1,14 @@
 <template>
-  <div id="app" :class="`${miscellaneousOptions.includes('animate-blur-spotlight')
-    ? 'animate-rotate-circle'
-    : 'scale-120-rotate-180'
-    }`
-    ">
+  <div
+    id="app"
+    :class="
+      `${
+        miscellaneousOptions.includes('animate-blur-spotlight')
+          ? 'animate-rotate-circle'
+          : 'scale-120-rotate-180'
+      }`
+    "
+  >
     <div class="scrim"></div>
   </div>
 </template>
@@ -55,9 +60,11 @@ export default {
   position: relative;
   width: 100%;
   height: 100vh;
-  background: linear-gradient(to bottom,
-      rgba(0, 0, 0, 0.4),
-      rgba(0, 0, 0, 0.6));
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.4),
+    rgba(0, 0, 0, 0.6)
+  );
 }
 
 .scale-120-rotate-180 {

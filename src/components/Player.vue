@@ -76,7 +76,6 @@ export default {
     /*if (
       this.settings.miscellaneousOption.includes('autohide-playback-controls')
     ) {*/
-    console.log('hide controls')
     document.addEventListener('showPlaybackControls', this.hideOrShowControls)
     if (
       this.settings.miscellaneousOption.includes('autohide-playback-controls')

@@ -23,7 +23,7 @@
               @click="play(item)"
             >
               <img :src="item.track.album.images[0].url" />
-              <h2 class="multiline-ellipsis">{{ item.track.name }}</h2>
+              <h2 class="ellipsis">{{ item.track.name }}</h2>
               <h3 class="ellipsis">
                 {{ item.track.artists.map(artist => artist.name).join(', ') }}
               </h3>
@@ -35,18 +35,18 @@
         </div>
       </div>
     </div>
-    <div v-if="player?.playing" class="blurred-background">
+    <div v-if="playerData?.playing" class="blurred-background">
       <div class="current-track">
-        <img :src="player.trackAlbum.image" />
+        <img :src="playerData.trackAlbum.image" />
         <div>
-          <h2>{{ player.trackTitle }}</h2>
-          <h3>
-            {{ player.trackArtists.map(artist => artist.name).join(', ') }}
+          <h2 class="multiline-ellipsis">{{ playerData.trackTitle }}</h2>
+          <h3 class="multiline-ellipsis">
+            {{ playerData.trackArtists.join(',') }}
           </h3>
         </div>
       </div>
     </div>
-    <div v-if="!player.playing" class="logo-container">
+    <div v-if="!playerData.playing" class="logo-container">
       <img src="/text-logo.svg" />
     </div>
   </div>
@@ -73,7 +73,7 @@ export default {
       type: Object,
       default: null
     },
-    player: {
+    playerData: {
       type: Object,
       default: null
     }
@@ -97,9 +97,8 @@ export default {
   created() {
     const settings = getPlayThingSettings()
     this.type = settings.backgroundOption
-
+    console.log('player data : ', this.playerData)
     this.getRecents()
-    // console.log("player : ", this.player)
   },
   methods: {
     async getRecents() {
@@ -262,6 +261,7 @@ export default {
   align-items: center;
   gap: 100px;
   z-index: 1;
+  width: 80vw;
 }
 
 .current-track h2 {

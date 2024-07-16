@@ -23,13 +23,25 @@
       <span @click="sendNext" ref="nextButton" class="nextButton">
         <SimpleSVG src="/controls/Next.svg" />
       </span>
-      <span v-show="repeat === 'off'" @click="sendRepeat('context')" style="opacity: 0.5;">
+      <span
+        v-show="repeat === 'off'"
+        @click="sendRepeat('context')"
+        style="opacity: 0.5;"
+      >
         <SimpleSVG src="/controls/Repeat.svg" />
       </span>
-      <span v-show="repeat === 'context'" @click="sendRepeat('track')" style="opacity: 1;">
+      <span
+        v-show="repeat === 'context'"
+        @click="sendRepeat('track')"
+        style="opacity: 1;"
+      >
         <SimpleSVG src="/controls/Repeat-1.svg" />
       </span>
-      <span v-show="repeat === 'track'" @click="sendRepeat('off')" style="opacity: 1">
+      <span
+        v-show="repeat === 'track'"
+        @click="sendRepeat('off')"
+        style="opacity: 1"
+      >
         <SimpleSVG src="/controls/Repeat-2.svg" />
       </span>
     </div>
@@ -62,7 +74,7 @@ export default {
       repeat: 'off',
       shuffle: false,
       synced: true,
-      lastSynced: new Date(),
+      lastSynced: new Date()
     }
   },
   mounted() {
@@ -83,8 +95,8 @@ export default {
   watch: {
     playerResponse(value) {
       if (!this.synced && this.secondsFromNow(this.lastSynced) >= 5) {
-        this.synced = true;
-        this.lastSynced = new Date();
+        this.synced = true
+        this.lastSynced = new Date()
         this.playing = value.is_playing
         // this.repeat = value.repeat_state
         // this.shuffle = value.shuffle_state
@@ -93,16 +105,16 @@ export default {
   },
   methods: {
     sendPlay() {
-      if (!this.synced) return;
+      if (!this.synced) return
       document.dispatchEvent(new CustomEvent('PlayThingPlay'))
       this.playing = true
-      this.synced = false;
+      this.synced = false
     },
     sendPause() {
-      if (!this.synced) return;
+      if (!this.synced) return
       document.dispatchEvent(new CustomEvent('PlayThingPause'))
       this.playing = false
-      this.synced = false;
+      this.synced = false
     },
     sendNext() {
       document.dispatchEvent(new CustomEvent('PlayThingNext'))
@@ -135,10 +147,10 @@ export default {
       )
     },
     secondsFromNow(date) {
-      const now = new Date();
-      const differenceInMilliseconds = now - date;
-      const differenceInSeconds = differenceInMilliseconds / 1000;
-      return differenceInSeconds;
+      const now = new Date()
+      const differenceInMilliseconds = now - date
+      const differenceInSeconds = differenceInMilliseconds / 1000
+      return differenceInSeconds
     }
   }
 }
