@@ -4,11 +4,7 @@
       <Background />
     </div>
     <div class="player">
-      <Player
-        :player="player"
-        :playerResponse="playerResponse"
-        :playerData="playerData"
-      />
+      <Player :player="player" :playerResponse="playerResponse" :playerData="playerData" />
     </div>
   </div>
 </template>
@@ -77,6 +73,7 @@ export default {
 }
 
 .background {
+  background-color: #000;
   position: absolute;
   height: 100vh;
   width: 100%;

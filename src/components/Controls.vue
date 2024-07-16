@@ -23,25 +23,13 @@
       <span @click="sendNext" ref="nextButton" class="nextButton">
         <SimpleSVG src="/controls/Next.svg" />
       </span>
-      <span
-        v-show="repeat === 'off'"
-        @click="sendRepeat('context')"
-        style="opacity: 0.5;"
-      >
+      <span v-show="repeat === 'off'" @click="sendRepeat('context')" style="opacity: 0.5;">
         <SimpleSVG src="/controls/Repeat.svg" />
       </span>
-      <span
-        v-show="repeat === 'context'"
-        @click="sendRepeat('track')"
-        style="opacity: 1;"
-      >
+      <span v-show="repeat === 'context'" @click="sendRepeat('track')" style="opacity: 1;">
         <SimpleSVG src="/controls/Repeat-1.svg" />
       </span>
-      <span
-        v-show="repeat === 'track'"
-        @click="sendRepeat('off')"
-        style="opacity: 1"
-      >
+      <span v-show="repeat === 'track'" @click="sendRepeat('off')" style="opacity: 1">
         <SimpleSVG src="/controls/Repeat-2.svg" />
       </span>
     </div>
@@ -72,13 +60,15 @@ export default {
     return {
       playing: false,
       repeat: 'off',
-      shuffle: false
+      shuffle: false,
+      synced: true,
+      lastSynced: new Date(),
     }
   },
   mounted() {
     const value = this.playerResponse
     if (value) {
-      //this.playing = this.player.playing
+      // this.playing = this.player.playing
       this.playing = value.is_playing
       this.repeat = value.repeat_state
       this.shuffle = value.shuffle_state
@@ -92,22 +82,27 @@ export default {
   },
   watch: {
     playerResponse(value) {
-      this.playing = value.is_playing
-      //this.repeat = value.repeat_state
-      // this.shuffle = value.shuffle_state
-      // if (value.playing != this.playing) { }
+      if (!this.synced && this.secondsFromNow(this.lastSynced) >= 5) {
+        this.synced = true;
+        this.lastSynced = new Date();
+        this.playing = value.is_playing
+        // this.repeat = value.repeat_state
+        // this.shuffle = value.shuffle_state
+      }
     }
   },
   methods: {
     sendPlay() {
+      if (!this.synced) return;
       document.dispatchEvent(new CustomEvent('PlayThingPlay'))
-      //this.playing = true
-      console.log(this.playing)
+      this.playing = true
+      this.synced = false;
     },
     sendPause() {
+      if (!this.synced) return;
       document.dispatchEvent(new CustomEvent('PlayThingPause'))
-      //this.playing = false
-      console.log(this.playing)
+      this.playing = false
+      this.synced = false;
     },
     sendNext() {
       document.dispatchEvent(new CustomEvent('PlayThingNext'))
@@ -138,6 +133,12 @@ export default {
           detail: { state }
         })
       )
+    },
+    secondsFromNow(date) {
+      const now = new Date();
+      const differenceInMilliseconds = now - date;
+      const differenceInSeconds = differenceInMilliseconds / 1000;
+      return differenceInSeconds;
     }
   }
 }
@@ -174,7 +175,8 @@ export default {
   grid-template-columns: repeat(5, 1fr);
   justify-content: center;
   z-index: 2;
-  top: 20;
+  //top: 20;
+  left: -3.8%;
   max-width: 100%;
 }
 

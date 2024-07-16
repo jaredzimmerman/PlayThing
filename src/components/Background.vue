@@ -42,7 +42,7 @@ export default {
 
 <style scoped>
 #app {
-  color: #fff;
+  color: #000;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -70,8 +70,9 @@ export default {
   width: 100%;
   border-radius: 5px;
   overflow: hidden;
-  height: 5px;
+  //height: 5px;
   //max-width: 640px;
+  height: 0.4629629629629629vh;
   margin-left: auto;
   margin-right: auto;
 }

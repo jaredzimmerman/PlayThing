@@ -2,39 +2,16 @@
   <div class="now-playing" :class="getNowPlayingClass()">
     <div class="container">
       <div class="now-playing__cover">
-        <img
-          :src="player.trackAlbum.image"
-          :alt="player.trackTitle"
-          :class="`now-playing__images`"
-          :style="
-            `margin-bottom: ${
-              miscellaneousOptions.includes('show-progress-bar')
-                ? '15px'
-                : '0px'
-            }`
-          "
-        />
-        <Progress
-          v-if="miscellaneousOptions.includes('show-progress-bar')"
-          :player="player"
-          :playerResponse="playerResponse"
-          :playerData="playerData"
-        />
+        <img :src="player.trackAlbum.image" :alt="player.trackTitle" :class="`now-playing__image`" />
+        <Progress v-if="miscellaneousOptions.includes('show-progress-bar')" :player="player"
+          :playerResponse="playerResponse" :playerData="playerData" />
       </div>
-      <div
-        class="now-playing__details"
-        :style="`justify-content: ${hideControls ? 'center' : 'space-between'}`"
-      >
+      <div class="now-playing__details" :style="`justify-content: ${hideControls ? 'center' : 'space-between'}`">
         <div>
-          <h1
-            class="now-playing__track multiline-ellipsis"
-            :style="`-webkit-line-clamp: ${lineNumber}`"
-            v-html="player.trackTitle"
-          ></h1>
-          <h2
-            class="now-playing__artists ellipsis"
-            v-text="getTrackArtists"
-          ></h2>
+          <h1 class="now-playing__track multiline-ellipsis" :style="`-webkit-line-clamp: ${lineNumber}`"
+            v-html="player.trackTitle"></h1>
+          <h2 class="now-playing__artists multiline-ellipsis" :style="`-webkit-line-clamp: ${lineNumberArtist}`"
+            v-text="getTrackArtists"></h2>
         </div>
         <div class="now-playing__controls" v-show="!hideControls">
           <Controls :player="player" :playerResponse="playerResponse" />
@@ -77,7 +54,8 @@ export default {
     return {
       settings: null,
       title: 'Elderly Woman Behind the Counter in a Small Town',
-      lineNumber: 10
+      lineNumber: 10,
+      lineNumberArtist: 10,
     }
   },
   created() {
@@ -128,30 +106,46 @@ export default {
         titleSize = '60px'
         artistSize = '50px'
         this.lineNumber = 4
+        this.lineNumberArtist = 3
       } else if (value === 'medium') {
         displayText = 'inherit'
         displayAlbumArt = 'inherit'
         textSize = '2rem'
         titleSize = '80px'
         artistSize = '50px'
-        if (this.hideControls) this.lineNumber = 4
-        else this.lineNumber = 3
+        if (this.hideControls) {
+          this.lineNumber = 4
+        }
+        else {
+          this.lineNumber = 3
+        }
+        this.lineNumberArtist = 3
       } else if (value === 'large') {
         displayText = 'inherit'
         displayAlbumArt = 'inherit'
         textSize = '3rem'
         titleSize = '110px'
         artistSize = '50px'
-        if (this.hideControls) this.lineNumber = 4
-        else this.lineNumber = 2
+        this.lineNumberArtist = 3
+        if (this.hideControls) {
+          this.lineNumber = 4
+        }
+        else {
+          this.lineNumber = 2
+        }
       } else if (value === 'extra-large') {
         displayText = 'inherit'
         displayAlbumArt = 'inherit'
         textSize = '3rem'
         titleSize = '130px'
         artistSize = '50px'
-        if (this.hideControls) this.lineNumber = 3
-        else this.lineNumber = 2
+        this.lineNumberArtist = 3
+        if (this.hideControls) {
+          this.lineNumber = 3
+        }
+        else {
+          this.lineNumber = 2
+        }
       } else if (value === 'text-only') {
         displayText = 'inherit'
         displayAlbumArt = 'none'
@@ -173,7 +167,7 @@ export default {
     }
   },
   watch: {
-    hideControls: function() {
+    hideControls: function () {
       this.updateTextStyle()
     }
   }
@@ -203,6 +197,7 @@ export default {
 
   &__cover {
     // max-width: 400px;
+    width: 33.33333333333333vw;
   }
 
   &__image {
@@ -210,6 +205,7 @@ export default {
     aspect-ratio: 1;
     max-width: 640px;
     width: 100%;
+    //width: 38.02083333333333vw;
     border-radius: 10px;
   }
 
@@ -221,7 +217,8 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    max-width: 640px;
+    //max-width: 640px;
+    width: 38.02083333333333vw;
   }
 
   /*&__details div:first-child {
@@ -239,7 +236,11 @@ export default {
   }
 
   &__cover {
-    display: var(--display-album-art);
+    //display: var(--display-album-art);
+    display: flex;
+    flex-direction: column;
+    gap: 1.3888888888888888vh;
+    height: 61.111111111111114vh;
   }
 
   &__track {
@@ -291,13 +292,16 @@ export default {
 
 .container {
   display: grid;
-  gap: 110px;
+  gap: 5.729166666666666vw;
   //height: 50vh;
   grid-template-columns: repeat(2, 1fr);
   //max-width: 1280px;
   position: absolute;
-  top: 220px;
-  left: 220px;
+  top: 20.37037037037037vh;
+  left: 11.458333333333332vw;
+  width: 77.08333333333334vw;
+  height: 61.111111111111114vh;
+  overflow: hidden;
 }
 
 .multiline-ellipsis {
