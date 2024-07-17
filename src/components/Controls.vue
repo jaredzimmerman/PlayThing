@@ -72,9 +72,9 @@ export default {
     return {
       playing: false,
       repeat: 'off',
-      shuffle: false,
-      synced: true,
-      lastSynced: new Date()
+      shuffle: false
+      //synced: true,
+      //lastSynced: new Date()
     }
   },
   mounted() {
@@ -93,28 +93,29 @@ export default {
     }
   },
   watch: {
-    playerResponse(value) {
-      if (!this.synced && this.secondsFromNow(this.lastSynced) >= 5) {
+    /*playerResponse(value) {
+      //if (!this.synced && this.secondsFromNow(this.lastSynced) >= 5) {
+      if (!this.synced && value.is_playing === this.playing) {
         this.synced = true
         this.lastSynced = new Date()
         this.playing = value.is_playing
         // this.repeat = value.repeat_state
         // this.shuffle = value.shuffle_state
       }
-    }
+    }*/
   },
   methods: {
     sendPlay() {
-      if (!this.synced) return
+      //if (!this.synced) return
       document.dispatchEvent(new CustomEvent('PlayThingPlay'))
       this.playing = true
-      this.synced = false
+      //this.synced = false
     },
     sendPause() {
-      if (!this.synced) return
+      //if (!this.synced) return
       document.dispatchEvent(new CustomEvent('PlayThingPause'))
       this.playing = false
-      this.synced = false
+      //this.synced = false
     },
     sendNext() {
       document.dispatchEvent(new CustomEvent('PlayThingNext'))
@@ -145,13 +146,13 @@ export default {
           detail: { state }
         })
       )
-    },
-    secondsFromNow(date) {
+    }
+    /*secondsFromNow(date) {
       const now = new Date()
       const differenceInMilliseconds = now - date
       const differenceInSeconds = differenceInMilliseconds / 1000
       return differenceInSeconds
-    }
+    }*/
   }
 }
 
