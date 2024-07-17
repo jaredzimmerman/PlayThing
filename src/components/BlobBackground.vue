@@ -57,7 +57,7 @@ export default {
 
       this.animationRunning = true
       const path = document.querySelector('path')
-      let hueNoiseOffset = 0
+      //let hueNoiseOffset = 0
       let noiseStep = 0.005
 
       const simplex = new SimplexNoise()
@@ -79,45 +79,51 @@ export default {
           const secondaryColor = getComputedStyle(
             document.documentElement
           ).getPropertyValue('--end-color')
+          //  console.log("start : ", primaryColor, " end : ", secondaryColor)
 
           // Convert hex colors to HSL
           const startHsl = hexToHsl(primaryColor)
           const endHsl = hexToHsl(secondaryColor)
 
           // Interpolate hues between the primary and secondary colors based on hueNoiseOffset
-          const hueOffset = (Math.sin(hueNoiseOffset) + 1) / 2 // oscillates between 0 and 1
+          const hueOffset = 0 //(Math.sin(hueNoiseOffset) + 1) / 2 // oscillates between 0 and 1
           const startHue = startHsl.h
           const endHue = endHsl.h
 
-          const currentHue = interpolateHue(startHue, endHue, hueOffset)
-          const startColor = `hsl(${currentHue}, ${startHsl.s}%, ${startHsl.l}%)`
-          const stopColor = `hsl(${currentHue + 60}, ${startHsl.s}%, ${
-            startHsl.l
-          }%)`
+          //const currentHue = interpolateHue(startHue, endHue, hueOffset)
+          const currentStartHue = interpolateHue(startHue, endHue, hueOffset)
+          const currentEndHue = interpolateHue(endHue, startHue, hueOffset)
+          const startColor = `hsl(${currentStartHue}, ${startHsl.s}%, ${startHsl.l}%)`
+          const stopColor = `hsl(${currentEndHue}, ${endHsl.s}%, ${endHsl.l}%)`
+
+          //const startColor = `hsl(${currentHue}, ${startHsl.s}%, ${startHsl.l}%)`
+          //const stopColor = `hsl(${currentHue + 60}, ${startHsl.s}%, ${startHsl.l}%)`
 
           this.startColor = startColor
           this.stopColor = stopColor
-          this.blobBackgroundColor = `hsl(${currentHue + 60}, 75%, 5%)`
-
-          hueNoiseOffset += noiseStep / 6
+          //this.blobBackgroundColor = `hsl(${currentStartHue + 60}, 75%, 5%)`
+          //this.blobBackgroundColor = `hsl(${currentHue + 60}, 75%, 5%)`
 
           // Update points for animation
-          for (let i = 0; i < points.length; i++) {
-            const point = points[i]
+          if (this.animate) {
+            //hueNoiseOffset += noiseStep / 6
+            for (let i = 0; i < points.length; i++) {
+              const point = points[i]
 
-            const nX = noise(point.noiseOffsetX, point.noiseOffsetX)
-            const nY = noise(point.noiseOffsetY, point.noiseOffsetY)
-            const x = map(nX, -1, 1, point.originX - 20, point.originX + 20)
-            const y = map(nY, -1, 1, point.originY - 20, point.originY + 20)
+              const nX = noise(point.noiseOffsetX, point.noiseOffsetX)
+              const nY = noise(point.noiseOffsetY, point.noiseOffsetY)
+              const x = map(nX, -1, 1, point.originX - 20, point.originX + 20)
+              const y = map(nY, -1, 1, point.originY - 20, point.originY + 20)
 
-            point.x = x
-            point.y = y
-            point.noiseOffsetX += noiseStep
-            point.noiseOffsetY += noiseStep
+              point.x = x
+              point.y = y
+              point.noiseOffsetX += noiseStep
+              point.noiseOffsetY += noiseStep
+            }
           }
         }
 
-        if (this.animate) requestAnimationFrame(animate)
+        requestAnimationFrame(animate)
       }
       animate()
 
@@ -171,6 +177,7 @@ export default {
         }
         return hue
       }
+
       function map(n, start1, end1, start2, end2) {
         return ((n - start1) / (end1 - start1)) * (end2 - start2) + start2
       }
@@ -226,7 +233,7 @@ export default {
 
 .blob {
   position: absolute;
-  width: 60%;
+  width: 50%;
   height: auto;
   z-index: 1;
   aspect-ratio: 1;

@@ -662,7 +662,7 @@ export default {
         if (suitableColor) {
           document.documentElement.style.setProperty(
             '--controls-color',
-            `rgb(${suitableColor.join(',')})`
+            `rgb(${adjustColorIfTooDark(suitableColor).join(',')})`
           )
         } else {
           document.documentElement.style.setProperty('--primary-color', `#ff`)
@@ -677,6 +677,33 @@ export default {
         const [r, g, b] = color
         const brightness = (r * 299 + g * 587 + b * 114) / 1000
         return brightness < 30 || brightness > 220
+      }
+
+      function adjustColorIfTooDark(rgb) {
+        function rgbToLuminance(r, g, b) {
+          return 0.2126 * r + 0.7152 * g + 0.0722 * b
+        }
+
+        function brightenColor(r, g, b, percentage) {
+          r = Math.min(255, r + (r * percentage) / 100)
+          g = Math.min(255, g + (g * percentage) / 100)
+          b = Math.min(255, b + (b * percentage) / 100)
+          return [r, g, b]
+        }
+
+        const [r, g, b] = rgb
+
+        const luminance = rgbToLuminance(r, g, b)
+        console.log('luminance , ', luminance)
+
+        const threshold = 50 // Adjust as needed
+
+        if (luminance < threshold) {
+          const brightenPercentage = (luminance / threshold) * 50 + 25
+          return brightenColor(r, g, b, brightenPercentage)
+        }
+
+        return [r, g, b]
       }
 
       if (img.complete) {
