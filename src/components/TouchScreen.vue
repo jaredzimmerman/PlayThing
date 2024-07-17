@@ -18,6 +18,7 @@ export default {
       document.dispatchEvent(new Event('showSettingButton'))
     },
     swipeUp() {
+      console.log('show controls')
       document.dispatchEvent(new Event('showPlaybackControls'))
     },
     swipeDown() {

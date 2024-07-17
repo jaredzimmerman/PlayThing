@@ -173,7 +173,7 @@ export default {
     justify-content: center;
   }
 
-  @media only screen and (min-width: 767px) {
+  /*@media only screen and (min-width: 767px) {
     flex-flow: row nowrap;
     padding: 10%;
 
@@ -186,15 +186,15 @@ export default {
     &__details {
       text-align: left;
     }
-  }
+  }*/
 }
 
 .top-details {
   position: absolute;
-  width: 47.083333333333336%;
-  height: 23.98148148148148%;
+  width: 47.083333333333336vw;
+  //height: 23.98148148148148%;
   top: 9.25925925925926vh;
-  left: 5.208333333333334%;
+  left: 5.20833333333333vw;
   gap: 0px;
   opacity: 0px;
 }
@@ -210,6 +210,10 @@ export default {
   //height: 8.148148148148149vh;
   //top: 77.5vh;
   //left: 71.1875vw;
+}
+
+.bottom-controls .controls {
+  left: 0 !important;
 }
 
 /*.bottom-progress {

@@ -189,8 +189,11 @@ export default {
   justify-content: center;
   z-index: 2;
   //top: 20;
-  left: -3.8%;
-  max-width: 100%;
+  left: -2.3%;
+  width: 27.083333333333332vw;
+  height: 8.148148148148149vh;
+  gap: 1.3vw;
+  //max-width: 100%;
 }
 
 .touch-screen {
@@ -209,13 +212,20 @@ export default {
   stroke: #fff;
 }
 
-@media only screen and (min-width: 767px) {
+.controls span {
+  // width: 88px;
+  width: 4.583333333333333vw;
+  height: 8.148148148148149vh;
+  //aspect-ratio: 1;
+}
+
+/*@media only screen and (min-width: 767px) {
   .controls {
     justify-content: left;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
   }
-}
+}*/
 
 .nextButton,
 .backButton {
