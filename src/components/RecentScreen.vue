@@ -37,7 +37,7 @@
     </div>
     <div v-if="playerData?.playing" class="blurred-background">
       <div class="current-track">
-        <Player
+        <Playback
           :player="player"
           :playerData="playerData"
           :playerResponse="playerResponse"
@@ -64,11 +64,12 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css'
 // optional style for arrows & dots
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 import TouchScreen from './TouchScreen.vue'
-import Player from './Player.vue'
+//import Player from './Player.vue'
+import Playback from './Playback.vue'
 
 export default {
   name: 'RecentScreen',
-  components: { VueSlickCarousel, TouchScreen, Player },
+  components: { VueSlickCarousel, TouchScreen, Playback },
   emits: ['requestRefreshToken'],
   props: {
     endpoints: {
@@ -284,7 +285,9 @@ export default {
   align-items: center;
   gap: 100px;
   z-index: 1;
-  width: 80vw;
+  width: 100vh;
+  left: 0;
+  //width: 80vw;
 }
 
 .current-track h2 {
