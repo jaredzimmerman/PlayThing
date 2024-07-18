@@ -217,7 +217,7 @@ export default {
   top: 5.1vh;
   left: 5.20833333333333vw;
   gap: 0px;
-  opacity: 0px;
+  //opacity: 0px;
 }
 
 .bottom-controls {
@@ -258,7 +258,7 @@ export default {
   transform: translateX(-50%);
   gap: 0px;
   border-radius: 2px 0px 0px 0px;
-  opacity: 0px;
+  //opacity: 0px;
 }
 
 .multiline-ellipsis {
