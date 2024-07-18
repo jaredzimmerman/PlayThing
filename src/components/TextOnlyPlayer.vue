@@ -1,5 +1,6 @@
 <template>
   <div class="now-playing" :class="getNowPlayingClass()">
+    <!--<div class="ruler"></div>-->
     <div class="top-details">
       <h1
         class="now-playing__track multiline-ellipsis"
@@ -125,6 +126,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/*.ruler {
+  background-color: red;
+  height: 5px;
+  width: 1720px;
+  position: absolute;
+  top: 1025px;
+  left: 100px
+}*/
+
 .now-playing {
   font-size: var(--text-size);
   /*background-color: var(--colour-background-now-playing);*/
@@ -147,15 +157,15 @@ export default {
     font-family: Inter;
     font-size: 6.4453125vw;
     font-weight: 700;
-    //line-height: 17.542592592592595vh;
-    line-height: 9.1vh;
+    line-height: 17.542592592592595vh;
     letter-spacing: 0.07em;
     text-align: left;
     margin-block-start: 0;
     margin-block-end: 0;
     margin: 0;
     padding: 0;
-    margin-bottom: 9vh;
+    //margin-bottom: 9vh;
+    margin-bottom: 3vh;
   }
 
   &__artists {
@@ -163,8 +173,7 @@ export default {
     font-family: Inter;
     font-size: 5.208333333333334vw;
     font-weight: 500;
-    line-height: 7.4vh;
-    //line-height: 13.88888888888889vh;
+    line-height: 13.88888888888889vh;
     letter-spacing: 0.07em;
     text-align: left;
     margin-block-start: 0;
@@ -204,7 +213,8 @@ export default {
   position: absolute;
   width: 47.083333333333336vw;
   //height: 23.98148148148148%;
-  top: 9.25925925925926vh;
+  //top: 9.25925925925926vh;
+  top: 5.1vh;
   left: 5.20833333333333vw;
   gap: 0px;
   opacity: 0px;
@@ -215,7 +225,8 @@ export default {
   width: 26vw;
   height: 11.148148vh;
   top: 77.5vh;
-  left: 70vw;
+  //left: 70vw;
+  left: 67vw;
 
   //width: 27.083333333333332vw;
   //height: 8.148148148148149vh;
@@ -256,5 +267,10 @@ export default {
   -webkit-line-clamp: 2;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+</style>
+<style>
+.controls {
+  gap: 1.5vw;
 }
 </style>
