@@ -10,7 +10,7 @@
             <stop id="gradientStop2 " offset="100%" stop-color="var(--secondary-color)" />-->
           </linearGradient>
         </defs>
-        <path d="" fill="url('#gradient')"></path>
+        <path :d="path" fill="url('#gradient')"></path>
       </svg>
     </div>
   </div>
@@ -30,7 +30,14 @@ export default {
       stopColor: '',
       blobBackgroundColor: '',
       settings: '',
-      animate: false
+      animate: false,
+      path: '',
+      slowDownFactor: 16,
+      fps: 120,
+      lastTime: 0,
+      noiseStep: 0.005,
+      points: this.createPoints(),
+      simplex: new SimplexNoise()
     }
   },
   created() {
@@ -48,174 +55,154 @@ export default {
     this.animationRunning = false
     document.removeEventListener('BlobBackgroundColorChanged', this.run)
   },
+  computed: {
+    frameInterval() {
+      return 1000 / (this.fps / this.slowDownFactor)
+    }
+  },
   methods: {
     run() {
-      let lastTime = 0
-      const fps = 60 // Original frames per second
-      const slowDownFactor = 2 // Slowing down by 50%
-      const frameInterval = 1000 / (fps / slowDownFactor) // Calculate new interval
-
       this.animationRunning = true
-      const path = document.querySelector('path')
-      //let hueNoiseOffset = 0
-      let noiseStep = 0.005
+      this.animateBlob()
+    },
+    map(n, start1, end1, start2, end2) {
+      return ((n - start1) / (end1 - start1)) * (end2 - start2) + start2
+    },
+    animateBlob(currentTime) {
+      if (!this.animationRunning) return
 
-      const simplex = new SimplexNoise()
+      if (currentTime - this.lastTime >= this.frameInterval) {
+        this.lastTime = currentTime
+        this.path = spline(this.points, 1, true)
 
-      const points = createPoints()
+        const primaryColor = getComputedStyle(
+          document.documentElement
+        ).getPropertyValue('--start-color')
+        const secondaryColor = getComputedStyle(
+          document.documentElement
+        ).getPropertyValue('--end-color')
 
-      const animate = currentTime => {
-        if (!this.animationRunning) return
+        const startHsl = this.hexToHsl(primaryColor)
+        const endHsl = this.hexToHsl(secondaryColor)
 
-        if (currentTime - lastTime >= frameInterval) {
-          lastTime = currentTime
+        const startHue = startHsl.h
+        const endHue = endHsl.h
 
-          path.setAttribute('d', spline(points, 1, true))
+        const currentStartHue = this.interpolateHue(startHue, endHue, 0)
+        const currentEndHue = this.interpolateHue(endHue, startHue, 0)
+        const startColor = `hsl(${currentStartHue}, ${startHsl.s}%, ${startHsl.l}%)`
+        const stopColor = `hsl(${currentEndHue}, ${endHsl.s}%, ${endHsl.l}%)`
 
-          // Define your primary and secondary colors in hex
-          const primaryColor = getComputedStyle(
-            document.documentElement
-          ).getPropertyValue('--start-color')
-          const secondaryColor = getComputedStyle(
-            document.documentElement
-          ).getPropertyValue('--end-color')
-          //  console.log("start : ", primaryColor, " end : ", secondaryColor)
-
-          // Convert hex colors to HSL
-          const startHsl = hexToHsl(primaryColor)
-          const endHsl = hexToHsl(secondaryColor)
-
-          // Interpolate hues between the primary and secondary colors based on hueNoiseOffset
-          const hueOffset = 0 //(Math.sin(hueNoiseOffset) + 1) / 2 // oscillates between 0 and 1
-          const startHue = startHsl.h
-          const endHue = endHsl.h
-
-          //const currentHue = interpolateHue(startHue, endHue, hueOffset)
-          const currentStartHue = interpolateHue(startHue, endHue, hueOffset)
-          const currentEndHue = interpolateHue(endHue, startHue, hueOffset)
-          const startColor = `hsl(${currentStartHue}, ${startHsl.s}%, ${startHsl.l}%)`
-          const stopColor = `hsl(${currentEndHue}, ${endHsl.s}%, ${endHsl.l}%)`
-
-          //const startColor = `hsl(${currentHue}, ${startHsl.s}%, ${startHsl.l}%)`
-          //const stopColor = `hsl(${currentHue + 60}, ${startHsl.s}%, ${startHsl.l}%)`
-
+        if (startColor !== this.startColor && stopColor !== this.stopColor) {
           this.startColor = startColor
           this.stopColor = stopColor
-          //this.blobBackgroundColor = `hsl(${currentStartHue + 60}, 75%, 5%)`
-          //this.blobBackgroundColor = `hsl(${currentHue + 60}, 75%, 5%)`
+        }
 
-          // Update points for animation
-          if (this.animate) {
-            //hueNoiseOffset += noiseStep / 6
-            for (let i = 0; i < points.length; i++) {
-              const point = points[i]
-
-              const nX = noise(point.noiseOffsetX, point.noiseOffsetX)
-              const nY = noise(point.noiseOffsetY, point.noiseOffsetY)
-              const x = map(nX, -1, 1, point.originX - 20, point.originX + 20)
-              const y = map(nY, -1, 1, point.originY - 20, point.originY + 20)
-
-              point.x = x
-              point.y = y
-              point.noiseOffsetX += noiseStep
-              point.noiseOffsetY += noiseStep
-            }
+        if (this.animate) {
+          for (let i = 0; i < this.points.length; i++) {
+            const point = this.points[i]
+            const nX = this.noise(point.noiseOffsetX, point.noiseOffsetX)
+            const nY = this.noise(point.noiseOffsetY, point.noiseOffsetY)
+            const x = this.map(
+              nX,
+              -1,
+              1,
+              point.originX - 20,
+              point.originX + 20
+            )
+            const y = this.map(
+              nY,
+              -1,
+              1,
+              point.originY - 20,
+              point.originY + 20
+            )
+            point.x = x
+            point.y = y
+            point.noiseOffsetX += this.noiseStep
+            point.noiseOffsetY += this.noiseStep
           }
         }
-
-        requestAnimationFrame(animate)
       }
-      animate()
 
-      // Helper function to convert hex color to HSL
-      function hexToHsl(hex) {
-        let bigint = parseInt(hex.slice(1), 16)
-        let r = (bigint >> 16) & 255
-        let g = (bigint >> 8) & 255
-        let b = bigint & 255
+      requestAnimationFrame(this.animateBlob)
+    },
+    interpolateHue(startHue, endHue, t) {
+      let hue = startHue + (endHue - startHue) * t
+      if (hue > 360) {
+        hue -= 360
+      } else if (hue < 0) {
+        hue += 360
+      }
+      return hue
+    },
+    noise(x, y) {
+      return this.simplex.noise2D(x, y)
+    },
+    createPoints() {
+      const points = []
+      // how many points do we need
+      const numPoints = 6
+      // used to equally space each point around the circle
+      const angleStep = (Math.PI * 2) / numPoints
+      // the radius of the circle
+      const rad = 75
 
-        ;(r /= 255), (g /= 255), (b /= 255)
-        let max = Math.max(r, g, b),
-          min = Math.min(r, g, b)
-        let h,
-          s,
-          l = (max + min) / 2
+      for (let i = 1; i <= numPoints; i++) {
+        // x & y coordinates of the current point
+        const theta = i * angleStep
 
-        if (max == min) {
-          h = s = 0 // achromatic
-        } else {
-          let d = max - min
-          s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
-          switch (max) {
-            case r:
-              h = (g - b) / d + (g < b ? 6 : 0)
-              break
-            case g:
-              h = (b - r) / d + 2
-              break
-            case b:
-              h = (r - g) / d + 4
-              break
-          }
-          h /= 6
+        const x = 100 + Math.cos(theta) * rad
+        const y = 100 + Math.sin(theta) * rad
+
+        points.push({
+          x: x,
+          y: y,
+          originX: x,
+          originY: y,
+          noiseOffsetX: Math.random() * 1000,
+          noiseOffsetY: Math.random() * 1000
+        })
+      }
+
+      return points
+    },
+    hexToHsl(hex) {
+      let bigint = parseInt(hex.slice(1), 16)
+      let r = (bigint >> 16) & 255
+      let g = (bigint >> 8) & 255
+      let b = bigint & 255
+
+      ;(r /= 255), (g /= 255), (b /= 255)
+      let max = Math.max(r, g, b),
+        min = Math.min(r, g, b)
+      let h,
+        s,
+        l = (max + min) / 2
+
+      if (max == min) {
+        h = s = 0 // achromatic
+      } else {
+        let d = max - min
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+        switch (max) {
+          case r:
+            h = (g - b) / d + (g < b ? 6 : 0)
+            break
+          case g:
+            h = (b - r) / d + 2
+            break
+          case b:
+            h = (r - g) / d + 4
+            break
         }
-
-        return {
-          h: h * 360,
-          s: s * 100,
-          l: l * 100
-        }
+        h /= 6
       }
 
-      // Helper function to interpolate between two hues
-      function interpolateHue(startHue, endHue, t) {
-        let hue = startHue + (endHue - startHue) * t
-        if (hue > 360) {
-          hue -= 360
-        } else if (hue < 0) {
-          hue += 360
-        }
-        return hue
-      }
-
-      function map(n, start1, end1, start2, end2) {
-        return ((n - start1) / (end1 - start1)) * (end2 - start2) + start2
-      }
-
-      function noise(x, y) {
-        return simplex.noise2D(x, y)
-      }
-
-      function createPoints() {
-        const points = []
-        // how many points do we need
-        const numPoints = 6
-        // used to equally space each point around the circle
-        const angleStep = (Math.PI * 2) / numPoints
-        // the radius of the circle
-        const rad = 75
-
-        for (let i = 1; i <= numPoints; i++) {
-          // x & y coordinates of the current point
-          const theta = i * angleStep
-
-          const x = 100 + Math.cos(theta) * rad
-          const y = 100 + Math.sin(theta) * rad
-
-          // store the point's position
-          points.push({
-            x: x,
-            y: y,
-            // we need to keep a reference to the point's original point for when we modulate the values later
-            originX: x,
-            originY: y,
-            // more on this in a moment!
-            noiseOffsetX: Math.random() * 1000,
-            noiseOffsetY: Math.random() * 1000
-          })
-        }
-
-        return points
+      return {
+        h: h * 360,
+        s: s * 100,
+        l: l * 100
       }
     }
   }

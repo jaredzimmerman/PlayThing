@@ -102,7 +102,8 @@ export default {
         previous: 'me/player/previous',
         shuffle: 'me/player/shuffle',
         repeat: 'me/player/repeat',
-        recentlyPlayed: 'me/player/recently-played'
+        recentlyPlayed: 'me/player/recently-played',
+        savedTracks: 'me/tracks'
       },
       player: {
         playing: false,

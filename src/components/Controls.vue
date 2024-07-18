@@ -192,7 +192,7 @@ export default {
   left: -2.3%;
   width: 27.083333333333332vw;
   height: 8.148148148148149vh;
-  gap: 1.3vw;
+  //gap: 1.3vw;
   //max-width: 100%;
 }
 

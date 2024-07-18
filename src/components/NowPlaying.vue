@@ -15,6 +15,8 @@
       :endpoints="endpoints"
       :auth="auth"
       @requestRefreshToken="requestRefreshTokens"
+      :player="player"
+      :playerResponse="playerResponse"
       :playerData="playerData"
     />
 
@@ -74,6 +76,7 @@ export default {
     document.addEventListener('PlayThingShuffle', this.handleShuffle)
     document.addEventListener('PlayThingRepeat', this.handleRepeat)
     document.addEventListener('PlayThingRecentScreen', this.toggleRecentScreen)
+    document.addEventListener('PlayThingPlaySaved', this.handlePlaySaved)
     document.addEventListener('keydown', this.onKeyDown)
 
     const started = document.documentElement.dataset.started
@@ -117,6 +120,7 @@ export default {
       'PlayThingRecentScreen',
       this.toggleRecentScreen
     )
+    document.removeEventListener('PlayThingPlaySaved', this.handlePlaySaved)
     document.removeEventListener('keydown', this.onKeyDown)
   },
   methods: {
@@ -334,6 +338,52 @@ export default {
             }
           }
         )
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    async handlePlaySaved() {
+      try {
+        const savedTracksResponse = await fetch(
+          `${this.endpoints.base}/${this.endpoints.savedTracks}`,
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${this.auth.accessToken}`
+            }
+          }
+        )
+
+        const data = await savedTracksResponse.json()
+
+        console.log('RESPONSE : ', data)
+
+        const uris = data.items.map(item => item.track.uri)
+        const body = {
+          uris: uris,
+          position_ms: 0
+        }
+        await fetch(`${this.endpoints.base}/${this.endpoints.play}`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${this.auth.accessToken}`
+          },
+          body: JSON.stringify(body)
+        })
+
+        document.dispatchEvent(
+          new CustomEvent('PlayThingShuffle', {
+            detail: { state: !this.shuffle }
+          })
+        )
+
+        document.dispatchEvent(
+          new CustomEvent('PlayThingRepeat', {
+            detail: { state: 'context' }
+          })
+        )
+
+        this.getNowPlaying()
       } catch (err) {
         console.log(err)
       }

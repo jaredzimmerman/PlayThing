@@ -227,6 +227,7 @@ export default {
   width: 100%;
   display: block;
   position: relative;
+  left: auto;
 }
 
 .controls .controls-container {
@@ -240,5 +241,11 @@ export default {
   //height: 100vh;
   //display: flex;
   align-items: center;
+}
+</style>
+
+<style>
+.controls {
+  left: auto;
 }
 </style>

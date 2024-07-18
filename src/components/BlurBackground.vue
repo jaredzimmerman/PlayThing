@@ -1,14 +1,14 @@
 <template>
-  <div
-    id="app"
-    :class="
-      `${
-        miscellaneousOptions.includes('animate-blur-spotlight')
-          ? 'animate-rotate-circle'
-          : 'scale-120-rotate-180'
-      }`
-    "
-  >
+  <div id="app">
+    <div
+      :class="
+        `album-art ${
+          miscellaneousOptions.includes('animate-blur-spotlight')
+            ? 'animate-rotate-circle'
+            : 'scale-120-rotate-180'
+        }`
+      "
+    />
     <div class="scrim"></div>
   </div>
 </template>
@@ -40,11 +40,16 @@ export default {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  background-color: var(--primary-color);
+  //transform: scale(120%) rotate(180deg);
+}
+
+.album-art {
   background-image: var(--album-image);
   background-size: cover;
   background-position: center;
-  background-color: #000;
-  //transform: scale(120%) rotate(180deg);
+  width: 100vw;
+  height: 100vh;
 }
 
 .scrim::before {
@@ -54,10 +59,11 @@ export default {
   top: 0;
   width: 100%;
   height: 100%;
+  //background: linear-gradient(10deg, #ff6ec4, #7873f5);
 }
 
 .scrim {
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 100vh;
   background: linear-gradient(
@@ -73,15 +79,15 @@ export default {
 
 @keyframes rotate {
   from {
-    transform: scale(2.1) rotate(0deg);
+    transform: scale(2.04) rotate(0deg);
   }
 
   to {
-    transform: scale(2.1) rotate(360deg);
+    transform: scale(2.04) rotate(360deg);
   }
 }
 
 .animate-rotate-circle {
-  animation: rotate 30s linear infinite;
+  animation: rotate 120s linear infinite;
 }
 </style>

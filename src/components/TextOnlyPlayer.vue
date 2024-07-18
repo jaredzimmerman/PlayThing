@@ -147,9 +147,15 @@ export default {
     font-family: Inter;
     font-size: 6.4453125vw;
     font-weight: 700;
-    line-height: 17.542592592592595vh;
+    //line-height: 17.542592592592595vh;
+    line-height: 9.1vh;
     letter-spacing: 0.07em;
     text-align: left;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 9vh;
   }
 
   &__artists {
@@ -157,9 +163,14 @@ export default {
     font-family: Inter;
     font-size: 5.208333333333334vw;
     font-weight: 500;
-    line-height: 13.88888888888889vh;
+    line-height: 7.4vh;
+    //line-height: 13.88888888888889vh;
     letter-spacing: 0.07em;
     text-align: left;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin: 0;
+    padding: 0;
   }
 
   &--active {

@@ -315,7 +315,7 @@ export default {
   left: 11.458333333333332vw;
   width: 77.08333333333334vw;
   height: 61.111111111111114vh;
-  overflow: hidden;
+  //overflow: hidden;
 }
 
 .multiline-ellipsis {

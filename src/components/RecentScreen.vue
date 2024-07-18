@@ -6,7 +6,7 @@
     <div class="tracks-container">
       <div>
         <h1>Favorites</h1>
-        <img src="/liked-songs.png" />
+        <img src="/liked-songs.png" @click="playSaved" />
         <h2>Liked Songs</h2>
       </div>
       <div>
@@ -37,13 +37,18 @@
     </div>
     <div v-if="playerData?.playing" class="blurred-background">
       <div class="current-track">
-        <img :src="playerData.trackAlbum.image" />
+        <Player
+          :player="player"
+          :playerData="playerData"
+          :playerResponse="playerResponse"
+        />
+        <!--<img :src="playerData.trackAlbum.image" />
         <div>
           <h2 class="multiline-ellipsis">{{ playerData.trackTitle }}</h2>
           <h3 class="multiline-ellipsis">
             {{ playerData.trackArtists.join(',') }}
           </h3>
-        </div>
+        </div>-->
       </div>
     </div>
     <div v-if="!playerData.playing" class="logo-container">
@@ -59,10 +64,11 @@ import 'vue-slick-carousel/dist/vue-slick-carousel.css'
 // optional style for arrows & dots
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 import TouchScreen from './TouchScreen.vue'
+import Player from './Player.vue'
 
 export default {
   name: 'RecentScreen',
-  components: { VueSlickCarousel, TouchScreen },
+  components: { VueSlickCarousel, TouchScreen, Player },
   emits: ['requestRefreshToken'],
   props: {
     endpoints: {
@@ -70,6 +76,14 @@ export default {
       default: null
     },
     auth: {
+      type: Object,
+      default: null
+    },
+    player: {
+      type: Object,
+      default: null
+    },
+    playerResponse: {
       type: Object,
       default: null
     },
@@ -137,6 +151,10 @@ export default {
       document.dispatchEvent(new Event('PlayThingRecentScreen'))
 
       //document.removeEventListener('PlayThingPlay', this.handlePlay)
+    },
+    async playSaved() {
+      document.dispatchEvent(new Event('PlayThingPlaySaved'))
+      document.dispatchEvent(new Event('PlayThingRecentScreen'))
     }
   }
 }
@@ -168,7 +186,7 @@ export default {
 
 .tracks-container h1 {
   opacity: 0.5;
-  margin-left: 5.62px;
+  margin-left: 0.2927083333333333vw;
   margin-bottom: 13.5px;
 }
 
@@ -205,6 +223,11 @@ export default {
   //opacity: 0.5;
   color: #808080;
   max-width: 270px;
+}
+
+.tracks-container h2,
+.tracks-container h3 {
+  margin-left: 0.2927083333333333vw;
 }
 
 .logo-container {
