@@ -8,36 +8,31 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Clock24',
-  data() {
-    return {
-      hours: '',
-      minutes: '',
-      interval: null
-    }
-  },
-  created() {
-    this.getNow()
-    this.interval = setInterval(this.getNow, 1000)
-  },
-  beforeDestroy() {
-    if (this.interval != null) {
-      clearInterval(this.interval)
-    }
-  },
-  methods: {
-    getNow() {
-      const now = new Date()
-      const hours = now.getHours()
-      const minutes = now.getMinutes()
-      this.hours = hours < 10 ? '0' + hours : hours
-      this.minutes = minutes < 10 ? '0' + minutes : minutes
-    }
-  }
+<script lang="ts" setup>
+import { ref, onMounted, onUnmounted } from 'vue';
+
+const hours = ref<string | null>(null)
+const minutes = ref<string | null>(null)
+let interval: any = null
+
+function getNow() {
+  const now = new Date()
+  const currentHours = now.getHours()
+  const currentMinutes = now.getMinutes()
+  hours.value = currentHours < 10 ? '0' + currentHours : currentHours.toString()
+  minutes.value = currentMinutes < 10 ? '0' + currentMinutes : currentMinutes.toString()
 }
+
+onMounted(() => {
+  interval = setInterval(getNow, 1000);
+})
+
+onUnmounted(() => {
+  clearInterval(interval)
+})
+
 </script>
+
 
 <style scoped>
 #app {
@@ -52,8 +47,7 @@ export default {
   overflow: hidden;
 }
 
-.container {
-}
+.container {}
 
 .time-text {
   /*font-size: 280px;*/

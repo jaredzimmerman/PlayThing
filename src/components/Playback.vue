@@ -1,74 +1,31 @@
 <template>
-  <div id="app">
-    <div class="background">
+  <div class="container">
+    <div class="background" :style="`opacity: ${fadePlayer ? 0.5 : 1}`">
       <Background />
     </div>
-    <div class="player">
-      <Player
-        :player="player"
-        :playerResponse="playerResponse"
-        :playerData="playerData"
-      />
+    <div class="player" :style="`opacity: ${fadePlayer ? 0.5 : 1}`">
+      <Player />
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts" setup>
 import Background from './Background.vue'
-import { getPlayThingSettings } from '@/utils/utils'
 import Player from './Player.vue'
+import { useAppStore } from '@/stores/app';
+import { storeToRefs } from 'pinia'
 
-// import * as Vibrant from 'node-vibrant'
-
-export default {
-  name: 'Playback',
-  components: {
-    Background,
-    Player
-  },
-  props: {
-    player: {
-      type: Object,
-      default: null
-    },
-    playerResponse: {
-      type: Object,
-      default: null
-    },
-    playerData: {
-      type: Object,
-      default: null
-    }
-  },
-  data() {
-    return {
-      settings: null
-    }
-  },
-  created() {
-    this.settings = getPlayThingSettings()
-  },
-  computed: {},
-
-  methods: {
-    /**
-     * Return a formatted empty object for an idle player.
-     * @return {Object}
-     */
-    getEmptyPlayer() {
-      return {
-        playing: false,
-        trackAlbum: {},
-        trackArtists: [],
-        trackId: '',
-        trackTitle: ''
-      }
-    }
-  }
-}
+const appStore = useAppStore()
+const { fadePlayer } = storeToRefs(appStore)
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.container {
+  height: 100%;
+  width: 100%;
+  background-color: #000;
+}
+
 .player {
   position: absolute;
   height: 100vh;
@@ -77,7 +34,6 @@ export default {
 }
 
 .background {
-  background-color: #000;
   position: absolute;
   height: 100vh;
   width: 100%;

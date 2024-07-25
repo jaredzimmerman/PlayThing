@@ -2,10 +2,7 @@
   <div id="app" class="scrim"></div>
 </template>
 
-<script>
-export default {
-  name: 'MatchBackground'
-}
+<script lang="ts" setup>
 </script>
 
 <style scoped>
@@ -21,10 +18,8 @@ export default {
 }
 
 .scrim {
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.2) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.2) 100%);
 }
 </style>

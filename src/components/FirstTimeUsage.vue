@@ -3,35 +3,35 @@
     <div class="foreground">
       <div class="top">
         <div class="rule-container">
-          <img src="/swipe-marker.svg" />
+          <SwipeMarker />
           <p class="rule">SWIPE DOWN FOR RECENTS</p>
         </div>
       </div>
 
       <div class="bottom">
         <div class="rule-container">
-          <img src="/swipe-marker.svg" />
+          <SwipeMarker />
           <p class="rule">SWIPE UP FOR PLAYBACK CONTROLS</p>
         </div>
       </div>
 
       <div class="right">
         <div class="rule-container">
-          <img src="/swipe-marker.svg" />
+          <SwipeMarker />
           <p class="rule">SWIPE FOR NEXT TRACK</p>
         </div>
       </div>
 
       <div class="left">
         <div class="rule-container">
-          <img src="/swipe-marker.svg" />
+          <SwipeMarker />
           <p class="rule">SWIPE FOR PREVIOUS TRACK</p>
         </div>
       </div>
     </div>
     <div class="background">
       <div>
-        <img src="/example-image.svg" />
+        <ExampleImage />
         <div class="track-details">
           <h2>Song Title</h2>
           <h3>Artist</h3>
@@ -41,10 +41,9 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'FirstTimeUsage'
-}
+<script lang="ts" setup>
+import SwipeMarker from '@/assets/swipe-marker.svg?component';
+import ExampleImage from '@/assets/example-image.svg'
 </script>
 
 <style lang="scss" scoped>
@@ -73,7 +72,7 @@ export default {
   z-index: 1;
 }
 
-.background img {
+.background svg {
   position: absolute;
   left: 220px;
   top: 220px;
@@ -170,7 +169,7 @@ export default {
   justify-content: center;
 }
 
-.bottom img {
+.bottom svg {
   transform: rotate(180deg);
 }
 
@@ -196,7 +195,7 @@ export default {
   height: 100vh;
 }
 
-.left img {
+.left svg {
   transform: rotate(-90deg);
 }
 
@@ -222,7 +221,7 @@ export default {
   height: 100vh;
 }
 
-.right img {
+.right svg {
   transform: rotate(90deg);
 }
 

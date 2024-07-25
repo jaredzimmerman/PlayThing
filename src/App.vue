@@ -1,282 +1,49 @@
 <template>
-  <div
-    id="app"
-    :style="
-      `position: relative;
-  width: 100vw !important;
-  height: 100vh !important;
-  overflow-x: hidden !important;
-  overflow-y: ${showTouchScreen ? 'hidden !important' : 'auto'};
-  `
-    "
-  >
-    <!--<TouchScreen v-if="showTouchScreen && false" @showSettingButton="displaySettingButton" />-->
-    <Component
-      v-if="true"
-      :is="getCurrentComponent"
-      :auth="auth"
-      :endpoints="endpoints"
-      :player="player"
-      @spotifyTrackUpdated="updateCurrentTrack"
-      @requestRefreshToken="requestRefreshTokens"
-      @pageChange="onPageChange"
-      @closeSettings="closeSettings"
-      v-on:showSettingButton="displaySettingButton"
-    >
-    </Component>
-
-    <Authorise
-      v-if="false"
-      :is="getCurrentComponent"
-      :auth="auth"
-      :endpoints="endpoints"
-      :player="player"
-      @spotifyTrackUpdated="updateCurrentTrack"
-      @requestRefreshToken="requestRefreshTokens"
-      @pageChange="onPageChange"
-      @closeSettings="closeSettings"
-      v-on:showSettingButton="displaySettingButton"
-    />
-    <div
-      v-if="showTouchScreen && showSettingButton"
-      @click.stop="openSettings"
-      class="settings-container fade-slide-up"
-      ref="settingButton"
-    >
-      <img src="SettingIcon.svg" />
-      <span>SETTINGS</span>
-    </div>
-  </div>
+  <SplashScreen v-if="showSplashScreen" />
+  <RouterView v-else />
 </template>
 
-<script>
-import Authorise from '@/components/Authorise'
-import NowPlaying from '@/components/NowPlaying'
+<script lang="ts" setup>
+import { RouterView, useRouter, useRoute } from 'vue-router'
+import { useSpotifyStore } from './stores/spotify';
+import SplashScreen from './components/SplashScreen.vue';
+import { onMounted, onUnmounted, watch } from 'vue';
+import { useAppStore } from '@/stores/app';
+import { storeToRefs } from 'pinia';
 
-import { getStoredAuth, setStoredAuth } from '@/utils/utils.js'
-import SplashScreen from './components/SplashScreen.vue'
-import SettingScreen from './components/SettingScreen.vue'
-import Clock from './components/Clock.vue'
-// import BlankScreen from './components/BlankScreen.vue'
-import TouchScreen from './components/TouchScreen.vue'
+const router = useRouter()
+const route = useRoute();
+const appStore = useAppStore();
+const spotifyStore = useSpotifyStore()
 
-export default {
-  name: 'App',
+const { showSplashScreen } = storeToRefs(appStore)
+const { authenticated } = storeToRefs(spotifyStore)
+const { initPlaybackSDK, authenticate } = spotifyStore
+const { registerKeyboardShortcuts, unregisterKeyboardShortcuts } = appStore
 
-  components: {
-    Authorise,
-    NowPlaying,
-    SplashScreen,
-    SettingScreen,
-    Clock,
-    TouchScreen
-  },
 
-  props: {},
-
-  data() {
-    return {
-      previousComponent: '',
-      storedAuth: '',
-      test: 'hello, world',
-      //displaySplashScreen: true,
-      showSettingButton: false,
-      auth: {
-        status: false,
-        clientId: process.env.VUE_APP_SP_CLIENT_ID,
-        clientSecret: process.env.VUE_APP_SP_CLIENT_SECRET,
-        authCode: '',
-        accessToken: '',
-        refreshToken: ''
-      },
-      endpoints: {
-        auth: 'https://accounts.spotify.com/authorize',
-        token: 'https://accounts.spotify.com/api/token',
-        base: 'https://api.spotify.com/v1',
-        nowPlaying: 'me/player/currently-playing',
-        playbackState: 'me/player',
-        play: 'me/player/play',
-        pause: 'me/player/pause',
-        next: 'me/player/next',
-        back: 'me/player/previous',
-        previous: 'me/player/previous',
-        shuffle: 'me/player/shuffle',
-        repeat: 'me/player/repeat',
-        recentlyPlayed: 'me/player/recently-played',
-        savedTracks: 'me/tracks'
-      },
-      player: {
-        playing: false,
-        trackArtists: [],
-        trackTitle: '',
-        trackAlbum: []
-      },
-      storedId: '',
-      currentComponent: 'NowPlaying'
-    }
-  },
-
-  computed: {
-    /**
-     * Check for the existence of a stored access token and
-     * return the correct Component to be displayed.
-     * @return {String}
-     */
-    getCurrentComponent() {
-      return this.currentComponent
-      // return this.auth.status === false ? 'Authorise' : 'NowPlaying'
-    },
-
-    showTouchScreen() {
-      return !['Authorise', 'SettingScreen'].includes(this.currentComponent)
-    }
-  },
-
-  created() {
-    console.log(Authorise, NowPlaying, SplashScreen, SettingScreen, Clock)
-    this.auth = {
-      ...this.auth,
-      ...getStoredAuth()
-    }
-    // this.onPageChange('SpashScreen');
-    /*setTimeout(() => {
-      this.onPageChange('Authorise')
-      //this.displaySplashScreen = false
-    }, 3000)*/
-  },
-
-  mounted() {
-    document.addEventListener('showSettingButton', this.displaySettingButton)
-  },
-
-  beforeDestroy() {
-    document.removeEventListener('showSettingButton', this.displaySettingButton)
-  },
-
-  methods: {
-    /**
-     * Store
-     */
-    storeAccessToken() {
-      this.getAccessToken()
-    },
-
-    /**
-     * Request a refresh token from Spotify.
-     */
-    requestRefreshTokens() {
-      this.auth.status = false
-      this.currentComponent = 'Authorise'
-    },
-
-    /**
-     * Update the player object.
-     * @param {Object} value - Spotify playr object.
-     */
-    updateCurrentTrack(value) {
-      this.player = value
-    },
-    /**
-     * Update the page displayed.
-     * @param {String} value - Page component name.
-     */
-    onPageChange(value) {
-      this.previousComponent = this.currentComponent
-      if (value === 'Authorise' && this.auth.status) {
-        this.currentComponent = 'NowPlaying'
-      } else {
-        this.currentComponent = value
-      }
-    },
-    /**
-     * Open settings page.
-     */
-    openSettings() {
-      this.showSettingButton = false
-      this.onPageChange('SettingScreen')
-    },
-    closeSettings() {
-      this.currentComponent = this.previousComponent
-    },
-    displaySettingButton() {
-      // const settingButton = this.$refs.settingButton
-      if (!this.showSettingButton) {
-        this.showSettingButton = true
-        clearTimeout(this.showSettingButtonInterval)
-        this.showSettingButtonInterval = setTimeout(() => {
-          this.showSettingButton = false
-        }, 15 * 1000)
-      } else {
-        this.showSettingButton = false
-        clearTimeout(this.showSettingButtonInterval)
-      }
-    }
-  },
-
-  watch: {
-    /**
-     * Watch the authorisation status.
-     */
-    'auth.status': function() {
-      setStoredAuth(this.auth)
-    }
+watch(authenticated, (auth) => {
+  if (auth && router.currentRoute.value.path === '/authorise') {
+    router.replace('/');
+  } else if (!auth && router.currentRoute.value.path !== '/authorise') {
+    router.replace('/authorise')
   }
-}
+})
+
+onMounted(() => {
+  initPlaybackSDK();
+  router.isReady().then(() => {
+    let code = route.query.code;
+    if (code) {
+      authenticate(code)
+    }
+  })
+  registerKeyboardShortcuts()
+})
+
+
+onUnmounted(() => {
+  unregisterKeyboardShortcuts()
+})
+
 </script>
-<style lang="scss">
-* {
-  user-select: none;
-}
-
-.fade-effect {
-  filter: brightness(0.5);
-  transition: filter 0.5s ease;
-}
-
-.settings-container {
-  position: absolute;
-  // bottom: 10px;
-  //bottom: 7.4074074074074066%;
-  bottom: 1.8518518518518516vh;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  left: 45%;
-  transform: translate(-50%, -50%);
-  font-family: Inter;
-  //font-size: 1.5rem;
-  // font-size: 187.5%;
-  //font-size: 2.4vw;
-  font-size: 1.5625vw;
-  font-weight: 600;
-  line-height: 30px;
-  letter-spacing: 0.1em;
-  text-align: left;
-  gap: 10px;
-
-  img {
-    width: 1.4432291666666668vw;
-    height: 2.8712962962962965vh;
-  }
-
-  /*transition: opacity 0.5s ease, transform 0.5s ease;*/
-
-  &.fade-slide-up {
-    opacity: 0;
-    transform: translateY(20px);
-    //transform: translateY(1.8518518518518516vh);
-    //transform: translateY(5px);
-    animation: fadeSlideUp 0.5s forwards;
-    z-index: 11;
-    overflow: hidden;
-  }
-
-  @keyframes fadeSlideUp {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-}
-</style>

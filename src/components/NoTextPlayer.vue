@@ -2,127 +2,40 @@
   <div class="now-playing">
     <div>
       <div class="now-playing__cover">
-        <img
-          :src="player.trackAlbum.image"
-          :class="`now-playing__image`"
-          :style="
-            `margin-bottom: ${
-              miscellaneousOptions.includes('show-progress-bar')
-                ? '15px'
-                : '0px'
-            }`
-          "
-        />
-        <Progress
-          v-if="miscellaneousOptions.includes('show-progress-bar')"
-          :player="player"
-          :playerResponse="playerResponse"
-          :playerData="playerData"
-        />
+        <img :src="albumArtURL" :class="`now-playing__image`" :style="`margin-bottom: ${miscellaneousOption.includes('show-progress-bar')
+          ? '15px'
+          : '0px'
+          }`
+          " />
+        <Progress v-if="miscellaneousOption.includes('show-progress-bar')" />
+        <div class="touch-screen">
+          <TouchScreen />
+        </div>
         <div class="controls" v-show="!hideControls">
-          <Controls :player="player" :playerResponse="playerResponse" />
+          <Controls />
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import { getPlayThingSettings } from '@/utils/utils'
-import Controls from './Controls.vue'
-import Progress from './Progress.vue'
+<script lang="ts" setup>
+import Progress from '@/components/Progress.vue'
+import Controls from '@/components/Controls.vue'
+import TouchScreen from '@/components/TouchScreen.vue'
+import { useSpotifyStore } from '@/stores/spotify'
+import { storeToRefs } from 'pinia'
+import { useSettingsStore } from '@/stores/settings'
+import { useAppStore } from '@/stores/app'
 
-export default {
-  name: 'NoTextPlayer',
-  components: {
-    Controls,
-    Progress
-  },
-  props: {
-    player: {
-      type: Object,
-      default: null
-    },
-    playerResponse: {
-      type: Object,
-      default: null
-    },
-    playerData: {
-      type: Object,
-      default: null
-    },
-    hideControls: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data() {
-    return {
-      settings: null
-    }
-  },
-  created() {
-    const settings = getPlayThingSettings()
-    this.settings = settings
+const settingsStore = useSettingsStore()
+const spotifyStore = useSpotifyStore();
+const appStore = useAppStore();
 
-    const value = settings.textOption
+const { miscellaneousOption } = storeToRefs(settingsStore);
+const { albumArtURL } = storeToRefs(spotifyStore);
+const { hideControls } = storeToRefs(appStore);
 
-    let displayText = ''
-    let displayAlbumArt = ''
-    let textSize = ''
-
-    if (value === 'none') {
-      displayText = 'none'
-      displayAlbumArt = 'inherit'
-      textSize = '1rem'
-    } else if (value === 'small') {
-      displayText = 'inherit'
-      displayAlbumArt = 'inherit'
-      textSize = '1rem'
-    } else if (value === 'medium') {
-      displayText = 'inherit'
-      displayAlbumArt = 'inherit'
-      textSize = '2rem'
-    } else if (value === 'large') {
-      displayText = 'inherit'
-      displayAlbumArt = 'inherit'
-      textSize = '3rem'
-    } else if (value === 'text-only') {
-      displayText = 'inherit'
-      displayAlbumArt = 'none'
-    }
-
-    document.documentElement.style.setProperty('--display-text', displayText)
-    document.documentElement.style.setProperty(
-      '--display-album-art',
-      displayAlbumArt
-    )
-    document.documentElement.style.setProperty('--text-size', textSize)
-  },
-  computed: {
-    /**
-     * Return a comma-separated list of track artists.
-     * @return {String}
-     */
-    getTrackArtists() {
-      return this.player.trackArtists.join(', ')
-    },
-
-    miscellaneousOptions() {
-      return this.settings?.miscellaneousOption ?? []
-    }
-  },
-  methods: {
-    /**
-     * Get the Now Playing element class.
-     * @return {String}
-     */
-    getNowPlayingClass() {
-      const playerClass = this.player.playing ? 'active' : 'idle'
-      return `now-playing--${playerClass}`
-    }
-  }
-}
 </script>
 
 <style lang="scss" scoped>
@@ -242,10 +155,28 @@ export default {
   //display: flex;
   align-items: center;
 }
+
+.touch-screen {
+  position: fixed;
+  z-index: 2;
+  //height: 500vh;
+  //width: 500vw;
+  height: 100vh;
+  width: 100vw;
+  //top: -200vh;
+  //right: -200vw;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
 </style>
 
-<style>
+<style lang="scss">
 .controls {
   left: auto;
+}
+
+.controls .touch-screen {
+  display: none;
 }
 </style>

@@ -5,47 +5,38 @@
       <span class="colon grid-item" v-show="hours != ''">:</span>
       <span class="time-text grid-item">{{ minutes }}</span>
       <span class="meridian grid-item">{{ meridian }}</span>
-
-      <!--<span class="time-text grid-item">99</span>
-      <span class="colon grid-item">:</span>
-      <span class="time-text grid-item">99</span>
-      <span class="meridian grid-item">AM</span>-->
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Clock12',
-  data() {
-    return {
-      hours: '',
-      minutes: '',
-      meridian: '',
-      interval: null
-    }
-  },
-  created() {
-    this.interval = setInterval(this.getNow, 1000)
-  },
-  beforeDestroy() {
-    if (this.interval != null) {
-      clearInterval(this.interval)
-    }
-  },
-  methods: {
-    getNow() {
-      const now = new Date()
-      let hours = now.getHours()
-      const minutes = now.getMinutes()
-      this.meridian = hours >= 12 ? 'PM' : 'AM'
-      hours = hours % 12
-      hours = hours ? hours : 12
-      this.hours = hours
-      this.minutes = minutes < 10 ? '0' + minutes : minutes
-    }
-  }
+<script lang="ts" setup>
+import { ref, onMounted, onUnmounted } from 'vue';
+
+
+const hours = ref<string | null>(null)
+const minutes = ref<string | null>(null)
+const meridian = ref<string>('')
+let interval: any = null
+
+function getNow() {
+  const now = new Date()
+  let currentHours = now.getHours()
+  const currentMinutes = now.getMinutes()
+  meridian.value = currentHours >= 12 ? 'PM' : 'AM'
+  currentHours = currentHours % 12
+  currentHours = currentHours ? currentHours : 12
+  hours.value = currentHours.toString()
+  minutes.value = currentMinutes < 10 ? '0' + currentMinutes : currentMinutes.toString()
 }
+
+onMounted(() => {
+  interval = setInterval(getNow, 1000);
+})
+
+onUnmounted(() => {
+  clearInterval(interval)
+})
+
 </script>
 
 <style lang="scss" scoped>

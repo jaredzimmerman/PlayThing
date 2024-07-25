@@ -4,64 +4,14 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Progress',
-  props: {
-    player: {
-      type: Object,
-      default: null
-    },
-    playerResponse: {
-      type: Object,
-      default: null
-    },
-    playerData: {
-      type: Object,
-      default: null
-    }
-  },
-  data() {
-    return {
-      duration: 1,
-      progress: 1,
-      interval: null
-    }
-  },
-  created() {
-    this.initialise()
-  },
-  watch: {
-    playerResponse() {
-      if (this.interval) clearInterval(this.interval)
-      this.initialise()
-    }
-  },
-  computed: {
-    progressPercentage() {
-      const percentage = (this.progress * 100) / this.duration
-      return Math.min(percentage, 100)
-    }
-  },
-  methods: {
-    initialise() {
-      const item = this.playerResponse?.item
-      this.duration = item?.duration_ms ?? 1
-      this.progress = this.playerResponse?.progress_ms ?? 1
-      this.simulateProgress()
-    },
-    simulateProgress() {
-      this.interval = setInterval(() => {
-        if (this.player.playing) this.progress += 1000
-      }, 1000)
-    }
-  },
-  beforeDestroy() {
-    if (this.interval) {
-      clearInterval(this.interval)
-    }
-  }
-}
+<script lang="ts" setup>
+import { useSpotifyStore } from '@/stores/spotify'
+import { storeToRefs } from 'pinia'
+
+const spotifyStore = useSpotifyStore()
+
+const { progressPercentage } = storeToRefs(spotifyStore);
+
 </script>
 
 <style lang="scss" progress>
@@ -70,11 +20,10 @@ export default {
   width: 100%;
   border-radius: 5px;
   overflow: hidden;
-  //height: 5px;
-  //max-width: 640px;
   height: 0.4629629629629629vh;
   margin-left: auto;
   margin-right: auto;
+  border-radius: 2px;
 }
 
 .progress-container::before {
@@ -96,10 +45,11 @@ export default {
   height: 100%;
   // background: var(--color-text-primary);
   background: var(--controls-color);
-  transition: width 0.3s ease;
   text-align: center;
   line-height: 20px;
   z-index: 2;
-  width: var(--player-progress);
+  transition: width 0.1s ease;
+  border: 1px solid var(--controls-color);
+  border-radius: 2px;
 }
 </style>

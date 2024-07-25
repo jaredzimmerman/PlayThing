@@ -1,128 +1,37 @@
 <template>
-  <div class="now-playing" :class="getNowPlayingClass()">
+  <div class="now-playing now-playing--active">
     <!--<div class="ruler"></div>-->
     <div class="top-details">
-      <h1
-        class="now-playing__track multiline-ellipsis"
-        v-text="player.trackTitle"
-      ></h1>
-      <h2
-        class="now-playing__artists multiline-ellipsis"
-        v-text="getTrackArtists"
-      ></h2>
+      <h1 class="now-playing__track multiline-ellipsis" v-text="trackName"></h1>
+      <h2 class="now-playing__artists multiline-ellipsis" v-text="artistName"></h2>
     </div>
 
     <div class="bottom-controls" v-show="!hideControls">
-      <Controls :player="player" :playerResponse="playerResponse" />
+      <Controls />
     </div>
 
-    <div
-      class="bottom-progress"
-      v-if="miscellaneousOptions.includes('show-progress-bar')"
-    >
-      <Progress
-        :player="player"
-        :playerResponse="playerResponse"
-        :playerData="playerData"
-      />
+    <div class="bottom-progress" v-if="miscellaneousOption.includes('show-progress-bar')"
+      :style="`opacity: ${showSettingButton ? 0.5 : 1}`">
+      <Progress />
     </div>
   </div>
 </template>
 
-<script>
-import { getPlayThingSettings } from '@/utils/utils'
-import Controls from './Controls.vue'
-import Progress from './Progress.vue'
+<script lang="ts" setup>
+import Progress from '@/components/Progress.vue'
+import Controls from '@/components/Controls.vue'
+import { useSpotifyStore } from '@/stores/spotify'
+import { useSettingsStore } from '@/stores/settings'
+import { useAppStore } from '@/stores/app'
+import { storeToRefs } from 'pinia'
 
-export default {
-  name: 'TextOnlyPlayer',
-  components: {
-    Controls,
-    Progress
-  },
-  props: {
-    player: {
-      type: Object,
-      default: null
-    },
-    playerResponse: {
-      type: Object,
-      default: null
-    },
-    playerData: {
-      type: Object,
-      default: null
-    },
-    hideControls: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data() {
-    return {
-      settings: null
-    }
-  },
-  created() {
-    const settings = getPlayThingSettings()
-    this.settings = settings
-    const value = settings.textOption
+const settingsStore = useSettingsStore();
+const spotifyStore = useSpotifyStore();
+const appStore = useAppStore();
 
-    let displayText = ''
-    let displayAlbumArt = ''
-    let textSize = ''
-
-    if (value === 'none') {
-      displayText = 'none'
-      displayAlbumArt = 'inherit'
-      textSize = '1rem'
-    } else if (value === 'small') {
-      displayText = 'inherit'
-      displayAlbumArt = 'inherit'
-      textSize = '1rem'
-    } else if (value === 'medium') {
-      displayText = 'inherit'
-      displayAlbumArt = 'inherit'
-      textSize = '2rem'
-    } else if (value === 'large') {
-      displayText = 'inherit'
-      displayAlbumArt = 'inherit'
-      textSize = '3rem'
-    } else if (value === 'text-only') {
-      displayText = 'inherit'
-      displayAlbumArt = 'none'
-    }
-
-    document.documentElement.style.setProperty('--display-text', displayText)
-    document.documentElement.style.setProperty(
-      '--display-album-art',
-      displayAlbumArt
-    )
-    document.documentElement.style.setProperty('--text-size', textSize)
-  },
-  computed: {
-    /**
-     * Return a comma-separated list of track artists.
-     * @return {String}
-     */
-    getTrackArtists() {
-      return this.player.trackArtists.join(', ')
-    },
-    miscellaneousOptions() {
-      return this.settings?.miscellaneousOption ?? []
-    }
-  },
-  methods: {
-    /**
-     * Get the Now Playing element class.
-     * @return {String}
-     */
-    getNowPlayingClass() {
-      const playerClass = this.player.playing ? 'active' : 'idle'
-      return `now-playing--${playerClass}`
-    }
-  }
-}
+const { miscellaneousOption } = storeToRefs(settingsStore);
+const { trackName, artistName } = storeToRefs(spotifyStore);
+const { hideControls, showSettingButton } = storeToRefs(appStore);
 </script>
 
 <style lang="scss" scoped>
@@ -169,7 +78,7 @@ export default {
   }
 
   &__artists {
-    opacity: 0.8;
+    opacity: 0.6;
     font-family: Inter;
     font-size: 5.208333333333334vw;
     font-weight: 500;
@@ -211,13 +120,12 @@ export default {
 
 .top-details {
   position: absolute;
-  width: 47.083333333333336vw;
-  //height: 23.98148148148148%;
-  //top: 9.25925925925926vh;
+  //width: 47.083333333333336vw;
+  width: 56.1vw;
   top: 5.1vh;
   left: 5.20833333333333vw;
   gap: 0px;
-  //opacity: 0px;
+  //background-color: red;
 }
 
 .bottom-controls {
@@ -227,12 +135,15 @@ export default {
   top: 77.5vh;
   //left: 70vw;
   left: 67vw;
+  //padding-top: 500px;
+  //top: 0;
 
   //width: 27.083333333333332vw;
   //height: 8.148148148148149vh;
   //top: 77.5vh;
   //left: 71.1875vw;
 }
+
 
 .bottom-controls .controls {
   left: 0 !important;
@@ -258,6 +169,7 @@ export default {
   transform: translateX(-50%);
   gap: 0px;
   border-radius: 2px 0px 0px 0px;
+  transition: opacity 0.5s ease;
   //opacity: 0px;
 }
 

@@ -1,52 +1,26 @@
 <template>
-  <div id="app">
-    <BlobBackground v-if="type === 'spotlight'" />
-    <MatchBackground v-else-if="type === 'match'" />
-    <MatchDarkBackground v-else-if="type === 'match-dark'" />
-    <MatchContrastBackground v-else-if="type === 'contrast'" />
-    <BlurBackground v-else-if="type === 'blur'" />
-    <BlackBackground v-else />
-  </div>
+  <BlobBackground v-if="backgroundOption === 'spotlight'" />
+  <MatchBackground v-else-if="backgroundOption === 'match'" />
+  <MatchDarkBackground v-else-if="backgroundOption === 'match-dark'" />
+  <MatchContrastBackground v-else-if="backgroundOption === 'contrast'" />
+  <BlurBackground v-else-if="backgroundOption === 'blur'" />
+  <BlackBackground v-else />
 </template>
 
-<script>
-import { getPlayThingSettings } from '@/utils/utils'
+<script lang="ts" setup>
 import BlobBackground from './BlobBackground.vue'
 import MatchBackground from './MatchBackground.vue'
 import BlackBackground from './BlackBackground.vue'
 import MatchContrastBackground from './MatchContrastBackground.vue'
 import MatchDarkBackground from './MatchDarkBackground.vue'
 import BlurBackground from './BlurBackground.vue'
+import { useSettingsStore } from '@/stores/settings';
+import { storeToRefs } from 'pinia'
 
-export default {
-  name: 'Background',
-  components: {
-    BlobBackground,
-    MatchBackground,
-    BlackBackground,
-    MatchContrastBackground,
-    MatchDarkBackground,
-    BlurBackground
-  },
-  data() {
-    return {
-      type: ''
-    }
-  },
-  created() {
-    const settings = getPlayThingSettings()
-    this.type = settings.backgroundOption
-  }
-}
+const settingsStore = useSettingsStore();
+
+const { backgroundOption } = storeToRefs(settingsStore);
+
 </script>
 
-<style scoped>
-#app {
-  color: #000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-}
-</style>
+<style lang="scss" scoped></style>

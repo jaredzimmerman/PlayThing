@@ -2,10 +2,7 @@
   <div id="app"></div>
 </template>
 
-<script>
-export default {
-  name: 'BlackBackground'
-}
+<script lang="ts" setup>
 </script>
 
 <style scoped>

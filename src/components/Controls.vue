@@ -4,59 +4,80 @@
       <TouchScreen />
     </div>
     <div class="controls">
-      <span v-show="!shuffle" @click="sendShuffle" style="opacity: 0.5;">
-        <SimpleSVG src="/controls/Shuffle.svg" />
+      <span v-show="!shuffleState" @click="shuffle(true)" style="opacity: 0.5;">
+        <Shuffle />
       </span>
-      <span v-show="shuffle" @click="sendShuffle" style="opacity: 1">
-        <SimpleSVG src="/controls/Shuffle-1.svg" />
+      <span v-show="shuffleState" @click="shuffle(false)" style="opacity: 1">
+        <Shuffle1 />
       </span>
 
-      <span @click="sendBack" ref="backButton" class="backButton">
-        <SimpleSVG src="/controls/Back.svg" />
+      <span @click="previousTrack()" class="backButton">
+        <Back />
       </span>
-      <span @click="sendPause" v-show="isPlaying">
-        <SimpleSVG src="/controls/Pause.svg" />
+      <span @click="pause()" v-show="isPlaying">
+        <Pause />
       </span>
-      <span @click="sendPlay" v-show="!isPlaying">
-        <SimpleSVG src="/controls/Play.svg" />
+      <span @click="play()" v-show="!isPlaying">
+        <Play />
       </span>
-      <span @click="sendNext" ref="nextButton" class="nextButton">
-        <SimpleSVG src="/controls/Next.svg" />
+      <span @click="nextTrack()" class="nextButton">
+        <Next />
       </span>
-      <span
-        v-show="repeat === 'off'"
-        @click="sendRepeat('context')"
-        style="opacity: 0.5;"
-      >
-        <SimpleSVG src="/controls/Repeat.svg" />
+      <span v-show="repeatState === 'off'" @click="repeat('context')" style="opacity: 0.5;">
+        <Repeat />
       </span>
-      <span
-        v-show="repeat === 'context'"
-        @click="sendRepeat('track')"
-        style="opacity: 1;"
-      >
-        <SimpleSVG src="/controls/Repeat-1.svg" />
+      <span v-show="repeatState === 'context'" @click="repeat('track')" style="opacity: 1;">
+        <Repeat1 />
       </span>
-      <span
-        v-show="repeat === 'track'"
-        @click="sendRepeat('off')"
-        style="opacity: 1"
-      >
-        <SimpleSVG src="/controls/Repeat-2.svg" />
+      <span v-show="repeatState === 'track'" @click="repeat('off')" style="opacity: 1">
+        <Repeat2 />
       </span>
     </div>
   </div>
 </template>
 
-<script>
-import { SimpleSVG } from 'vue-simple-svg'
+<script lang="ts" setup>
 import TouchScreen from './TouchScreen.vue'
+import Shuffle from '@/assets/controls/Shuffle.svg?component';
+import Shuffle1 from '@/assets/controls/Shuffle-1.svg?component';
+import Back from '@/assets/controls/Back.svg?component';
+import Pause from '@/assets/controls/Pause.svg?component';
+import Play from '@/assets/controls/Play.svg?component';
+import Next from '@/assets/controls/Next.svg?component';
+import Repeat from '@/assets/controls/Repeat.svg?component';
+import Repeat1 from '@/assets/controls/Repeat-1.svg?component';
+import Repeat2 from '@/assets/controls/Repeat-2.svg?component';
+import { useSpotifyStore } from '@/stores/spotify';
+import { storeToRefs } from 'pinia'
 
-export default {
+const spotifyStore = useSpotifyStore();
+
+const { play, pause, shuffle, repeat, nextTrack, previousTrack } = spotifyStore;
+const { isPlaying, shuffleState, repeatState } = storeToRefs(spotifyStore);
+
+/*
+
+      this.$refs.nextButton.style.opacity = 1
+      setTimeout(() => {
+        this.$refs.nextButton.style.opacity = 0.75
+      }, 200)
+
+*/
+
+
+/*export default {
   name: 'Controls',
   components: {
-    SimpleSVG,
-    TouchScreen
+    TouchScreen,
+    Shuffle,
+    Shuffle1,
+    Back,
+    Pause,
+    Play,
+    Next,
+    Repeat,
+    Repeat1,
+    Repeat2
   },
   props: {
     player: {
@@ -92,69 +113,10 @@ export default {
       return this.playing
     }
   },
-  watch: {
-    /*playerResponse(value) {
-      //if (!this.synced && this.secondsFromNow(this.lastSynced) >= 5) {
-      if (!this.synced && value.is_playing === this.playing) {
-        this.synced = true
-        this.lastSynced = new Date()
-        this.playing = value.is_playing
-        // this.repeat = value.repeat_state
-        // this.shuffle = value.shuffle_state
-      }
-    }*/
-  },
   methods: {
-    sendPlay() {
-      //if (!this.synced) return
-      document.dispatchEvent(new CustomEvent('PlayThingPlay'))
-      this.playing = true
-      //this.synced = false
-    },
-    sendPause() {
-      //if (!this.synced) return
-      document.dispatchEvent(new CustomEvent('PlayThingPause'))
-      this.playing = false
-      //this.synced = false
-    },
-    sendNext() {
-      document.dispatchEvent(new CustomEvent('PlayThingNext'))
-      this.$refs.nextButton.style.opacity = 1
-      setTimeout(() => {
-        this.$refs.nextButton.style.opacity = 0.75
-      }, 200)
-    },
-    sendBack() {
-      document.dispatchEvent(new CustomEvent('PlayThingBack'))
-      this.$refs.backButton.style.opacity = 1
-      setTimeout(() => {
-        this.$refs.backButton.style.opacity = 0.75
-      }, 200)
-    },
-    sendShuffle() {
-      document.dispatchEvent(
-        new CustomEvent('PlayThingShuffle', {
-          detail: { state: !this.shuffle }
-        })
-      )
-      this.shuffle = !this.shuffle
-    },
-    sendRepeat(state) {
-      this.repeat = state
-      document.dispatchEvent(
-        new CustomEvent('PlayThingRepeat', {
-          detail: { state }
-        })
-      )
-    }
-    /*secondsFromNow(date) {
-      const now = new Date()
-      const differenceInMilliseconds = now - date
-      const differenceInSeconds = differenceInMilliseconds / 1000
-      return differenceInSeconds
-    }*/
+
   }
-}
+}*/
 
 /*
     async getNowPlaying() {
@@ -197,27 +159,34 @@ export default {
 }
 
 .touch-screen {
-  position: absolute;
+  position: fixed;
   z-index: 2;
-  height: 500vh;
-  width: 500vw;
-  top: -200vh;
-  right: -200vw;
+  //height: 500vh;
+  //width: 500vw;
+  height: 100vh;
+  width: 100vw;
+  //top: -200vh;
+  //right: -200vw;
+  top: 0;
+  left: 0;
   overflow: hidden;
 }
 
 .controls svg {
-  width: 100% !important;
   fill: var(--controls-color);
-  stroke: #fff;
+  stroke: var(--controls-color);
 }
 
 .controls span {
-  // width: 88px;
-  width: 4.583333333333333vw;
-  height: 8.148148148148149vh;
-  //aspect-ratio: 1;
+  width: 88px;
+  //width: 4.583333333333333vw;
+  //height: 8.148148148148149vh;
+  aspect-ratio: 1;
 }
+
+
+.controls span:active svg {}
+
 
 /*@media only screen and (min-width: 767px) {
   .controls {
@@ -230,6 +199,11 @@ export default {
 .nextButton,
 .backButton {
   opacity: 0.75;
+}
+
+.nextButton:active,
+.backButton:active {
+  opacity: 1;
 }
 
 .shuffleButton,

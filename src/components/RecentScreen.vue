@@ -6,166 +6,81 @@
     <div class="tracks-container">
       <div>
         <h1>Favorites</h1>
-        <img src="/liked-songs.png" @click="playSaved" />
+        <img src="@/assets/liked-songs.png" @click="playSaved" />
         <h2>Liked Songs</h2>
       </div>
       <div>
         <h1>Recents</h1>
         <div class="carousel-container">
-          <VueSlickCarousel
-            v-if="recentTracks.length > 0"
-            v-bind="carouselSettings"
-          >
-            <div
-              v-for="item in recentTracks"
-              :key="item.track.id"
-              class="carousel-item"
-              @click="play(item)"
-            >
-              <img :src="item.track.album.images[0].url" />
-              <h2 class="ellipsis">{{ item.track.name }}</h2>
-              <h3 class="ellipsis">
-                {{ item.track.artists.map(artist => artist.name).join(', ') }}
-              </h3>
-            </div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </VueSlickCarousel>
+          <Splide :options="options" aria-label="My Favorite Images">
+            <SplideSlide v-for="item in recentlyPlayedTracksNoDuplicates" :key="item.track.id">
+              <div class="carousel-item" @click="playRecent(item)">
+                <img :src="item.track.album.images[0].url" />
+                <h2 class="ellipsis">{{ item.track.name }}</h2>
+                <h3 class="ellipsis">
+                  {{ item.track.artists.map(artist => artist.name).join(', ') }}
+                </h3>
+              </div>
+            </SplideSlide>
+            <SplideSlide></SplideSlide>
+            <SplideSlide></SplideSlide>
+            <SplideSlide></SplideSlide>
+          </Splide>
         </div>
       </div>
     </div>
-    <div v-if="playerData?.playing" class="blurred-background">
-      <div class="current-track">
-        <Playback
-          :player="player"
-          :playerData="playerData"
-          :playerResponse="playerResponse"
-        />
-        <!--<img :src="playerData.trackAlbum.image" />
-        <div>
-          <h2 class="multiline-ellipsis">{{ playerData.trackTitle }}</h2>
-          <h3 class="multiline-ellipsis">
-            {{ playerData.trackArtists.join(',') }}
-          </h3>
-        </div>-->
-      </div>
-    </div>
-    <div v-if="!playerData.playing" class="logo-container">
-      <img src="/text-logo.svg" />
+    <div v-if="!showPlayer" class="logo-container">
+      <Logo />
     </div>
   </div>
 </template>
 
-<script>
-import { getPlayThingSettings } from '@/utils/utils'
-import VueSlickCarousel from 'vue-slick-carousel'
-import 'vue-slick-carousel/dist/vue-slick-carousel.css'
-// optional style for arrows & dots
-import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
+<script lang="ts" setup>
 import TouchScreen from './TouchScreen.vue'
-//import Player from './Player.vue'
-import Playback from './Playback.vue'
+// @ts-ignore
+import { Splide, SplideSlide } from '@splidejs/vue-splide';
+import '@splidejs/vue-splide/css';
+import { useSpotifyStore } from '@/stores/spotify';
+import { useAppStore } from '@/stores/app';
+import { storeToRefs } from 'pinia';
+import { computed, ref } from 'vue';
+import Logo from "@/assets/text-logo.svg?component"
 
-export default {
-  name: 'RecentScreen',
-  components: { VueSlickCarousel, TouchScreen, Playback },
-  emits: ['requestRefreshToken'],
-  props: {
-    endpoints: {
-      type: Object,
-      default: null
-    },
-    auth: {
-      type: Object,
-      default: null
-    },
-    player: {
-      type: Object,
-      default: null
-    },
-    playerResponse: {
-      type: Object,
-      default: null
-    },
-    playerData: {
-      type: Object,
-      default: null
-    }
-  },
-  data() {
-    return {
-      type: '',
-      carouselSettings: {
-        dots: false,
-        arrows: false,
-        focusOnSelect: false,
-        infinite: false,
-        speed: 500,
-        slidesToShow: 5.5,
-        slidesToScroll: 3,
-        touchThreshold: 5
-      },
-      recentTracks: []
-    }
-  },
-  created() {
-    const settings = getPlayThingSettings()
-    this.type = settings.backgroundOption
-    console.log('player data : ', this.playerData)
-    this.getRecents()
-  },
-  methods: {
-    async getRecents() {
-      try {
-        const response = await fetch(
-          `${this.endpoints.base}/${this.endpoints.recentlyPlayed}`,
-          {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${this.auth.accessToken}`
-            }
-          }
-        )
+const spotifyStore = useSpotifyStore();
+const appStore = useAppStore();
+const options = ref({ rewind: false, autoWidth: false, arrows: false, pagination: false, perPage: 5, perMove: 1, padding: { right: 200 } })
 
-        //console.log('response type : ', response.status)
+const { recentlyPlayedTracks, savedTracks } = storeToRefs(spotifyStore);
+const { play } = spotifyStore
+const { showPlayer, showRecentlyPlayed } = storeToRefs(appStore);
 
-        if (response.status === 401) {
-          this.$emit('requestRefreshToken')
-        }
+const recentlyPlayedTracksNoDuplicates = computed(() => {
+  const seen = new Set();
+  return recentlyPlayedTracks.value.filter((item) => {
+    const duplicate = seen.has(item.track.id);
+    seen.add(item.track.id);
+    return !duplicate;
+  });
+})
 
-        const data = await response.json()
-        // console.log('data: ', data)
-        this.recentTracks = data.items
-      } catch (err) {
-        console.log(err)
-      }
-    },
-    async play(item) {
-      console.log('to play: ', item)
-      document.dispatchEvent(
-        new CustomEvent('PlayThingPlay', {
-          detail: { uri: item.track.uri }
-        })
-      )
-
-      document.dispatchEvent(new Event('PlayThingRecentScreen'))
-
-      //document.removeEventListener('PlayThingPlay', this.handlePlay)
-    },
-    async playSaved() {
-      document.dispatchEvent(new Event('PlayThingPlaySaved'))
-      document.dispatchEvent(new Event('PlayThingRecentScreen'))
-    }
-  }
+function playRecent(track: typeof recentlyPlayedTracks.value[number]) {
+  play([track.track.uri])
+  showRecentlyPlayed.value = false
 }
+
+function playSaved() {
+  play(savedTracks.value.map((item) => item.track.uri))
+  showRecentlyPlayed.value = false
+}
+
 </script>
 
 <style lang="scss" scoped>
 #app {
   color: #fff;
   overflow: hidden;
-  background-color: #000;
+  //background-color: #000;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
 }
 
 .tracks-container {
@@ -175,13 +90,14 @@ export default {
   height: 50vh;
   width: 100vw;
   left: 0;
-  margin-top: 60px;
+  padding-top: 60px;
   padding-left: 60px;
   overflow: hidden;
   gap: 112px;
+  //background-color: #000;
 }
 
-.tracks-container > div {
+.tracks-container>div {
   z-index: 5;
 }
 
@@ -239,11 +155,12 @@ export default {
   position: absolute;
   bottom: 0;
   width: 100vw;
+  background-color: #000000;
 }
 
-.logo-container img {
-  width: 520.43px;
-  height: 318.56px;
+.logo-container svg {
+  //width: 520.43px;
+  //height: 318.56px;
   margin-bottom: 150.44px;
 }
 
@@ -313,9 +230,9 @@ export default {
 
 .touch-screen {
   //background-color: red;
-  position: absolute;
-  width: 500%;
-  height: 500%;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
   z-index: 5;
 }
 

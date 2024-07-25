@@ -1,16 +1,35 @@
 <template>
-  <div
-    id="screen"
-    v-touch:tap="tap"
-    v-touch:swipe.up="swipeUp"
-    v-touch:swipe.down="swipeDown"
-    v-touch:swipe.left="swipeLeft"
-    v-touch:swipe.right="swipeRight"
-  ></div>
+  <div id="screen" v-touch:tap="tap" v-touch:swipe.left="previousTrack" v-touch:swipe.right="nextTrack">
+    <div class="top" v-touch:swipe.down="swipeDown"></div>
+    <div class="bottom" v-touch:swipe.up="swipeUp"></div>
+  </div>
 </template>
 
-<script>
-export default {
+<script lang="ts" setup>
+import { useSpotifyStore } from '@/stores/spotify';
+import { useAppStore } from '@/stores/app';
+import { storeToRefs } from 'pinia';
+
+const spotifyStore = useSpotifyStore();
+const appStore = useAppStore();
+
+const { showSettingButton, showRecentlyPlayed, hideControls } = storeToRefs(appStore);
+const { nextTrack, previousTrack } = spotifyStore;
+
+function tap() {
+  showSettingButton.value = true
+}
+
+function swipeUp() {
+  hideControls.value = !hideControls.value
+}
+
+function swipeDown() {
+  showRecentlyPlayed.value = !showRecentlyPlayed.value
+}
+
+
+/*export default {
   name: 'TouchScreen',
   emits: ['show-setting-button'],
   methods: {
@@ -31,13 +50,13 @@ export default {
       document.dispatchEvent(new Event('PlayThingNext'))
     }
   }
-}
+}*/
 </script>
 
 <style lang="scss" scoped>
 #screen {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   position: absolute;
   background-color: transparent;
@@ -45,5 +64,19 @@ export default {
   height: 100%;
   overflow: hidden;
   pointer-events: all;
+  //background-color: red;
+  flex-direction: column;
+}
+
+.top {
+  height: 25%;
+  width: 100%;
+  //background-color: red;
+}
+
+.bottom {
+  height: 25%;
+  width: 100%;
+  //background-color: yellow;
 }
 </style>

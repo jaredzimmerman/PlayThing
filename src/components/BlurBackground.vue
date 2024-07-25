@@ -1,34 +1,38 @@
 <template>
   <div id="app">
-    <div
-      :class="
-        `album-art ${
-          miscellaneousOptions.includes('animate-blur-spotlight')
-            ? 'animate-rotate-circle'
-            : 'scale-120-rotate-180'
-        }`
-      "
-    />
+    <div :class="`album-art ${miscellaneousOption.includes('animate-blur-spotlight')
+      ? 'animate-rotate-circle'
+      : 'scale-120-rotate-180'
+      }`
+      " ref="albumArtRef" />
     <div class="scrim"></div>
   </div>
 </template>
 
-<script>
-import { getPlayThingSettings } from '@/utils/utils'
+<script lang="ts" setup>
+import { storeToRefs } from 'pinia'
+import { useSettingsStore } from '@/stores/settings'
+import { useSpotifyStore } from '@/stores/spotify';
+import { useAppStore } from '@/stores/app';
+import { ref, watch } from 'vue';
 
-export default {
-  name: 'BlurBackground',
-  data() {
-    return {
-      miscellaneousOptions: []
+const albumArtRef = ref<HTMLDivElement | null>(null)
+
+const settingsStore = useSettingsStore()
+const spotifyStore = useSpotifyStore()
+
+const { miscellaneousOption } = storeToRefs(settingsStore);
+const { isPlaying } = storeToRefs(spotifyStore)
+
+// only animate background if playing
+if (miscellaneousOption.value.includes('animate-blur-spotlight')) {
+  watch(isPlaying, (playing) => {
+    if (albumArtRef.value) {
+      albumArtRef.value.style.animationPlayState = playing ? 'running' : 'paused'
     }
-  },
-  created() {
-    const settings = getPlayThingSettings()
-    this.miscellaneousOptions = settings.miscellaneousOption
-    console.log('options : ', this.miscellaneousOption)
-  }
+  })
 }
+
 </script>
 
 <style lang="scss" scoped>
@@ -66,11 +70,9 @@ export default {
   position: absolute;
   width: 100%;
   height: 100vh;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.4),
-    rgba(0, 0, 0, 0.6)
-  );
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.4),
+      rgba(0, 0, 0, 0.6));
 }
 
 .scale-120-rotate-180 {

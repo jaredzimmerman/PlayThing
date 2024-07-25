@@ -1,41 +1,28 @@
 <template>
   <div id="app">
-    <Playback
-      v-if="component === 'Playback'"
-      :player="player"
-      :playerResponse="playerResponse"
-      :playerData="playerData"
-      :key="playbackKey"
-    />
+    <Playback v-if="showPlayer" />
 
-    <Clock v-if="component === 'Clock'" />
+    <Clock v-if="!showPlayer" />
 
-    <RecentScreen
-      v-if="component === 'RecentScreen'"
-      :endpoints="endpoints"
-      :auth="auth"
-      @requestRefreshToken="requestRefreshTokens"
-      :player="player"
-      :playerResponse="playerResponse"
-      :playerData="playerData"
-    />
-
-    <SplashScreen v-if="component === 'SplashScreen'" />
-    <FirstTimeUsage v-if="component === 'FirstTimeUsage'" />
+    <div v-show="showRecentlyPlayed" class="recent-page">
+      <RecentScreen v-if="true" />
+    </div>
   </div>
 </template>
 
-<script>
-import props from '@/utils/props.js'
+<script lang="ts" setup>
 import Clock from './Clock.vue'
 import Playback from './Playback.vue'
-import * as ColorThief from 'color-thief-browser'
-import { getPlayThingSettings } from '@/utils/utils'
-import SplashScreen from './SplashScreen.vue'
 import RecentScreen from './RecentScreen.vue'
-import FirstTimeUsage from './FirstTimeUsage.vue'
+import { useAppStore } from '@/stores/app'
+import { storeToRefs } from 'pinia'
 
-export default {
+const appStore = useAppStore();
+
+const { showRecentlyPlayed, showPlayer } = storeToRefs(appStore);
+//console.log("player nowplaying : ", playbackState.value)
+
+/*export default {
   name: 'NowPlaying',
 
   props: {
@@ -242,12 +229,7 @@ export default {
     },
 
     updateSettings(newSettings) {
-      /*const settings = {
-        nothingPlayingOption: this.selectedNothingPlayingOption,
-        backgroundOption: this.selectedBackgroundOption,
-        textOption: this.selectedTextOption,
-        miscellaneousOption: this.selectedMiscellaneousOption
-      }*/
+
       localStorage.setItem('playThingSettings', JSON.stringify(newSettings))
     },
     async handlePlay(event) {
@@ -388,10 +370,7 @@ export default {
         console.log(err)
       }
     },
-    /**
-     * Make the network request to Spotify to
-     * get the current played track.
-     */
+
     async getNowPlaying() {
       let data = {}
 
@@ -406,17 +385,11 @@ export default {
           }
         )
 
-        /**
-         * Fetch error.
-         */
         if (!response.ok) {
           throw new Error(`An error has occured: ${response.status}`)
         }
 
-        /**
-         * Spotify returns a 204 when no current device session is found.
-         * The connection was successful but there's no content to return.
-         */
+
         if (response.status === 204) {
           this.isNowPlaying = false
           data = this.getEmptyPlayer()
@@ -447,9 +420,6 @@ export default {
       this.$emit('requestRefreshToken')
     },
 
-    /**
-     * Poll Spotify for data.
-     */
     setDataInterval() {
       clearInterval(this.pollPlaying)
       this.pollPlaying = setInterval(() => {
@@ -458,18 +428,11 @@ export default {
       //}, 2500)
     },
 
-    /**
-     * Handle an expired access token from Spotify.
-     */
     handleExpiredToken() {
       clearInterval(this.pollPlaying)
       this.$emit('requestRefreshToken')
     },
 
-    /**
-     * Return a formatted empty object for an idle player.
-     * @return {Object}
-     */
     getEmptyPlayer() {
       return {
         playing: false,
@@ -480,9 +443,6 @@ export default {
       }
     },
 
-    /**
-     * Handle newly updated Spotify Tracks.
-     */
     handleNowPlaying() {
       if (
         this.playerResponse.error?.status === 401 ||
@@ -493,9 +453,6 @@ export default {
         return
       }
 
-      /**
-       * Player is active, but user has paused.
-       */
       if (this.playerResponse.is_playing === false) {
         this.playerData.playing = false
         //this.playerData = this.getEmptyPlayer()
@@ -503,17 +460,11 @@ export default {
         return
       }
 
-      /**
-       * The newly fetched track is the same as our stored
-       * one, we don't want to update the DOM yet.
-       */
+
       if (this.playerResponse.item?.id === this.playerData.trackId) {
         return
       }
 
-      /**
-       * Store the current active track.
-       */
       this.playerData = {
         playing: this.playerResponse.is_playing,
         trackArtists: this.playerResponse.item.artists.map(
@@ -527,13 +478,9 @@ export default {
         }
       }
     },
-    /**
-     * Get the colour palette from the album cover.
-     */
+
     getAlbumColours() {
-      /**
-       * No image (rare).
-       */
+
       //if (!this.player.trackAlbum?.image) {
       if (!this.playerData.trackAlbum?.image) {
         return
@@ -541,259 +488,15 @@ export default {
 
       this.setAppColours()
     },
-    getMatchColors(imageBlob) {
-      //const img = document.getElementById('albumCover');
-      const colorThief = new ColorThief()
-      const img = new Image()
-      img.src = imageBlob
-
-      img.onload = function() {
-        const colors = colorThief.getPalette(img, 10)
-        const suitableColor = getSuitableColor(colors)
-        document.documentElement.style.setProperty('--controls-color', `#fff`)
-        document.documentElement.style.setProperty(
-          '--color-text-primary',
-          '#fff'
-        )
-        if (suitableColor) {
-          document.documentElement.style.setProperty(
-            '--primary-color',
-            `rgb(${suitableColor.join(',')})`
-          )
-        } else {
-          document.documentElement.style.setProperty('--primary-color', `#000`)
-        }
-      }
-
-      function getSuitableColor(colors) {
-        return colors.find(color => !isNearBlackOrWhite(color))
-      }
-
-      function isNearBlackOrWhite(color) {
-        const [r, g, b] = color
-        const brightness = (r * 299 + g * 587 + b * 114) / 1000
-        return brightness < 30 || brightness > 220
-      }
-
-      if (img.complete) {
-        img.onload()
-      }
-    },
-    getMatchContrastColors(imageBlob) {
-      const colorThief = new ColorThief()
-      const img = new Image()
-      img.src = imageBlob
-
-      img.onload = function() {
-        const colors = colorThief.getPalette(img, 10)
-        const backgroundColor = getComplementaryOrThirdColor(colors)
-        console.log('background is ', backgroundColor)
-        document.documentElement.style.setProperty('--controls-color', `#fff`)
-        document.documentElement.style.setProperty(
-          '--color-text-primary',
-          '#fff'
-        )
-        if (backgroundColor) {
-          document.documentElement.style.setProperty(
-            '--primary-color',
-            `rgb(${backgroundColor.join(',')})`
-          )
-        } else {
-          document.documentElement.style.setProperty('--primary-color', `#000`)
-        }
-      }
-
-      function getComplementaryOrThirdColor(colors) {
-        const prominentColor = colors[0]
-        const complementaryColor = getComplementaryColor(prominentColor)
-
-        if (
-          complementaryColor &&
-          !isNearBlackOrWhite(complementaryColor) &&
-          isColorInPalette(colors, complementaryColor)
-        ) {
-          return complementaryColor
-        } else {
-          const thirdColor = colors[2]
-          if (thirdColor && !isNearBlackOrWhite(thirdColor)) {
-            return thirdColor
-          }
-        }
-        return null
-      }
-
-      function getComplementaryColor([r, g, b]) {
-        // Calculate complementary color
-        const compColor = [255 - r, 255 - g, 255 - b]
-        return compColor
-      }
-
-      function isColorInPalette(colors, color) {
-        return colors.some(
-          c => color[0] === c[0] && color[1] === c[1] && color[2] === c[2]
-        )
-      }
-
-      function isNearBlackOrWhite(color) {
-        const [r, g, b] = color
-        const brightness = (r * 299 + g * 587 + b * 114) / 1000
-        return brightness < 30 || brightness > 220
-      }
-
-      // Trigger image load if it is cached
-      if (img.complete) {
-        img.onload()
-      }
-    },
-    getSpotlightColors(imageBlob) {
-      const colorThief = new ColorThief()
-      const img = new Image()
-      img.src = imageBlob
-
-      img.onload = function() {
-        const colors = colorThief.getPalette(img, 10)
-        const backgroundColors = getDominantColors(colors)
-        document.documentElement.style.setProperty('--controls-color', `#fff`)
-        document.documentElement.style.setProperty(
-          '--color-text-primary',
-          '#fff'
-        )
-        if (backgroundColors) {
-          const startColor = rgbToHex(backgroundColors[0])
-          const stopColor = rgbToHex(backgroundColors[1])
-          document.documentElement.style.setProperty(
-            '--start-color',
-            startColor
-          )
-          document.documentElement.style.setProperty('--end-color', stopColor)
-          document.dispatchEvent(new CustomEvent('BlobBackgroundColorChanged'))
-        }
-      }
-
-      function getDominantColors(colors) {
-        const filteredColors = colors.filter(
-          color => !isNearBlackOrWhite(color)
-        )
-        if (filteredColors.length >= 2) {
-          return [filteredColors[0], filteredColors[1]]
-        }
-        return null
-      }
-
-      function isNearBlackOrWhite(color) {
-        const [r, g, b] = color
-        const brightness = (r * 299 + g * 587 + b * 114) / 1000
-        return brightness < 30 || brightness > 220
-      }
-
-      function rgbToHex([r, g, b]) {
-        const toHex = value => value.toString(16).padStart(2, '0')
-        return `#${toHex(r)}${toHex(g)}${toHex(b)}`
-      }
-
-      // Trigger image load if it is cached
-      if (img.complete) {
-        img.onload()
-      }
-    },
-    getBlackOledColors(imageBlob) {
-      //const img = document.getElementById('albumCover');
-      const colorThief = new ColorThief()
-      const img = new Image()
-      img.src = imageBlob
-
-      img.onload = function() {
-        const colors = colorThief.getPalette(img, 10)
-        const suitableColor = getSuitableColor(colors)
-        document.documentElement.style.setProperty(
-          '--color-text-primary',
-          '#fff'
-        )
-        if (suitableColor) {
-          document.documentElement.style.setProperty(
-            '--controls-color',
-            `rgb(${adjustColorIfTooDark(suitableColor).join(',')})`
-          )
-        } else {
-          document.documentElement.style.setProperty('--primary-color', `#ff`)
-        }
-      }
-
-      function getSuitableColor(colors) {
-        return colors.find(color => !isNearBlackOrWhite(color))
-      }
-
-      function isNearBlackOrWhite(color) {
-        const [r, g, b] = color
-        const brightness = (r * 299 + g * 587 + b * 114) / 1000
-        return brightness < 30 || brightness > 220
-      }
-
-      function adjustColorIfTooDark(rgb) {
-        function rgbToLuminance(r, g, b) {
-          return 0.2126 * r + 0.7152 * g + 0.0722 * b
-        }
-
-        function brightenColor(r, g, b, percentage) {
-          r = Math.min(255, r + (r * percentage) / 100)
-          g = Math.min(255, g + (g * percentage) / 100)
-          b = Math.min(255, b + (b * percentage) / 100)
-          return [r, g, b]
-        }
-
-        const [r, g, b] = rgb
-
-        const luminance = rgbToLuminance(r, g, b)
-        console.log('luminance , ', luminance)
-
-        const threshold = 50 // Adjust as needed
-
-        if (luminance < threshold) {
-          const brightenPercentage = (luminance / threshold) * 50 + 25
-          return brightenColor(r, g, b, brightenPercentage)
-        }
-
-        return [r, g, b]
-      }
-
-      if (img.complete) {
-        img.onload()
-      }
-    },
-    async setAppColours() {
-      const response = await fetch(this.playerData.trackAlbum.image)
-      const blob = await response.blob()
-
-      const blobUrl = URL.createObjectURL(blob)
-      document.documentElement.style.setProperty(
-        '--album-image',
-        `url(${this.player.trackAlbum.image})`
-      )
-      document.documentElement.style.setProperty('--controls-color', `#fff`)
-      document.documentElement.style.setProperty('--color-text-primary', '#fff')
-      document.documentElement.style.setProperty('--primary-color', `#fff`)
-
-      const settings = getPlayThingSettings()
-      console.log(settings?.backgroundOption)
-      if (['match', 'match-dark'].includes(settings?.backgroundOption))
-        this.getMatchColors(blobUrl)
-      else if (['contrast'].includes(settings?.backgroundOption))
-        this.getMatchContrastColors(blobUrl)
-      else if (['spotlight'].includes(settings?.backgroundOption)) {
-        this.getSpotlightColors(blobUrl)
-      } else if (['black-oled'].includes(settings?.backgroundOption)) {
-        this.getBlackOledColors(blobUrl)
-      }
-    },
-    isFirstTime() {
-      let firstTime = true
-      try {
-        firstTime = JSON.parse(localStorage.getItem('firstTime'))
-      } catch {
-        localStorage.setItem('firstTime', 'false')
-      }
-      return firstTime
-    },
+      function isFirstTime() {
+    let firstTime = true
+    try {
+      firstTime = JSON.parse(localStorage.getItem('firstTime'))
+    } catch {
+      localStorage.setItem('firstTime', 'false')
+    }
+    return firstTime
+  },
     toggleRecentScreen() {
       if (this.component === 'RecentScreen') {
         if (this.isNowPlaying) this.component = 'Playback'
@@ -804,19 +507,15 @@ export default {
     }
   },
   watch: {
-    /**
-     * Watch the auth object returned from Spotify.
-     */
-    auth: function(oldVal, newVal) {
+
+    auth: function (oldVal, newVal) {
       if (newVal.status === false) {
         clearInterval(this.pollPlaying)
       }
     },
 
-    /**
-     * Watch the returned track object.
-     */
-    playerResponse: function(newVal, oldVal) {
+
+    playerResponse: function (newVal, oldVal) {
       this.handleNowPlaying()
       if (oldVal == null || newVal == null) return
       if (oldVal.is_playing && !newVal.is_playing && this.fadeTimeout == null) {
@@ -838,10 +537,8 @@ export default {
         document.body.classList.remove('fade-effect')
       }
     },
-    /**
-     * Watch our locally stored track data.
-     */
-    playerData: function() {
+
+    playerData: function () {
       this.$emit('spotifyTrackUpdated', this.playerData)
       //this.getAlbumColours()
       // console.log("image ", this.playerResponse)
@@ -849,7 +546,7 @@ export default {
         this.getAlbumColours()
       })
     },
-    playbackKey: function() {
+    playbackKey: function () {
       this.setAppColours()
     },
     isNowPlaying(newVal) {
@@ -859,7 +556,14 @@ export default {
       }
     }
   }
-}
+}*/
 </script>
 
 <style src="@/styles/components/now-playing.scss" lang="scss" scoped></style>
+<style lang="scss" scoped>
+.recent-page {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+}
+</style>
