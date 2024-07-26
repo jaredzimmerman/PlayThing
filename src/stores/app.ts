@@ -114,7 +114,7 @@ export const useAppStore = defineStore(
     function onKeyDown(event: KeyboardEvent) {
       switch (event.key) {
         case 'ArrowRight':
-          if (event.ctrlKey) {
+          if (event.ctrlKey || event.altKey) {
             if (backgroundOption.value === 'black-oled') backgroundOption.value = 'match'
             else if (backgroundOption.value === 'match') backgroundOption.value = 'match-dark'
             else if (backgroundOption.value === 'match-dark') backgroundOption.value = 'contrast'
@@ -126,7 +126,7 @@ export const useAppStore = defineStore(
           }
           break
         case 'ArrowLeft':
-          if (event.ctrlKey) {
+          if (event.ctrlKey || event.altKey) {
             if (backgroundOption.value === 'black-oled') backgroundOption.value = 'spotlight'
             else if (backgroundOption.value === 'match') backgroundOption.value = 'black-oled'
             else if (backgroundOption.value === 'match-dark') backgroundOption.value = 'match'
@@ -138,7 +138,7 @@ export const useAppStore = defineStore(
           }
           break
         case 'ArrowUp':
-          if (event.ctrlKey) {
+          if (event.ctrlKey || event.altKey) {
             if (textOption.value === 'none') textOption.value = 'text-only'
             else if (textOption.value === 'small') textOption.value = 'none'
             else if (textOption.value === 'medium') textOption.value = 'small'
@@ -150,7 +150,7 @@ export const useAppStore = defineStore(
           }
           break
         case 'ArrowDown':
-          if (event.ctrlKey) {
+          if (event.ctrlKey || event.altKey) {
             if (textOption.value === 'none') textOption.value = 'small'
             else if (textOption.value === 'small') textOption.value = 'medium'
             else if (textOption.value === 'medium') textOption.value = 'large'

@@ -99,10 +99,11 @@ onMounted(() => {
 }
 
 .logo {
-  width: 71%;
+  //width: 71%;
   aspect-ratio: 1;
   z-index: 1;
-  scale: 2;
+  scale: 2.4544;
+  //scale: 2;
 }
 
 .fade-out {

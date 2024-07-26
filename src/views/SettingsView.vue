@@ -87,7 +87,7 @@
 
           <p>Open Source Libraries in use: @georgedoescode/spline,
             @spotify/web-api-ts-sdk,
-            colorthief
+            colorthief,
             pinia,
             pinia-plugin-persistedstate,
             simplex-noise,

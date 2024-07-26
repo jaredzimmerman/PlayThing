@@ -22,9 +22,8 @@
                 </h3>
               </div>
             </SplideSlide>
-            <SplideSlide></SplideSlide>
-            <SplideSlide></SplideSlide>
-            <SplideSlide></SplideSlide>
+            <SplideSlide v-for="i in [1, 2]">
+            </SplideSlide>
           </Splide>
         </div>
       </div>
@@ -109,7 +108,7 @@ function playSaved() {
 
 .carousel-container {
   position: absolute;
-  max-width: 100%;
+  width: 100%;
   max-height: 100%;
   height: 100%;
 }
@@ -128,6 +127,10 @@ function playSaved() {
   line-height: 33.75px;
   text-align: left;
   max-width: 270px;
+}
+
+.carousel-item {
+  min-width: 270px;
 }
 
 .carousel-item h3 {

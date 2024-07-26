@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div class="container">
     <div class="foreground">
       <div class="top">
         <div class="rule-container">
@@ -47,7 +47,7 @@ import ExampleImage from '@/assets/example-image.svg'
 </script>
 
 <style lang="scss" scoped>
-#app {
+.container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -55,14 +55,20 @@ import ExampleImage from '@/assets/example-image.svg'
   background-color: #000;
   width: 100%;
   height: 100vh;
+  //height: 59.25925925925925vh;
+  //width: 77.08333333333334vw;
   overflow: hidden;
 }
 
 .foreground {
   position: absolute;
-  width: 100%;
-  height: 100vh;
+  //width: 100%;
+  //height: 100vh;
   z-index: 3;
+  height: 90%;
+  width: 90%;
+  //background-color: red;
+  //background-color: red;
 }
 
 .background {
@@ -164,7 +170,8 @@ import ExampleImage from '@/assets/example-image.svg'
 .bottom {
   position: absolute;
   width: 100%;
-  bottom: -43px;
+  //bottom: -43px;
+  bottom: 0px;
   display: flex;
   justify-content: center;
 }
@@ -189,7 +196,8 @@ import ExampleImage from '@/assets/example-image.svg'
 
 .left {
   position: absolute;
-  left: 17px;
+  //left: 17px;
+  left: 2%;
   display: flex;
   align-items: center;
   height: 100vh;
@@ -215,7 +223,8 @@ import ExampleImage from '@/assets/example-image.svg'
 
 .right {
   position: absolute;
-  right: 27px;
+  //right: 27px;
+  right: 2%;
   display: flex;
   align-items: center;
   height: 100vh;
