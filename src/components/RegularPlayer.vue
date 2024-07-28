@@ -3,7 +3,7 @@
     <div class="container">
       <div class="now-playing__cover">
         <img :src="albumArtURL" :alt="trackName" :class="`now-playing__image`" />
-        <Progress v-if="miscellaneousOption.includes('show-progress-bar')" />
+        <ProgressBar v-if="miscellaneousOption.includes('show-progress-bar')" />
       </div>
       <div class="now-playing__details" :style="`justify-content: ${hideControls ? 'center' : 'space-between'}`">
         <div>
@@ -15,7 +15,7 @@
           </h2>
         </div>
         <div class="now-playing__controls" v-show="!hideControls">
-          <Controls />
+          <PlayerControls />
         </div>
       </div>
     </div>
@@ -23,8 +23,8 @@
 </template>
 
 <script lang="ts" setup>
-import Progress from '@/components/Progress.vue'
-import Controls from '@/components/Controls.vue'
+import ProgressBar from '@/components/ProgressBar.vue'
+import PlayerControls from '@/components/PlayerControls.vue'
 import TextClamp from 'vue3-text-clamp';
 import { useSpotifyStore } from '@/stores/spotify'
 import { storeToRefs } from 'pinia'
@@ -39,9 +39,6 @@ const { miscellaneousOption } = storeToRefs(settingsStore);
 const { trackName, artistName, albumArtURL } = storeToRefs(spotifyStore);
 const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore);
 
-function replaceSpacesWithNbsp(text: string) {
-  return text.replace(/ /g, '&nbsp;');
-}
 </script>
 
 <style lang="scss" scoped>

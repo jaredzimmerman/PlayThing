@@ -13,7 +13,6 @@
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
 import { useSpotifyStore } from '@/stores/spotify';
-import { useAppStore } from '@/stores/app';
 import { ref, watch } from 'vue';
 
 const albumArtRef = ref<HTMLDivElement | null>(null)

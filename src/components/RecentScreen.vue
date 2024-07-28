@@ -24,7 +24,7 @@
                 </h3>
               </div>
             </SplideSlide>
-            <SplideSlide v-for="i in [1, 2]">
+            <SplideSlide v-for="i in [1, 2]" :key="i">
             </SplideSlide>
           </Splide>
         </div>

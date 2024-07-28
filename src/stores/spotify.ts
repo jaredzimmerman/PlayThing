@@ -1,7 +1,6 @@
 import { ref, computed, shallowRef, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { SpotifyApi, type AccessToken, type SavedTrack } from '@spotify/web-api-ts-sdk'
-import type { LocationQueryValue } from 'vue-router'
 import type { PlayHistory } from 'node_modules/@spotify/web-api-ts-sdk/dist/cjs'
 
 declare global {
@@ -113,6 +112,25 @@ export const useSpotifyStore = defineStore(
       }
     }
 
+    function updateProgress(startTime: number) {
+      if (isPlaying.value) {
+        const elapsedTime = Date.now() - startTime
+        progressPosition.value = Math.min(elapsedTime, progressDuration.value)
+        if (elapsedTime == progressDuration.value) {
+          progressPosition.value = 0
+        }
+        // if (progressPosition.value > progressDuration.value) progressPosition.value = 0
+        if (progressPosition.value < progressDuration.value) {
+          progressAnimationFrameId = requestAnimationFrame(() => updateProgress(startTime))
+        } else {
+          // when repeat mode is on track, we restart the whole progress
+          if (playbackState.value.repeat_mode === 2) {
+            startProgress(true)
+          }
+        }
+      }
+    }
+
     function startProgress(restarting = false) {
       if (playbackState.value) {
         if (restarting) progressPosition.value = 0
@@ -121,26 +139,7 @@ export const useSpotifyStore = defineStore(
         if (progressAnimationFrameId) {
           cancelAnimationFrame(progressAnimationFrameId)
         }
-
-        function updateProgress() {
-          if (isPlaying.value) {
-            const elapsedTime = Date.now() - startTime
-            progressPosition.value = Math.min(elapsedTime, progressDuration.value)
-            if (elapsedTime == progressDuration.value) {
-              progressPosition.value = 0
-            }
-            // if (progressPosition.value > progressDuration.value) progressPosition.value = 0
-            if (progressPosition.value < progressDuration.value) {
-              progressAnimationFrameId = requestAnimationFrame(updateProgress)
-            } else {
-              // when repeat mode is on track, we restart the whole progress
-              if (playbackState.value.repeat_mode === 2) {
-                startProgress(true)
-              }
-            }
-          }
-        }
-        progressAnimationFrameId = requestAnimationFrame(updateProgress)
+        progressAnimationFrameId = requestAnimationFrame(() => updateProgress(startTime))
       }
     }
 
@@ -165,7 +164,9 @@ export const useSpotifyStore = defineStore(
             shuffle_mode: state ? 1 : 0
           }
         }
-      } catch (err) {}
+      } catch (err) {
+        console.error(err)
+      }
     }
 
     function repeat(repeatMode: 'track' | 'context' | 'off') {
@@ -179,7 +180,9 @@ export const useSpotifyStore = defineStore(
             repeat_mode: modes[repeatMode]
           }
         }
-      } catch (err) {}
+      } catch (err) {
+        console.error(err)
+      }
     }
 
     function nextTrack() {

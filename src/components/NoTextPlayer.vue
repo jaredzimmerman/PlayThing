@@ -7,12 +7,12 @@
           : '0px'
           }`
           " />
-        <Progress v-if="miscellaneousOption.includes('show-progress-bar')" />
+        <ProgressBar v-if="miscellaneousOption.includes('show-progress-bar')" />
         <div class="touch-screen">
           <TouchScreen />
         </div>
         <div class="controls" v-show="!hideControls">
-          <Controls />
+          <PlayerControls />
         </div>
       </div>
     </div>
@@ -20,8 +20,8 @@
 </template>
 
 <script lang="ts" setup>
-import Progress from '@/components/Progress.vue'
-import Controls from '@/components/Controls.vue'
+import ProgressBar from '@/components/ProgressBar.vue'
+import PlayerControls from '@/components/PlayerControls.vue'
 import TouchScreen from '@/components/TouchScreen.vue'
 import { useSpotifyStore } from '@/stores/spotify'
 import { storeToRefs } from 'pinia'

@@ -93,6 +93,7 @@
             simplex-noise,
             vue-router,
             vue-splide,
+            vue3-text-clamp,
             vue3-touch-events,
             vueJS.</p>
         </section>

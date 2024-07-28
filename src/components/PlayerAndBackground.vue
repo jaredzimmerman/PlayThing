@@ -1,17 +1,17 @@
 <template>
   <div class="container">
     <div class="background" :style="`opacity: ${fadePlayer ? 0.5 : 1}`">
-      <Background />
+      <BackgroundSelector />
     </div>
     <div class="player" :style="`opacity: ${fadePlayer ? 0.5 : 1}`">
-      <Player />
+      <PlayerSelector />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import Background from './Background.vue'
-import Player from './Player.vue'
+import BackgroundSelector from './BackgroundSelector.vue'
+import PlayerSelector from './PlayerSelector.vue'
 import { useAppStore } from '@/stores/app';
 import { storeToRefs } from 'pinia'
 

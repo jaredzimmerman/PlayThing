@@ -1,6 +1,6 @@
-import { ref, computed, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { miscellaneousOptions, useSettingsStore } from './settings'
+import { useSettingsStore } from './settings'
 import { setAppColours } from '@/utils/colors'
 import { useSpotifyStore } from './spotify'
 

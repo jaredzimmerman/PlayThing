@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <Playback v-if="showPlayer" />
+    <PlayerAndBackground v-if="showPlayer" />
 
-    <Clock v-if="!showPlayer" />
+    <ClockSelector v-if="!showPlayer" />
 
     <!-- if v-if or v-show use, TextClamp not working; so we put it out of viewport -->
     <div
@@ -14,8 +14,8 @@
 </template>
 
 <script lang="ts" setup>
-import Clock from './Clock.vue'
-import Playback from './Playback.vue'
+import ClockSelector from './ClockSelector.vue'
+import PlayerAndBackground from './PlayerAndBackground.vue'
 import RecentScreen from './RecentScreen.vue'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'

@@ -22,7 +22,7 @@ import { spline } from '@georgedoescode/spline'
 import { createNoise2D } from 'simplex-noise'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
-import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useSpotifyStore } from '@/stores/spotify';
 
 const settingsStore = useSettingsStore()

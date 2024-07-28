@@ -11,19 +11,19 @@
     </div>
 
     <div class="bottom-controls" v-show="!hideControls">
-      <Controls />
+      <PlayerControls />
     </div>
 
     <div class="bottom-progress" v-if="miscellaneousOption.includes('show-progress-bar')"
       :style="`opacity: ${showSettingButton ? 0.5 : 1}`">
-      <Progress />
+      <ProgressBar />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import Progress from '@/components/Progress.vue'
-import Controls from '@/components/Controls.vue'
+import ProgressBar from '@/components/ProgressBar.vue'
+import PlayerControls from '@/components/PlayerControls.vue'
 import TextClamp from 'vue3-text-clamp';
 import { useSpotifyStore } from '@/stores/spotify'
 import { useSettingsStore } from '@/stores/settings'
