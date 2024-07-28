@@ -33,7 +33,7 @@ export const useSpotifyStore = defineStore(
     const savedTracks = ref<SavedTrack[]>([])
 
     const progressDuration = ref(1)
-    const progressPosition = ref(1)
+    const progressPosition = ref(0)
 
     //const settingsStore = useSettingsStore()
     const clientId = import.meta.env.VUE_APP_SP_CLIENT_ID
@@ -113,15 +113,30 @@ export const useSpotifyStore = defineStore(
       }
     }
 
-    function startProgress() {
+    function startProgress(restarting = false) {
       if (playbackState.value) {
+        if (restarting) progressPosition.value = 0
         const startTime = Date.now() - progressPosition.value
+
+        if (progressAnimationFrameId) {
+          cancelAnimationFrame(progressAnimationFrameId)
+        }
+
         function updateProgress() {
           if (isPlaying.value) {
             const elapsedTime = Date.now() - startTime
             progressPosition.value = Math.min(elapsedTime, progressDuration.value)
+            if (elapsedTime == progressDuration.value) {
+              progressPosition.value = 0
+            }
+            // if (progressPosition.value > progressDuration.value) progressPosition.value = 0
             if (progressPosition.value < progressDuration.value) {
               progressAnimationFrameId = requestAnimationFrame(updateProgress)
+            } else {
+              // when repeat mode is on track, we restart the whole progress
+              if (playbackState.value.repeat_mode === 2) {
+                startProgress(true)
+              }
             }
           }
         }
