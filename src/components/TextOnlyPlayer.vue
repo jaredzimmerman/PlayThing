@@ -2,8 +2,12 @@
   <div class="now-playing now-playing--active">
     <!--<div class="ruler"></div>-->
     <div class="top-details">
-      <h1 class="now-playing__track multiline-ellipsis" v-text="trackName"></h1>
-      <h2 class="now-playing__artists multiline-ellipsis" v-text="artistName"></h2>
+      <h1 class="now-playing__track">
+        <TextClamp :text="trackName" :max-lines="2" autoresize />
+      </h1>
+      <h2 class="now-playing__artists">
+        <TextClamp :text="artistName" :max-lines="2" autoresize />
+      </h2>
     </div>
 
     <div class="bottom-controls" v-show="!hideControls">
@@ -20,6 +24,7 @@
 <script lang="ts" setup>
 import Progress from '@/components/Progress.vue'
 import Controls from '@/components/Controls.vue'
+import TextClamp from 'vue3-text-clamp';
 import { useSpotifyStore } from '@/stores/spotify'
 import { useSettingsStore } from '@/stores/settings'
 import { useAppStore } from '@/stores/app'

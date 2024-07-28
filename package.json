@@ -22,6 +22,7 @@
     "simplex-noise": "^4.0.2",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3",
+    "vue3-text-clamp": "^0.1.2",
     "vue3-touch-events": "^4.1.8"
   },
   "devDependencies": {

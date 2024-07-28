@@ -7,10 +7,12 @@
       </div>
       <div class="now-playing__details" :style="`justify-content: ${hideControls ? 'center' : 'space-between'}`">
         <div>
-          <h1 class="now-playing__track multiline-ellipsis" :style="`-webkit-line-clamp: ${lineNumber}`"
-            v-html="trackName"></h1>
-          <h2 class="now-playing__artists multiline-ellipsis" :style="`-webkit-line-clamp: ${lineNumberArtist}`"
-            v-text="artistName"></h2>
+          <h1 class="now-playing__track">
+            <TextClamp :text="trackName" :max-lines="lineNumber" />
+          </h1>
+          <h2 class="now-playing__artists">
+            <TextClamp :text="artistName" :max-lines="lineNumberArtist" />
+          </h2>
         </div>
         <div class="now-playing__controls" v-show="!hideControls">
           <Controls />
@@ -23,6 +25,7 @@
 <script lang="ts" setup>
 import Progress from '@/components/Progress.vue'
 import Controls from '@/components/Controls.vue'
+import TextClamp from 'vue3-text-clamp';
 import { useSpotifyStore } from '@/stores/spotify'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
@@ -35,6 +38,10 @@ const appStore = useAppStore();
 const { miscellaneousOption } = storeToRefs(settingsStore);
 const { trackName, artistName, albumArtURL } = storeToRefs(spotifyStore);
 const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore);
+
+function replaceSpacesWithNbsp(text: string) {
+  return text.replace(/ /g, '&nbsp;');
+}
 </script>
 
 <style lang="scss" scoped>

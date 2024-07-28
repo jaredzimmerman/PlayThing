@@ -16,9 +16,11 @@
             <SplideSlide v-for="item in recentlyPlayedTracksNoDuplicates" :key="item.track.id">
               <div class="carousel-item" @click="playRecent(item)">
                 <img :src="item.track.album.images[0].url" />
-                <h2 class="ellipsis">{{ item.track.name }}</h2>
-                <h3 class="ellipsis">
-                  {{ item.track.artists.map(artist => artist.name).join(', ') }}
+                <h2>
+                  <TextClamp :text="item.track.name" :max-lines="1" />
+                </h2>
+                <h3>
+                  <TextClamp :text="artistName(item)" :max-lines="1" />
                 </h3>
               </div>
             </SplideSlide>
@@ -36,6 +38,7 @@
 
 <script lang="ts" setup>
 import TouchScreen from './TouchScreen.vue'
+import TextClamp from 'vue3-text-clamp';
 // @ts-ignore
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import '@splidejs/vue-splide/css';
@@ -70,6 +73,10 @@ function playRecent(track: typeof recentlyPlayedTracks.value[number]) {
 function playSaved() {
   play(savedTracks.value.map((item) => item.track.uri))
   showRecentlyPlayed.value = false
+}
+
+function artistName(track: typeof recentlyPlayedTracks.value[number]) {
+  return track.track.artists.map(artist => artist.name).join(', ')
 }
 
 </script>
