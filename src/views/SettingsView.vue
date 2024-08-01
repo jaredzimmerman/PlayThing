@@ -83,7 +83,7 @@
             PlayThing is not affiliated with Spotify.
           </p>
 
-          <p>More info at: <br />https://jmz.fyi/plaything</p>
+          <p>More info at: <br /><span @click="openInfo()">https://jmz.fyi/plaything</span></p>
 
           <p>Open Source Libraries in use: @georgedoescode/spline,
             @spotify/web-api-ts-sdk,
@@ -128,6 +128,10 @@ const {
 } = settingsStore;
 
 const { logout } = spotifyStore
+
+function openInfo() {
+  window?.open("https://jmz.fyi/plaything", '_blank')?.focus();
+}
 
 </script>
 
