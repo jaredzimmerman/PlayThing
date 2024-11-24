@@ -2,11 +2,8 @@
   <div class="now-playing">
     <div>
       <div class="now-playing__cover">
-        <img :src="albumArtURL" :class="`now-playing__image`" :style="`margin-bottom: ${miscellaneousOption.includes('show-progress-bar')
-          ? '15px'
-          : '0px'
-          }`
-          " />
+        <AlbumArt />
+
         <ProgressBar v-if="miscellaneousOption.includes('show-progress-bar')" />
         <div class="touch-screen">
           <TouchScreen />
@@ -30,6 +27,7 @@ import { useSpotifyStore } from '@/stores/spotify'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
 import { useAppStore } from '@/stores/app'
+import AlbumArt from './AlbumArt.vue'
 
 const settingsStore = useSettingsStore()
 const spotifyStore = useSpotifyStore();
@@ -72,6 +70,7 @@ const { hideControls } = storeToRefs(appStore);
   }
 
   &__cover {
+    //position: relative;
     display: block;
   }
 
@@ -99,6 +98,7 @@ const { hideControls } = storeToRefs(appStore);
 
   &__cover {
     //display: var(--display-album-art);
+    position: relative;
     display: 'block';
   }
 

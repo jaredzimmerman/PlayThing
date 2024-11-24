@@ -2,7 +2,7 @@
   <div class="now-playing" :class="'now-playing-active'">
     <div class="container">
       <div class="now-playing__cover">
-        <img :src="albumArtURL" :alt="trackName" :class="`now-playing__image`" />
+        <AlbumArt />
         <ProgressBar v-if="miscellaneousOption.includes('show-progress-bar')" />
       </div>
       <div class="now-playing__details" :style="`justify-content: ${hideControls ? 'center' : 'space-between'}`">
@@ -30,6 +30,7 @@ import { useSpotifyStore } from '@/stores/spotify'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
 import { useAppStore } from '@/stores/app'
+import AlbumArt from './AlbumArt.vue';
 
 const settingsStore = useSettingsStore()
 const spotifyStore = useSpotifyStore();
