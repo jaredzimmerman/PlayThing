@@ -2,6 +2,7 @@ import { ref, computed, shallowRef, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { SpotifyApi, type AccessToken, type SavedTrack } from '@spotify/web-api-ts-sdk'
 import type { PlayHistory } from 'node_modules/@spotify/web-api-ts-sdk/dist/cjs'
+import { useSpotifyPlaybackState } from '@/composables/useSpotifyPlaybackState'
 
 declare global {
   interface Window {
@@ -17,19 +18,27 @@ const scopes = [
   'user-read-recently-played',
   'user-library-read',
   'streaming',
-  'user-read-private'
+  'user-read-private',
+  'user-read-birthdate',
+  'user-read-email',
+  'web-playback'
 ]
 
 export const useSpotifyStore = defineStore(
   'spotify',
   () => {
+    const pollingInterval = import.meta.env.VUE_APP_POLLING_INTERVAL_MILLISECONDS ?? 1000
     const accessToken = ref<AccessToken | null>(null)
     //const player = ref<any>(null)
-    const playbackState = shallowRef<any | null>(null)
+    //const playbackState = shallowRef<any | null>(null)
     const authenticated = ref(false)
     const currentDeviceID = ref('')
     const recentlyPlayedTracks = ref<PlayHistory[]>([])
     const savedTracks = ref<SavedTrack[]>([])
+    const { playbackState } = useSpotifyPlaybackState(
+      async () => accessToken.value?.access_token ?? '',
+      pollingInterval
+    )
 
     const progressDuration = ref(1)
     const progressPosition = ref(0)
@@ -51,39 +60,40 @@ export const useSpotifyStore = defineStore(
       () => (progressPosition.value * 100) / progressDuration.value
     )
 
-    const trackID = computed(() => playbackState.value?.track_window.current_track.id)
+    const trackID = computed(() => playbackState.value?.item.id)
 
     const trackName = computed(() => {
-      if (playbackState.value?.track_window == null) return ''
-      return playbackState.value.track_window.current_track.name
+      if (playbackState.value?.item == null) return ''
+      return playbackState.value.item.name
     })
 
     const artistName = computed(() => {
-      if (playbackState.value?.track_window == null) return ''
-      const item = playbackState.value.track_window as any
-      return item.current_track.artists.map((artist: any) => artist.name).join(', ')
+      if (playbackState.value?.item == null) return ''
+      const item = playbackState.value.item as any
+      return item.artists.map((artist: any) => artist.name).join(', ')
     })
 
     const albumArtURL = computed(() => {
       if (playbackState.value == null) return ''
-      const item = playbackState.value.track_window as any
-      return item.current_track.album.images[0].url
+      const item = playbackState.value.item as any
+      return item.album.images[0].url
     })
 
     const shuffleState = computed(() => {
       if (playbackState.value == null) return false
-      return playbackState.value.shuffle
+      return playbackState.value.shuffle_state
     })
 
     const repeatState = computed(() => {
-      const states = ['off', 'context', 'track']
+      //const states = ['off', 'context', 'track']
       if (playbackState.value == null) return 'off'
-      return states[playbackState.value.repeat_mode]
+      return playbackState.value.repeat_state
+      //return states[playbackState.value.repeat_mode]
     })
 
     const isPlaying = computed(() => {
       if (playbackState.value == null) return false
-      return !playbackState.value.paused
+      return playbackState.value.is_playing
     })
 
     function authenticate(code: any = null) {
@@ -105,10 +115,17 @@ export const useSpotifyStore = defineStore(
       }
     }
 
-    function resetProgress() {
+    /*function resetProgress() {
       if (playbackState.value) {
         progressDuration.value = playbackState.value.duration ?? 1
         progressPosition.value = playbackState.value.position ?? 1
+      }
+    }*/
+
+    function resetProgress() {
+      if (playbackState.value) {
+        progressDuration.value = playbackState.value.item.duration_ms ?? 1
+        progressPosition.value = playbackState.value.progress_ms ?? 1
       }
     }
 
@@ -124,7 +141,7 @@ export const useSpotifyStore = defineStore(
           progressAnimationFrameId = requestAnimationFrame(() => updateProgress(startTime))
         } else {
           // when repeat mode is on track, we restart the whole progress
-          if (playbackState.value.repeat_mode === 2) {
+          if (playbackState.value?.repeat_state === 'track') {
             startProgress(true)
           }
         }
@@ -147,22 +164,33 @@ export const useSpotifyStore = defineStore(
       if (tracks) {
         apiClient?.player.startResumePlayback(currentDeviceID.value, undefined, tracks)
       } else {
-        player?.resume()
+        apiClient?.player.startResumePlayback(currentDeviceID.value)
       }
+      /*if (tracks) {
+        apiClient?.player.startResumePlayback(currentDeviceID.value, undefined, tracks)
+      } else {
+        //apiClient?.player?.
+        //player?.resume()
+      }*/
     }
     function pause() {
-      player?.pause()
+      apiClient?.player?.pausePlayback(currentDeviceID.value)
+      //player?.pause()
     }
     function shuffle(state: boolean) {
       try {
         if (currentDeviceID.value) {
           apiClient?.player.togglePlaybackShuffle(state, currentDeviceID.value)
           // we update in advance
-          playbackState.value = {
-            ...playbackState.value,
-            shuffle: state,
-            shuffle_mode: state ? 1 : 0
+          if (playbackState.value) {
+            playbackState.value.shuffle_state = state
           }
+          /*playbackState.value = {
+            ...playbackState.value,
+            //shuffle: state,
+            shuffle_state: state,
+            //shuffle_mode: state ? 1 : 0
+          }*/
         }
       } catch (err) {
         console.error(err)
@@ -175,10 +203,11 @@ export const useSpotifyStore = defineStore(
         if (currentDeviceID.value) {
           apiClient?.player.setRepeatMode(repeatMode, currentDeviceID.value)
           // we update in advance
-          playbackState.value = {
+          if (playbackState.value) playbackState.value.repeat_state = repeatMode
+          /*playbackState.value = {
             ...playbackState.value,
             repeat_mode: modes[repeatMode]
-          }
+          }*/
         }
       } catch (err) {
         console.error(err)
@@ -186,15 +215,20 @@ export const useSpotifyStore = defineStore(
     }
 
     function nextTrack() {
-      player?.nextTrack()
+      apiClient.player.skipToNext(currentDeviceID.value)
+      //player?.nextTrack()
     }
 
     function previousTrack() {
-      player?.previousTrack()
+      apiClient.player.skipToPrevious(currentDeviceID.value)
+      //player?.previousTrack()
     }
 
     function initPlayer() {
       if (!window.Spotify) return
+      loadRecents()
+      loadSavedTracks()
+      /*console.log('Token : ', accessToken)
       player = new window.Spotify.Player({
         name: 'PlayThing',
         getOAuthToken: (cb: any) => {
@@ -208,19 +242,20 @@ export const useSpotifyStore = defineStore(
       })
 
       player.addListener('player_state_changed', (state: any) => {
-        // console.log('new state : ', state)
+        console.log('new state : ', state)
         playbackState.value = state
         loadRecents()
         loadSavedTracks()
       })
 
-      player.on('authentication_error', () => {
-        //console.log('AUTHENTICATION ERROR')
+      player.on('authentication_error', ({ message }: any) => {
+        console.log('AUTHENTICATION ERROR : ', message)
+        //authenticate()
         //authoriseWithAccessToken()
       })
 
       player.on('playback_error', () => {
-        //console.log('PLAYBACK ERROR')
+        console.log('PLAYBACK ERROR')
         authenticate()
         //authoriseWithAccessToken()
       })
@@ -230,12 +265,18 @@ export const useSpotifyStore = defineStore(
           authenticated.value = true
           // player?.resume()
         }
-      })
+      })*/
     }
 
     watch(currentDeviceID, () => {
       if (currentDeviceID.value) {
-        apiClient?.player.transferPlayback([currentDeviceID.value], true)
+        // apiClient?.player.transferPlayback([currentDeviceID.value], true)
+      }
+    })
+
+    watch(playbackState, () => {
+      if (playbackState.value?.device.id) {
+        currentDeviceID.value = playbackState.value.device.id
       }
     })
 
