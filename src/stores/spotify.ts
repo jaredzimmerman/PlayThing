@@ -182,9 +182,9 @@ export const useSpotifyStore = defineStore(
         if (currentDeviceID.value) {
           apiClient?.player.togglePlaybackShuffle(state, currentDeviceID.value)
           // we update in advance
-          if (playbackState.value) {
+          /*if (playbackState.value) {
             playbackState.value.shuffle_state = state
-          }
+          }*/
           /*playbackState.value = {
             ...playbackState.value,
             //shuffle: state,
@@ -203,7 +203,7 @@ export const useSpotifyStore = defineStore(
         if (currentDeviceID.value) {
           apiClient?.player.setRepeatMode(repeatMode, currentDeviceID.value)
           // we update in advance
-          if (playbackState.value) playbackState.value.repeat_state = repeatMode
+          //if (playbackState.value) playbackState.value.repeat_state = repeatMode
           /*playbackState.value = {
             ...playbackState.value,
             repeat_mode: modes[repeatMode]
@@ -268,15 +268,16 @@ export const useSpotifyStore = defineStore(
       })*/
     }
 
-    watch(currentDeviceID, () => {
+    /*watch(currentDeviceID, () => {
       if (currentDeviceID.value) {
         // apiClient?.player.transferPlayback([currentDeviceID.value], true)
       }
-    })
+    })*/
 
     watch(playbackState, () => {
       if (playbackState.value?.device.id) {
         currentDeviceID.value = playbackState.value.device.id
+        resetProgress()
       }
     })
 

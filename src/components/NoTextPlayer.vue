@@ -11,9 +11,12 @@
         <div class="touch-screen">
           <TouchScreen />
         </div>
-        <div class="controls" v-show="!hideControls">
-          <PlayerControls />
-        </div>
+        <transition name="fade-up">
+          <div class="controls" v-show="!hideControls">
+            <PlayerControls />
+          </div>
+
+        </transition>
       </div>
     </div>
   </div>
@@ -168,6 +171,24 @@ const { hideControls } = storeToRefs(appStore);
   top: 0;
   left: 0;
   overflow: hidden;
+}
+
+
+.fade-up-enter-active,
+.fade-up-leave-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-up-enter-from,
+.fade-up-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-up-enter-to,
+.fade-up-leave-from {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>
 
