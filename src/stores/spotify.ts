@@ -4,13 +4,6 @@ import { SpotifyApi, type AccessToken, type SavedTrack } from '@spotify/web-api-
 import type { PlayHistory } from 'node_modules/@spotify/web-api-ts-sdk/dist/cjs'
 import { useSpotifyPlaybackState } from '@/composables/useSpotifyPlaybackState'
 
-declare global {
-  interface Window {
-    Spotify: any
-    onSpotifyWebPlaybackSDKReady: any
-  }
-}
-
 const scopes = [
   'user-read-currently-playing',
   'user-modify-playback-state',
@@ -51,8 +44,6 @@ export const useSpotifyStore = defineStore(
       window.location.origin,
       scopes
     )
-
-    let player: any = null
 
     let progressAnimationFrameId: any = null
 
@@ -162,9 +153,11 @@ export const useSpotifyStore = defineStore(
 
     function play(tracks: string[] | null = null) {
       if (tracks) {
-        apiClient?.player.startResumePlayback(currentDeviceID.value, undefined, tracks)
+        apiClient?.player
+          .startResumePlayback(currentDeviceID.value, undefined, tracks)
+          .catch(() => {})
       } else {
-        apiClient?.player.startResumePlayback(currentDeviceID.value)
+        apiClient?.player.startResumePlayback(currentDeviceID.value).catch(() => {})
       }
       /*if (tracks) {
         apiClient?.player.startResumePlayback(currentDeviceID.value, undefined, tracks)
@@ -174,13 +167,13 @@ export const useSpotifyStore = defineStore(
       }*/
     }
     function pause() {
-      apiClient?.player?.pausePlayback(currentDeviceID.value)
+      apiClient?.player?.pausePlayback(currentDeviceID.value).catch(() => {})
       //player?.pause()
     }
     function shuffle(state: boolean) {
       try {
         if (currentDeviceID.value) {
-          apiClient?.player.togglePlaybackShuffle(state, currentDeviceID.value)
+          apiClient?.player.togglePlaybackShuffle(state, currentDeviceID.value).catch(() => {})
           // we update in advance
           /*if (playbackState.value) {
             playbackState.value.shuffle_state = state
@@ -198,10 +191,10 @@ export const useSpotifyStore = defineStore(
     }
 
     function repeat(repeatMode: 'track' | 'context' | 'off') {
-      const modes = { off: 0, context: 1, track: 2 }
+      // const modes = { off: 0, context: 1, track: 2 }
       try {
         if (currentDeviceID.value) {
-          apiClient?.player.setRepeatMode(repeatMode, currentDeviceID.value)
+          apiClient?.player.setRepeatMode(repeatMode, currentDeviceID.value).catch(() => {})
           // we update in advance
           //if (playbackState.value) playbackState.value.repeat_state = repeatMode
           /*playbackState.value = {
@@ -215,64 +208,19 @@ export const useSpotifyStore = defineStore(
     }
 
     function nextTrack() {
-      apiClient.player.skipToNext(currentDeviceID.value)
+      apiClient.player.skipToNext(currentDeviceID.value).catch(() => {})
       //player?.nextTrack()
     }
 
     function previousTrack() {
-      apiClient.player.skipToPrevious(currentDeviceID.value)
+      apiClient.player.skipToPrevious(currentDeviceID.value).catch(() => {})
       //player?.previousTrack()
     }
 
     function initPlayer() {
-      if (!window.Spotify) return
       loadRecents()
       loadSavedTracks()
-      /*console.log('Token : ', accessToken)
-      player = new window.Spotify.Player({
-        name: 'PlayThing',
-        getOAuthToken: (cb: any) => {
-          cb(accessToken.value?.access_token)
-        }
-      })
-
-      player.addListener('ready', ({ device_id }: any) => {
-        currentDeviceID.value = device_id
-        loadRecents()
-      })
-
-      player.addListener('player_state_changed', (state: any) => {
-        console.log('new state : ', state)
-        playbackState.value = state
-        loadRecents()
-        loadSavedTracks()
-      })
-
-      player.on('authentication_error', ({ message }: any) => {
-        console.log('AUTHENTICATION ERROR : ', message)
-        //authenticate()
-        //authoriseWithAccessToken()
-      })
-
-      player.on('playback_error', () => {
-        console.log('PLAYBACK ERROR')
-        authenticate()
-        //authoriseWithAccessToken()
-      })
-
-      player.connect().then((success: boolean) => {
-        if (success) {
-          authenticated.value = true
-          // player?.resume()
-        }
-      })*/
     }
-
-    /*watch(currentDeviceID, () => {
-      if (currentDeviceID.value) {
-        // apiClient?.player.transferPlayback([currentDeviceID.value], true)
-      }
-    })*/
 
     watch(playbackState, () => {
       if (playbackState.value?.device.id) {
@@ -296,14 +244,6 @@ export const useSpotifyStore = defineStore(
       resetProgress()
       startProgress()
     })
-
-    function initPlaybackSDK() {
-      window.onSpotifyWebPlaybackSDKReady = () => {
-        if (authenticated.value && player == null) {
-          initPlayer()
-        }
-      }
-    }
 
     function loadRecents() {
       apiClient?.player.getRecentlyPlayedTracks().then((response) => {
@@ -339,7 +279,6 @@ export const useSpotifyStore = defineStore(
       progressPercentage,
       recentlyPlayedTracks,
       savedTracks,
-      initPlaybackSDK,
       initPlayer,
       authenticate,
       play,

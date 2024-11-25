@@ -10,9 +10,11 @@
       </h2>
     </div>
 
-    <div class="bottom-controls" v-show="!hideControls">
-      <PlayerControls />
-    </div>
+    <transition name="fade-up">
+      <div class="bottom-controls" v-show="!hideControls">
+        <PlayerControls />
+      </div>
+    </transition>
 
     <div class="bottom-progress" v-if="miscellaneousOption.includes('show-progress-bar')"
       :style="`opacity: ${showSettingButton ? 0.5 : 1}`">

@@ -2,9 +2,12 @@
   <div class="now-playing">
     <div>
       <div class="now-playing__cover">
-        <AlbumArt />
+        <div class="art-container">
+          <AlbumArt />
 
-        <ProgressBar v-if="miscellaneousOption.includes('show-progress-bar')" />
+          <ProgressBar v-if="miscellaneousOption.includes('show-progress-bar')" />
+
+        </div>
         <div class="touch-screen">
           <TouchScreen />
         </div>
@@ -12,7 +15,6 @@
           <div class="controls" v-show="!hideControls">
             <PlayerControls />
           </div>
-
         </transition>
       </div>
     </div>
@@ -99,7 +101,15 @@ const { hideControls } = storeToRefs(appStore);
   &__cover {
     //display: var(--display-album-art);
     position: relative;
-    display: 'block';
+    //display: 'block';
+    //gap: 1.3888888888888888vh;
+  }
+
+  &__cover .art-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3888888888888888vh;
+    height: 61.111111111111114vh;
   }
 
   &__track {
@@ -171,24 +181,6 @@ const { hideControls } = storeToRefs(appStore);
   top: 0;
   left: 0;
   overflow: hidden;
-}
-
-
-.fade-up-enter-active,
-.fade-up-leave-active {
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.fade-up-enter-from,
-.fade-up-leave-to {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.fade-up-enter-to,
-.fade-up-leave-from {
-  opacity: 1;
-  transform: translateY(0);
 }
 </style>
 

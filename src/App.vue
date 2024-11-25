@@ -18,7 +18,7 @@ const spotifyStore = useSpotifyStore()
 
 const { showSplashScreen } = storeToRefs(appStore)
 const { authenticated } = storeToRefs(spotifyStore)
-const { initPlaybackSDK, authenticate } = spotifyStore
+const { authenticate } = spotifyStore
 const { registerKeyboardShortcuts, unregisterKeyboardShortcuts } = appStore
 
 
@@ -31,12 +31,11 @@ watch(authenticated, (auth) => {
 })
 
 onMounted(() => {
-  initPlaybackSDK();
   router.isReady().then(() => {
     let code = route.query.code;
-    if (code) {
-      authenticate(code)
-    }
+    //if (code) {
+    authenticate(code)
+    //}
   })
   registerKeyboardShortcuts()
 })

@@ -26,7 +26,7 @@ const { miscellaneousOption } = storeToRefs(settingsStore);
         //display: var(--display-album-art);
         position: relative;
         display: 'block';
-        overflow: hidden;
+        //overflow: hidden;
     }
 
 
@@ -81,11 +81,14 @@ const { miscellaneousOption } = storeToRefs(settingsStore);
     /* Stack the images */
     top: 0;
     left: 0;
-    //  width: 100%;
+    width: 100%;
     /* Adjust as needed */
     height: auto;
     /* Maintain aspect ratio */
-    object-fit: cover;
     /* Makes sure the image scales nicely */
+    box-shadow: 0px 0px 25px 0px #00000040;
+    border-radius: 10px;
+    aspect-ratio: 1;
+    max-width: 640px;
 }
 </style>

@@ -15,6 +15,7 @@
   width: 100%;
   height: 100vh;
   overflow: hidden;
+  transition: background-color 3s ease;
 }
 
 .scrim {

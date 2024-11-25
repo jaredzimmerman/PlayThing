@@ -40,3 +40,22 @@ const { fadePlayer } = storeToRefs(appStore)
   z-index: 1;
 }
 </style>
+
+<style lang="scss">
+.fade-up-enter-active,
+.fade-up-leave-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-up-enter-from,
+.fade-up-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-up-enter-to,
+.fade-up-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>

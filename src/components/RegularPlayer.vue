@@ -14,9 +14,11 @@
             <TextClamp :text="artistName" :max-lines="lineNumberArtist" />
           </h2>
         </div>
+
         <div class="now-playing__controls" v-show="!hideControls">
           <PlayerControls />
         </div>
+
       </div>
     </div>
   </div>

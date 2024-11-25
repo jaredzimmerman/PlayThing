@@ -44,6 +44,7 @@ if (miscellaneousOption.value.includes('animate-blur-spotlight')) {
   height: 100vh;
   overflow: hidden;
   background-color: var(--primary-color);
+  transition: background-color 3s ease;
   //transform: scale(120%) rotate(180deg);
 }
 
@@ -53,6 +54,7 @@ if (miscellaneousOption.value.includes('animate-blur-spotlight')) {
   background-position: center;
   width: 100vw;
   height: 100vh;
+  transition: background-image 3s ease-in-out, opacity 3s ease-in-out;
 }
 
 .scrim::before {
