@@ -11,13 +11,13 @@
     </div>
 
     <transition name="fade-up">
-      <div class="bottom-controls" v-show="!hideControls">
+      <div class="bottom-controls" v-show="!hideControls" :style="showSettingButton ? 'translate: 0px -20px;' : ''">
         <PlayerControls />
       </div>
     </transition>
 
     <div class="bottom-progress" v-if="miscellaneousOption.includes('show-progress-bar')"
-      :style="`opacity: ${showSettingButton ? 0.5 : 1}`">
+      :style="showSettingButton ? ' opacity: 0.5; translate: 0px -20px;' : 'opacity: 1; translate: 0px;'">
       <ProgressBar />
     </div>
   </div>
@@ -82,6 +82,8 @@ const { hideControls, showSettingButton } = storeToRefs(appStore);
     padding: 0;
     //margin-bottom: 9vh;
     margin-bottom: 3vh;
+    width: 83vw;
+    //background-color: yellow;
   }
 
   &__artists {
@@ -96,6 +98,8 @@ const { hideControls, showSettingButton } = storeToRefs(appStore);
     margin-block-end: 0;
     margin: 0;
     padding: 0;
+    width: 63vw;
+    //background-color: green;
   }
 
   &--active {
@@ -128,7 +132,8 @@ const { hideControls, showSettingButton } = storeToRefs(appStore);
 .top-details {
   position: absolute;
   //width: 47.083333333333336vw;
-  width: 56.1vw;
+  //width: 56.1vw;
+  width: 90vw;
   top: 5.1vh;
   left: 5.20833333333333vw;
   gap: 0px;
@@ -149,6 +154,7 @@ const { hideControls, showSettingButton } = storeToRefs(appStore);
   //height: 8.148148148148149vh;
   //top: 77.5vh;
   //left: 71.1875vw;
+  transition: translate 0.5s ease;
 }
 
 
@@ -176,7 +182,7 @@ const { hideControls, showSettingButton } = storeToRefs(appStore);
   transform: translateX(-50%);
   gap: 0px;
   border-radius: 2px 0px 0px 0px;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease, translate 0.5s ease;
   //opacity: 0px;
 }
 

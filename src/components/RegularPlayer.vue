@@ -80,6 +80,12 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore);
     width: 38.02083333333333vw;
   }
 
+
+  &__details>div:first-child {
+    font-size: var(--track-text-size);
+    line-height: 1.33;
+  }
+
   &__controls {
     margin-bottom: 15%;
     width: 80%;
@@ -100,10 +106,21 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore);
 
   &__artists {
     opacity: 0.8;
-    font-size: var(--artist-text-size);
+    //font-size: var(--artist-text-size);
+    font-size: 0.8em;
     max-width: 100%;
     margin-top: 30px;
+    //max-height: 275px;
   }
+
+  /*&__artists div {
+    max-height: 275px;
+  }
+
+  &__track div {
+    max-height: 275px;
+  }*/
+
 
   &--active {
     align-items: center;

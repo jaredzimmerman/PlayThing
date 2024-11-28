@@ -182,6 +182,7 @@ const { isPlaying, shuffleState, repeatState } = storeToRefs(spotifyStore);
   //width: 4.583333333333333vw;
   //height: 8.148148148148149vh;
   aspect-ratio: 1;
+  // border: 1px solid red;
 }
 
 

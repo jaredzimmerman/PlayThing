@@ -87,6 +87,10 @@ function artistName(track: typeof recentlyPlayedTracks.value[number]) {
   overflow: hidden;
   //background-color: #000;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+  //backdrop-filter: blur(15px);
+  /* Adjust the blur intensity here */
+  //-webkit-backdrop-filter: blur(15px);
+  /* For better browser support */
 }
 
 .tracks-container {

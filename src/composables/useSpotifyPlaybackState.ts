@@ -1,3 +1,4 @@
+import type { SpotifyApi } from '@spotify/web-api-ts-sdk'
 import { ref, onMounted, onUnmounted } from 'vue'
 
 export interface PlaybackState {
@@ -126,6 +127,7 @@ export interface Disallows {
 
 export function useSpotifyPlaybackState(
   getAccessToken: () => Promise<string>,
+  // getApiClient: () => Promise<SpotifyApi>,
   pollingInterval = 5000
 ) {
   const playbackState = ref<PlaybackState | null>(null)
@@ -146,6 +148,11 @@ export function useSpotifyPlaybackState(
         }
       })
 
+      //const client = await getApiClient()
+
+      //const data = await client.player.getPlaybackState()
+      // console.log('response : ', response)
+
       if (!response.ok) {
         if (response.status === 401) {
           error.value = 'Unauthorized: Token expired or invalid.'
@@ -158,6 +165,7 @@ export function useSpotifyPlaybackState(
       }
 
       const data = await response.json()
+      //console.log(data)
       playbackState.value = data
       /*playbackState.value = {
         isPlaying: data.is_playing,

@@ -79,7 +79,7 @@ export const useAppStore = defineStore(
         textSize = '3rem'
         titleSize = '110px'
         artistSize = '50px'
-        lineNumberArtist.value = 3
+        lineNumberArtist.value = 2
         if (hideControls.value) {
           lineNumber.value = 4
         } else {
@@ -91,11 +91,12 @@ export const useAppStore = defineStore(
         textSize = '3rem'
         titleSize = '130px'
         artistSize = '50px'
-        lineNumberArtist.value = 3
+        lineNumberArtist.value = 1
         if (hideControls.value) {
           lineNumber.value = 3
         } else {
           lineNumber.value = 2
+          //lineNumberArtist.value = 2
         }
       } else if (value === 'text-only') {
         displayText = 'inherit'

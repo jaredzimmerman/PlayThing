@@ -29,7 +29,11 @@ export const useSpotifyStore = defineStore(
     const recentlyPlayedTracks = ref<PlayHistory[]>([])
     const savedTracks = ref<SavedTrack[]>([])
     const { playbackState } = useSpotifyPlaybackState(
-      async () => accessToken.value?.access_token ?? '',
+      async () => {
+        const accessToken = await apiClient.getAccessToken()
+        return accessToken?.access_token ?? ''
+      },
+      //async () => apiClient,
       pollingInterval
     )
 
