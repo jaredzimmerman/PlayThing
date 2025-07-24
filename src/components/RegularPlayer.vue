@@ -64,6 +64,7 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
   &__cover {
     width: var(--album-art-size);
     max-width: 95vmin;
+    position: relative;
   }
 
   &__image {
