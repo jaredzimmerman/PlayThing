@@ -10,8 +10,7 @@ import { storeToRefs } from 'pinia'
 
 const spotifyStore = useSpotifyStore()
 
-const { progressPercentage } = storeToRefs(spotifyStore);
-
+const { progressPercentage } = storeToRefs(spotifyStore)
 </script>
 
 <style lang="scss" progress>
@@ -20,7 +19,7 @@ const { progressPercentage } = storeToRefs(spotifyStore);
   width: 100%;
   border-radius: 5px;
   overflow: hidden;
-  height: 0.4629629629629629vh;
+  height: 0.5vh;
   margin-left: auto;
   margin-right: auto;
   border-radius: 2px;
