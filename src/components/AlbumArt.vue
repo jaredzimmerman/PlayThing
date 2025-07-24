@@ -1,22 +1,38 @@
 <template>
   <div class="now-playing__image">
     <transition name="fade">
-      <img :key="albumArtURL" :src="albumArtURL" />
+      <img
+        :key="albumArtURL"
+        :src="albumArtURL"
+        :style="`margin-bottom: ${
+          miscellaneousOption.includes('show-progress-bar') ? '15px' : '0px'
+        }`"
+      />
     </transition>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { useSettingsStore } from '@/stores/settings'
 import { storeToRefs } from 'pinia'
 import { useSpotifyStore } from '@/stores/spotify'
 
 const spotifyStore = useSpotifyStore()
 
+const settingsStore = useSettingsStore()
 const { albumArtURL } = storeToRefs(spotifyStore)
+const { miscellaneousOption } = storeToRefs(settingsStore)
 </script>
 
 <style lang="scss" scoped>
 .now-playing {
+  &__cover {
+    position: relative;
+    width: var(--album-art-size);
+    max-width: 95vmin;
+    display: block;
+  }
+
   &__image {
     //box-shadow: 1px 1px 16px -2px rgba(0, 0, 0, 0.3);
     height: auto;

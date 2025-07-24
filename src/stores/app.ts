@@ -47,6 +47,7 @@ export const useAppStore = defineStore(
       let textSize = ''
       let titleSize = ''
       let artistSize = ''
+
       if (value === 'none') {
         displayText = 'none'
         displayAlbumArt = 'inherit'

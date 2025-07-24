@@ -64,7 +64,6 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
   &__cover {
     width: var(--album-art-size);
     max-width: 95vmin;
-    position: relative;
   }
 
   &__image {
@@ -80,7 +79,8 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 38.02083333333333vw;
+    flex: 1;
+    min-width: 0;
   }
 
   &__details > div:first-child {
@@ -136,14 +136,13 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
 }
 
 .container {
-  display: grid;
-  gap: 5.729166666666666vw;
-  grid-template-columns: repeat(2, 1fr);
-  position: absolute;
-  top: 20.37037037037037vh;
-  left: 11.458333333333332vw;
-  width: 77.08333333333334vw;
-  height: 61.111111111111114vh;
+  display: flex;
+  gap: 3vw;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 5vh 5vw;
+  align-items: center;
 }
 
 .multiline-ellipsis {
