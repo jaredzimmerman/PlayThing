@@ -224,8 +224,6 @@ export async function setAppColours(settings: any, imageUrl: string) {
   document.documentElement.style.setProperty('--album-image', `url(${imageUrl})`)
   document.documentElement.style.setProperty('--controls-color', `#fff`)
   document.documentElement.style.setProperty('--color-text-primary', '#fff')
-  document.documentElement.style.setProperty('--primary-color', `#fff`)
-
   if (['match', 'match-dark'].includes(settings?.backgroundOption)) getMatchColors(blobUrl)
   else if (['contrast'].includes(settings?.backgroundOption)) getMatchContrastColors(blobUrl)
   else if (['spotlight'].includes(settings?.backgroundOption)) {
