@@ -79,8 +79,7 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    flex: 1;
-    min-width: 0;
+    width: 38.02083333333333vw;
   }
 
   &__details > div:first-child {
@@ -136,13 +135,14 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
 }
 
 .container {
-  display: flex;
-  gap: 3vw;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 5vh 5vw;
-  align-items: center;
+  display: grid;
+  gap: 5.729166666666666vw;
+  grid-template-columns: repeat(2, 1fr);
+  position: absolute;
+  top: 20.37037037037037vh;
+  left: 11.458333333333332vw;
+  width: 77.08333333333334vw;
+  height: 61.111111111111114vh;
 }
 
 .multiline-ellipsis {
