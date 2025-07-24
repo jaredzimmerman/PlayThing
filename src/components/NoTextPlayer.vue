@@ -6,7 +6,6 @@
           <AlbumArt />
 
           <ProgressBar v-if="miscellaneousOption.includes('show-progress-bar')" />
-
         </div>
         <div class="touch-screen">
           <TouchScreen />
@@ -32,13 +31,12 @@ import { useAppStore } from '@/stores/app'
 import AlbumArt from './AlbumArt.vue'
 
 const settingsStore = useSettingsStore()
-const spotifyStore = useSpotifyStore();
-const appStore = useAppStore();
+const spotifyStore = useSpotifyStore()
+const appStore = useAppStore()
 
-const { miscellaneousOption } = storeToRefs(settingsStore);
-const { albumArtURL } = storeToRefs(spotifyStore);
-const { hideControls } = storeToRefs(appStore);
-
+const { miscellaneousOption } = storeToRefs(settingsStore)
+const { albumArtURL } = storeToRefs(spotifyStore)
+const { hideControls } = storeToRefs(appStore)
 </script>
 
 <style lang="scss" scoped>
@@ -82,8 +80,8 @@ const { hideControls } = storeToRefs(appStore);
     // max-width: 640px; //60vw;
     width: 100%;
     //width: 60vw;
-    max-width: 640px;
-    width: 60vh;
+    max-width: var(--album-art-size);
+    width: var(--album-art-size);
     aspect-ratio: 1;
     border-radius: 10px;
   }
@@ -108,8 +106,9 @@ const { hideControls } = storeToRefs(appStore);
   &__cover .art-container {
     display: flex;
     flex-direction: column;
-    gap: 1.3888888888888888vh;
-    height: 61.111111111111114vh;
+    gap: 1vh;
+    align-items: center;
+    width: var(--album-art-size);
   }
 
   &__track {

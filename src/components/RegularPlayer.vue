@@ -5,7 +5,10 @@
         <AlbumArt />
         <ProgressBar v-if="miscellaneousOption.includes('show-progress-bar')" />
       </div>
-      <div class="now-playing__details" :style="`justify-content: ${hideControls ? 'center' : 'space-between'}`">
+      <div
+        class="now-playing__details"
+        :style="`justify-content: ${hideControls ? 'center' : 'space-between'}`"
+      >
         <div>
           <h1 class="now-playing__track">
             <TextClamp :text="trackName" :max-lines="lineNumber" />
@@ -18,7 +21,6 @@
         <div class="now-playing__controls" v-show="!hideControls">
           <PlayerControls />
         </div>
-
       </div>
     </div>
   </div>
@@ -27,21 +29,20 @@
 <script lang="ts" setup>
 import ProgressBar from '@/components/ProgressBar.vue'
 import PlayerControls from '@/components/PlayerControls.vue'
-import TextClamp from 'vue3-text-clamp';
+import TextClamp from 'vue3-text-clamp'
 import { useSpotifyStore } from '@/stores/spotify'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
 import { useAppStore } from '@/stores/app'
-import AlbumArt from './AlbumArt.vue';
+import AlbumArt from './AlbumArt.vue'
 
 const settingsStore = useSettingsStore()
-const spotifyStore = useSpotifyStore();
-const appStore = useAppStore();
+const spotifyStore = useSpotifyStore()
+const appStore = useAppStore()
 
-const { miscellaneousOption } = storeToRefs(settingsStore);
-const { trackName, artistName, albumArtURL } = storeToRefs(spotifyStore);
-const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore);
-
+const { miscellaneousOption } = storeToRefs(settingsStore)
+const { trackName, artistName, albumArtURL } = storeToRefs(spotifyStore)
+const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
 </script>
 
 <style lang="scss" scoped>
@@ -61,7 +62,8 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore);
   }
 
   &__cover {
-    width: 33.33333333333333vw;
+    width: var(--album-art-size);
+    max-width: 95vmin;
   }
 
   &__image {
@@ -77,11 +79,11 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 38.02083333333333vw;
+    flex: 1;
+    min-width: 0;
   }
 
-
-  &__details>div:first-child {
+  &__details > div:first-child {
     font-size: var(--track-text-size);
     line-height: 1.33;
   }
@@ -121,7 +123,6 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore);
     max-height: 275px;
   }*/
 
-
   &--active {
     align-items: center;
     justify-content: center;
@@ -132,18 +133,16 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore);
     align-items: center;
     justify-content: center;
   }
-
 }
 
 .container {
-  display: grid;
-  gap: 5.729166666666666vw;
-  grid-template-columns: repeat(2, 1fr);
-  position: absolute;
-  top: 20.37037037037037vh;
-  left: 11.458333333333332vw;
-  width: 77.08333333333334vw;
-  height: 61.111111111111114vh;
+  display: flex;
+  gap: 3vw;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 5vh 5vw;
+  align-items: center;
 }
 
 .multiline-ellipsis {
