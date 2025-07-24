@@ -15,9 +15,7 @@ const { progressPercentage } = storeToRefs(spotifyStore)
 
 <style lang="scss" progress>
 .progress-container {
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  position: relative;
   width: 100%;
   border-radius: 5px;
   overflow: hidden;

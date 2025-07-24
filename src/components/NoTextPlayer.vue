@@ -109,7 +109,6 @@ const { hideControls } = storeToRefs(appStore)
     gap: 1vh;
     align-items: center;
     width: var(--album-art-size);
-    position: relative;
   }
 
   &__track {
