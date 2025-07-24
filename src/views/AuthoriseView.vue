@@ -3,7 +3,7 @@
     <h1 class="authorise__heading">PlayThing</h1>
 
     <p class="authorise__copy">
-      PlaThing is a simple Spotify 'Now Playing' screen designed for the
+      PlayThing is a simple Spotify 'Now Playing' screen designed for the
       Raspberry Pi. Login with Spotify below and start playing some music!
     </p>
 
