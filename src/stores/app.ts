@@ -47,6 +47,7 @@ export const useAppStore = defineStore(
       let textSize = ''
       let titleSize = ''
       let artistSize = ''
+      let albumArtSize = ''
 
       if (value === 'none') {
         displayText = 'none'
@@ -54,6 +55,7 @@ export const useAppStore = defineStore(
         textSize = '1rem'
         titleSize = ''
         artistSize = ''
+        albumArtSize = 'clamp(200px, 45vmin, 640px)'
       } else if (value === 'small') {
         displayText = 'inherit'
         displayAlbumArt = 'inherit'
@@ -62,6 +64,7 @@ export const useAppStore = defineStore(
         artistSize = '50px'
         lineNumber.value = 4
         lineNumberArtist.value = 3
+        albumArtSize = 'clamp(150px, 40vmin, 640px)'
       } else if (value === 'medium') {
         displayText = 'inherit'
         displayAlbumArt = 'inherit'
@@ -74,6 +77,7 @@ export const useAppStore = defineStore(
           lineNumber.value = 3
         }
         lineNumberArtist.value = 3
+        albumArtSize = 'clamp(150px, 38vmin, 640px)'
       } else if (value === 'large') {
         displayText = 'inherit'
         displayAlbumArt = 'inherit'
@@ -81,6 +85,7 @@ export const useAppStore = defineStore(
         titleSize = '110px'
         artistSize = '50px'
         lineNumberArtist.value = 2
+        albumArtSize = 'clamp(150px, 35vmin, 640px)'
         if (hideControls.value) {
           lineNumber.value = 4
         } else {
@@ -93,6 +98,7 @@ export const useAppStore = defineStore(
         titleSize = '130px'
         artistSize = '50px'
         lineNumberArtist.value = 1
+        albumArtSize = 'clamp(150px, 32vmin, 640px)'
         if (hideControls.value) {
           lineNumber.value = 3
         } else {
@@ -104,6 +110,7 @@ export const useAppStore = defineStore(
         displayAlbumArt = 'none'
         titleSize = ''
         artistSize = ''
+        albumArtSize = 'clamp(150px, 40vmin, 640px)'
       }
 
       document.documentElement.style.setProperty('--display-text', displayText)
@@ -111,6 +118,7 @@ export const useAppStore = defineStore(
       document.documentElement.style.setProperty('--text-size', textSize)
       document.documentElement.style.setProperty('--track-text-size', titleSize)
       document.documentElement.style.setProperty('--artist-text-size', artistSize)
+      document.documentElement.style.setProperty('--album-art-size', albumArtSize)
     }
 
     function onKeyDown(event: KeyboardEvent) {
