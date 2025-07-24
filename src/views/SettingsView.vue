@@ -15,18 +15,32 @@
         <section>
           <h3>Nothing playing</h3>
           <ul>
-            <li v-for="option in nothingPlayingOptions" :key="option.value" @click="setNothingPlaying(option.value)">
-              <span v-if="nothingPlayingOption.includes(option.value)"><img src="@/assets/CaretIcon.svg?url" /></span>
-              <span v-if="option.value != 'regular-clock'" :class="option.value === nothingPlayingOption ? 'active' : ''
-        ">
+            <li
+              v-for="option in nothingPlayingOptions"
+              :key="option.value"
+              @click="setNothingPlaying(option.value)"
+            >
+              <span v-if="nothingPlayingOption.includes(option.value)"
+                ><img src="@/assets/CaretIcon.svg?url"
+              /></span>
+              <span
+                v-if="option.value != 'regular-clock'"
+                :class="option.value === nothingPlayingOption ? 'active' : ''"
+              >
                 {{ option.title }}
               </span>
-              <span class="colorless-active" v-else-if="nothingPlayingOption === 'regular-clock-12'"><span
-                  style="color: #fff">Clock</span>&nbsp;<span style="color: #fff"
-                  class="clock">12h</span>&nbsp;/&nbsp;24h</span>
-              <span class="colorless-active" v-else-if="nothingPlayingOption === 'regular-clock-24'"><span
-                  style="color: #fff">Clock</span>&nbsp;12h&nbsp;/&nbsp;<span style="color: #fff"
-                  class="clock">24h</span></span>
+              <span class="colorless-active" v-else-if="nothingPlayingOption === 'regular-clock-12'"
+                ><span style="color: #fff">Clock</span>&nbsp;<span style="color: #fff" class="clock"
+                  >12h</span
+                >&nbsp;/&nbsp;24h</span
+              >
+              <span class="colorless-active" v-else-if="nothingPlayingOption === 'regular-clock-24'"
+                ><span style="color: #fff">Clock</span>&nbsp;12h&nbsp;/&nbsp;<span
+                  style="color: #fff"
+                  class="clock"
+                  >24h</span
+                ></span
+              >
               <span v-else>Clock&nbsp;12h&nbsp;/&nbsp;24h</span>
             </li>
           </ul>
@@ -34,18 +48,31 @@
         <section>
           <h3>Background</h3>
           <ul>
-            <li v-for="option in backgroundOptions" :key="option.value" @click="setBackgroundOption(option.value)">
-              <span v-if="option.value === backgroundOption"><img src="@/assets/CaretIcon.svg?url" /></span>
-              <span :class="option.value === backgroundOption ? 'active' : ''
-        ">{{ option.title }}</span>
+            <li
+              v-for="option in backgroundOptions"
+              :key="option.value"
+              @click="setBackgroundOption(option.value)"
+            >
+              <span v-if="option.value === backgroundOption"
+                ><img src="@/assets/CaretIcon.svg?url"
+              /></span>
+              <span :class="option.value === backgroundOption ? 'active' : ''">{{
+                option.title
+              }}</span>
             </li>
           </ul>
         </section>
         <section>
           <h3>Text Size & Album Art</h3>
           <ul>
-            <li v-for="option in textOptions" :key="option.value" @click="setTextOption(option.value)">
-              <span v-if="option.value === textOption"><img src="@/assets/CaretIcon.svg?url" /></span>
+            <li
+              v-for="option in textOptions"
+              :key="option.value"
+              @click="setTextOption(option.value)"
+            >
+              <span v-if="option.value === textOption"
+                ><img src="@/assets/CaretIcon.svg?url"
+              /></span>
               <span :class="option.value === textOption ? 'active' : ''">{{ option.title }}</span>
             </li>
           </ul>
@@ -53,13 +80,17 @@
         <section>
           <h3>Miscellaneous</h3>
           <ul>
-            <li v-for="option in miscellaneousOptions" :key="option.value"
-              @click="setMiscellaneousOption(option.value)">
-              <span v-if="miscellaneousOption.includes(option.value)"><img src="@/assets/CaretIcon.svg?url" /></span>
-              <span :class="miscellaneousOption.includes(option.value)
-        ? 'active'
-        : ''
-        ">{{ option.title }}</span>
+            <li
+              v-for="option in miscellaneousOptions"
+              :key="option.value"
+              @click="setMiscellaneousOption(option.value)"
+            >
+              <span v-if="miscellaneousOption.includes(option.value)"
+                ><img src="@/assets/CaretIcon.svg?url"
+              /></span>
+              <span :class="miscellaneousOption.includes(option.value) ? 'active' : ''">{{
+                option.title
+              }}</span>
             </li>
           </ul>
         </section>
@@ -76,26 +107,17 @@
           </p>
           <p>
             PlayThing is Designed and conceptualized by
-            <strong>Jared Zimmerman</strong> and built by
-            <strong>Cedric Agoliki</strong>.
+            <strong>Jared Zimmerman</strong> and built by <strong>Cedric Agoliki</strong>.
           </p>
-          <p>
-            PlayThing is not affiliated with Spotify.
-          </p>
+          <p>PlayThing is not affiliated with Spotify.</p>
 
           <p>More info at: <br /><span @click="openInfo()">https://jmz.fyi/plaything</span></p>
 
-          <p>Open Source Libraries in use: @georgedoescode/spline,
-            @spotify/web-api-ts-sdk,
-            colorthief,
-            pinia,
-            pinia-plugin-persistedstate,
-            simplex-noise,
-            vue-router,
-            vue-splide,
-            vue3-text-clamp,
-            vue3-touch-events,
-            vueJS.</p>
+          <p>
+            Open Source Libraries in use: @georgedoescode/spline, @spotify/web-api-ts-sdk,
+            colorthief, pinia, pinia-plugin-persistedstate, simplex-noise, vue-router, vue-splide,
+            vue3-text-clamp, vue3-touch-events, vueJS.
+          </p>
         </section>
       </div>
     </div>
@@ -103,36 +125,33 @@
 </template>
 
 <script lang="ts" setup>
-import { useSettingsStore, nothingPlayingOptions, textOptions, backgroundOptions, miscellaneousOptions } from '@/stores/settings';
+import {
+  useSettingsStore,
+  nothingPlayingOptions,
+  textOptions,
+  backgroundOptions,
+  miscellaneousOptions
+} from '@/stores/settings'
 import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router';
-import { useSpotifyStore } from '@/stores/spotify';
+import { useRouter } from 'vue-router'
+import { useSpotifyStore } from '@/stores/spotify'
 
-const router = useRouter();
+const router = useRouter()
 
-const settingsStore = useSettingsStore();
-const spotifyStore = useSpotifyStore();
+const settingsStore = useSettingsStore()
+const spotifyStore = useSpotifyStore()
 
-const {
-  nothingPlayingOption,
-  textOption,
-  backgroundOption,
-  miscellaneousOption,
-} = storeToRefs(settingsStore);
+const { nothingPlayingOption, textOption, backgroundOption, miscellaneousOption } =
+  storeToRefs(settingsStore)
 
-const {
-  setNothingPlaying,
-  setTextOption,
-  setBackgroundOption,
-  setMiscellaneousOption
-} = settingsStore;
+const { setNothingPlaying, setTextOption, setBackgroundOption, setMiscellaneousOption } =
+  settingsStore
 
 const { logout } = spotifyStore
 
 function openInfo() {
-  window?.open("https://jmz.fyi/plaything", '_blank')?.focus();
+  window?.open('https://jmz.fyi/plaything', '_blank')?.focus()
 }
-
 </script>
 
 <style scoped lang="scss">
@@ -151,6 +170,34 @@ function openInfo() {
   display: flex;
   width: 100%;
   min-height: 100vh;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  .img-container,
+  .setting-container {
+    width: 100%;
+  }
+  .img-container > div {
+    position: static;
+    width: 100%;
+    height: auto;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+  .seperator {
+    display: none;
+  }
+  .mainTitle {
+    position: static;
+    text-align: center;
+  }
+  .closeIconContainer {
+    top: 10px;
+    right: 10px;
+  }
 }
 
 .img-container {
@@ -176,7 +223,7 @@ function openInfo() {
   margin-left: 140px;
 }
 
-.img-container>div {
+.img-container > div {
   position: fixed;
   //background-color: red;
   width: 50%;

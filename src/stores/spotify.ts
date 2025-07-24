@@ -10,11 +10,9 @@ const scopes = [
   'user-read-playback-state',
   'user-read-recently-played',
   'user-library-read',
-  'streaming',
   'user-read-private',
   'user-read-birthdate',
-  'user-read-email',
-  'web-playback'
+  'user-read-email'
 ]
 
 export const useSpotifyStore = defineStore(
@@ -118,10 +116,12 @@ export const useSpotifyStore = defineStore(
     }*/
 
     function resetProgress() {
-      if (playbackState.value) {
-        progressDuration.value = playbackState.value.item.duration_ms ?? 1
-        progressPosition.value = playbackState.value.progress_ms ?? 1
+      if (!playbackState.value?.item) {
+        return
       }
+
+      progressDuration.value = playbackState.value.item?.duration_ms ?? 1
+      progressPosition.value = playbackState.value.progress_ms ?? 1
     }
 
     function updateProgress(startTime: number) {
