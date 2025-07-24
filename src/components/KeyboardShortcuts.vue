@@ -32,7 +32,8 @@ function close() {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -54,7 +55,7 @@ function close() {
 }
 .overlay-content kbd {
   background: #333;
-  padding: 0.2rem 0.4rem;
+  padding: 0.25rem 0.4rem;
   border-radius: 3px;
   margin-right: 0.5rem;
 }
