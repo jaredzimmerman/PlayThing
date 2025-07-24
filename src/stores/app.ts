@@ -19,6 +19,7 @@ export const useAppStore = defineStore(
     const showPlayer = ref(false)
     const fadePlayer = ref(false)
     const isFirstTimeUsage = ref(true)
+    const showShortcuts = ref(false)
 
     const lineNumber = ref(10)
     const lineNumberArtist = ref(10)
@@ -192,6 +193,12 @@ export const useAppStore = defineStore(
             }
           }
           break
+        case '?':
+          showShortcuts.value = !showShortcuts.value
+          break
+        case 'Escape':
+          showShortcuts.value = false
+          break
         default:
           break
       }
@@ -295,6 +302,7 @@ export const useAppStore = defineStore(
       fadePlayer,
       isFirstTimeUsage,
       showRecentlyPlayed,
+      showShortcuts,
       registerKeyboardShortcuts,
       unregisterKeyboardShortcuts
     }
