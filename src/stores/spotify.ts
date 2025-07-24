@@ -10,11 +10,9 @@ const scopes = [
   'user-read-playback-state',
   'user-read-recently-played',
   'user-library-read',
-  'streaming',
   'user-read-private',
   'user-read-birthdate',
-  'user-read-email',
-  'web-playback'
+  'user-read-email'
 ]
 
 export const useSpotifyStore = defineStore(
