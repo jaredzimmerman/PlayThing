@@ -171,11 +171,11 @@ watch([trackName, artistName, lineNumber, lineNumberArtist, hideControls], () =>
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-rows: min-content 1fr min-content;
-  column-gap: 2.5%;
+  column-gap: 2.5vmin;
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 5vh 5vw;
+  margin: auto;
+  padding: 5vmin;
   align-items: center;
   justify-items: center;
 }

@@ -35,9 +35,10 @@ const { miscellaneousOption } = storeToRefs(settingsStore)
   }
 
   &__image {
-    //box-shadow: 1px 1px 16px -2px rgba(0, 0, 0, 0.3);
-    height: auto;
+    position: relative;
     width: 100%;
+    height: 100%;
+    //box-shadow: 1px 1px 16px -2px rgba(0, 0, 0, 0.3);
     max-width: var(--album-art-size);
     aspect-ratio: 1;
     border-radius: 10px;
