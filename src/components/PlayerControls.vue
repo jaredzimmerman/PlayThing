@@ -154,7 +154,7 @@ const { isPlaying, shuffleState, repeatState } = storeToRefs(spotifyStore);
   left: -2.3%;
   width: 27.083333333333332vw;
   height: 8.148148148148149vh;
-  //gap: 1.3vw;
+  column-gap: 1.25%;
   //max-width: 100%;
 }
 

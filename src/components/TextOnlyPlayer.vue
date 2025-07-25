@@ -196,6 +196,6 @@ const { hideControls, showSettingButton } = storeToRefs(appStore);
 </style>
 <style>
 .controls {
-  gap: 1.5vw;
+  gap: 1.25%;
 }
 </style>
