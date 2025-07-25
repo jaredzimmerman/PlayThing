@@ -55,7 +55,9 @@ function updateAlbumArtSize() {
   nextTick(() => {
     const textHeight = textRef.value?.offsetHeight || 0
     const controlsHeight = controlsRef.value?.offsetHeight || 0
-    albumArtSize.value = textHeight + controlsHeight
+    const calculatedSize = textHeight + controlsHeight
+    const maxSize = window.innerHeight * 2 / 3
+    albumArtSize.value = Math.min(calculatedSize, maxSize)
   })
 }
 
