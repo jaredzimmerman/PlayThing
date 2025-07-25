@@ -1,7 +1,10 @@
 <template>
   <div class="now-playing" :class="'now-playing-active'">
     <div class="container">
-      <div class="now-playing__cover">
+      <div
+        class="now-playing__cover"
+        :style="{ width: albumArtSize + 'px', height: albumArtSize + 'px' }"
+      >
         <AlbumArt />
         <ProgressBar v-if="miscellaneousOption.includes('show-progress-bar')" />
       </div>
@@ -9,7 +12,7 @@
         class="now-playing__details"
         :style="`justify-content: ${hideControls ? 'center' : 'space-between'}`"
       >
-        <div>
+        <div ref="textRef">
           <h1 class="now-playing__track">
             <TextClamp :text="trackName" :max-lines="lineNumber" />
           </h1>
@@ -17,8 +20,7 @@
             <TextClamp :text="artistName" :max-lines="lineNumberArtist" />
           </h2>
         </div>
-
-        <div class="now-playing__controls" v-show="!hideControls">
+        <div class="now-playing__controls" v-show="!hideControls" ref="controlsRef">
           <PlayerControls />
         </div>
       </div>
@@ -35,6 +37,7 @@ import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
 import { useAppStore } from '@/stores/app'
 import AlbumArt from './AlbumArt.vue'
+import { onMounted, onUnmounted, ref, watch, nextTick } from 'vue'
 
 const settingsStore = useSettingsStore()
 const spotifyStore = useSpotifyStore()
@@ -43,6 +46,31 @@ const appStore = useAppStore()
 const { miscellaneousOption } = storeToRefs(settingsStore)
 const { trackName, artistName, albumArtURL } = storeToRefs(spotifyStore)
 const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
+
+const textRef = ref<HTMLElement | null>(null)
+const controlsRef = ref<HTMLElement | null>(null)
+const albumArtSize = ref(0)
+
+function updateAlbumArtSize() {
+  nextTick(() => {
+    const textHeight = textRef.value?.offsetHeight || 0
+    const controlsHeight = controlsRef.value?.offsetHeight || 0
+    albumArtSize.value = textHeight + controlsHeight
+  })
+}
+
+onMounted(() => {
+  updateAlbumArtSize()
+  window.addEventListener('resize', updateAlbumArtSize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateAlbumArtSize)
+})
+
+watch([trackName, artistName, lineNumber, lineNumberArtist, hideControls], () =>
+  updateAlbumArtSize()
+)
 </script>
 
 <style lang="scss" scoped>
@@ -63,13 +91,15 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
 
   &__cover {
     grid-row: 1 / span 3;
-    width: var(--album-art-size);
     max-width: 95vmin;
     margin-top: 10%;
     margin-bottom: 10%;
-    align-self: stretch;
     /* Nudge album art slightly left */
     transform: translateX(-3vw);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1vh;
   }
 
   &__image {
@@ -102,13 +132,6 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
     width: 80%;
     position: relative;
     transition: all 1s ease-out;
-  }
-
-  &__cover {
-    display: flex;
-    flex-direction: column;
-    gap: 1.3888888888888888vh;
-    justify-content: space-between;
   }
 
   &__track {
@@ -149,7 +172,7 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-rows: min-content 1fr min-content;
-  column-gap: 10%;
+  column-gap: 5%;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
