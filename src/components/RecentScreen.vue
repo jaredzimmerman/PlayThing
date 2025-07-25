@@ -6,7 +6,7 @@
     <div class="tracks-container">
       <div>
         <h1>Favorites</h1>
-        <img src="@/assets/liked-songs.png" @click="playSaved" />
+        <img src="@/assets/liked-songs.png" @click="playSaved" alt="Liked songs" />
         <h2>Liked Songs</h2>
       </div>
       <div>
@@ -15,7 +15,7 @@
           <Splide :options="options" aria-label="My Favorite Images">
             <SplideSlide v-for="item in recentlyPlayedTracksNoDuplicates" :key="item.track.id">
               <div class="carousel-item" @click="playRecent(item)">
-                <img :src="item.track.album.images[0].url" />
+                <img :src="item.track.album.images[0].url" :alt="`${item.track.name} album art`" />
                 <h2>
                   <TextClamp :text="item.track.name" :max-lines="1" />
                 </h2>

@@ -2,7 +2,7 @@
   <div id="app">
     <NowPlaying />
     <div v-show="showSettingButton" class="settings-container fade-slide-up" ref="settingButton" @click="openSettings">
-      <img src="@/assets/SettingIcon.svg?url" />
+      <img src="@/assets/SettingIcon.svg?url" alt="Settings" />
       <span>SETTINGS</span>
     </div>
   </div>
