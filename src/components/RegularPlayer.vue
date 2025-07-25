@@ -68,6 +68,8 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
     margin-top: 10%;
     margin-bottom: 10%;
     align-self: stretch;
+    /* Nudge album art slightly left */
+    transform: translateX(-3vw);
   }
 
   &__image {
@@ -86,6 +88,8 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
     justify-content: space-between;
     flex: 1;
     min-width: 0;
+    /* Shift text and controls slightly right */
+    transform: translateX(3vw);
   }
 
   &__details > div:first-child {
