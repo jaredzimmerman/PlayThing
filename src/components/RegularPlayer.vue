@@ -94,8 +94,6 @@ watch([trackName, artistName, lineNumber, lineNumberArtist, hideControls], () =>
     max-width: 95vmin;
     margin-top: auto;
     margin-bottom: auto;
-    /* Nudge album art slightly left */
-    transform: translateX(-3vw);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -118,8 +116,6 @@ watch([trackName, artistName, lineNumber, lineNumberArtist, hideControls], () =>
     justify-content: space-between;
     flex: 1;
     min-width: 0;
-    /* Shift text and controls slightly right */
-    transform: translateX(3vw);
   }
 
   &__details > div:first-child {
@@ -128,6 +124,7 @@ watch([trackName, artistName, lineNumber, lineNumberArtist, hideControls], () =>
   }
 
   &__controls {
+    margin-top: 1.25vw;
     margin-bottom: 15%;
     width: 80%;
     position: relative;
@@ -177,7 +174,8 @@ watch([trackName, artistName, lineNumber, lineNumberArtist, hideControls], () =>
   max-width: 1200px;
   margin: 0 auto;
   padding: 5vh 5vw;
-  align-items: stretch;
+  align-items: center;
+  justify-items: center;
 }
 
 .multiline-ellipsis {

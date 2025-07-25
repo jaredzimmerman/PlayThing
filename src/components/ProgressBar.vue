@@ -13,13 +13,13 @@ const spotifyStore = useSpotifyStore()
 const { progressPercentage } = storeToRefs(spotifyStore)
 </script>
 
-<style lang="scss" progress>
+<style lang="scss" scoped>
 .progress-container {
   position: relative;
   width: 100%;
   border-radius: 5px;
   overflow: hidden;
-  height: 0.5vh;
+  height: 1vh;
   margin-left: auto;
   margin-right: auto;
   border-radius: 2px;
