@@ -7,6 +7,7 @@
         :style="`margin-bottom: ${
           miscellaneousOption.includes('show-progress-bar') ? '15px' : '0px'
         }`"
+        alt="Album Art"
       />
     </transition>
   </div>

@@ -1,12 +1,12 @@
 <template>
   <div id="setting-screen">
     <div class="closeIconContainer">
-      <img src="@/assets/CloseIcon.svg?url" @click="router.back()" />
+      <img src="@/assets/CloseIcon.svg?url" @click="router.back()" alt="Close" />
     </div>
     <div class="container">
       <div class="img-container">
         <div>
-          <img src="@/assets/text-logo.svg?url" class="logo" />
+          <img src="@/assets/text-logo.svg?url" class="logo" alt="PlayThing Logo" />
           <div class="seperator"></div>
         </div>
       </div>
@@ -21,8 +21,7 @@
               @click="setNothingPlaying(option.value)"
             >
               <span v-if="nothingPlayingOption.includes(option.value)"
-                ><img src="@/assets/CaretIcon.svg?url"
-              /></span>
+                ><img src="@/assets/CaretIcon.svg?url" alt="Selected" /></span>
               <span
                 v-if="option.value != 'regular-clock'"
                 :class="option.value === nothingPlayingOption ? 'active' : ''"
@@ -54,8 +53,7 @@
               @click="setBackgroundOption(option.value)"
             >
               <span v-if="option.value === backgroundOption"
-                ><img src="@/assets/CaretIcon.svg?url"
-              /></span>
+                ><img src="@/assets/CaretIcon.svg?url" alt="Selected" /></span>
               <span :class="option.value === backgroundOption ? 'active' : ''">{{
                 option.title
               }}</span>
@@ -71,8 +69,7 @@
               @click="setTextOption(option.value)"
             >
               <span v-if="option.value === textOption"
-                ><img src="@/assets/CaretIcon.svg?url"
-              /></span>
+                ><img src="@/assets/CaretIcon.svg?url" alt="Selected" /></span>
               <span :class="option.value === textOption ? 'active' : ''">{{ option.title }}</span>
             </li>
           </ul>
@@ -86,8 +83,7 @@
               @click="setMiscellaneousOption(option.value)"
             >
               <span v-if="miscellaneousOption.includes(option.value)"
-                ><img src="@/assets/CaretIcon.svg?url"
-              /></span>
+                ><img src="@/assets/CaretIcon.svg?url" alt="Selected" /></span>
               <span :class="miscellaneousOption.includes(option.value) ? 'active' : ''">{{
                 option.title
               }}</span>
