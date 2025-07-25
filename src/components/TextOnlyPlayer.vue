@@ -158,8 +158,8 @@ const { hideControls, showSettingButton } = storeToRefs(appStore);
 }
 
 
-.bottom-controls .controls {
-  left: 0 !important;
+.bottom-controls :deep(.controls) {
+  left: 0;
 }
 
 /*.bottom-progress {
