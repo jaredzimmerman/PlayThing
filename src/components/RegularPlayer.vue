@@ -92,8 +92,8 @@ watch([trackName, artistName, lineNumber, lineNumberArtist, hideControls], () =>
   &__cover {
     grid-row: 1 / span 3;
     max-width: 95vmin;
-    margin-top: 10%;
-    margin-bottom: 10%;
+    margin-top: auto;
+    margin-bottom: auto;
     /* Nudge album art slightly left */
     transform: translateX(-3vw);
     display: flex;
@@ -172,7 +172,7 @@ watch([trackName, artistName, lineNumber, lineNumberArtist, hideControls], () =>
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-rows: min-content 1fr min-content;
-  column-gap: 5%;
+  column-gap: 2.5%;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;

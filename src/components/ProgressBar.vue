@@ -23,6 +23,7 @@ const { progressPercentage } = storeToRefs(spotifyStore)
   margin-left: auto;
   margin-right: auto;
   border-radius: 2px;
+  z-index: 2;
 }
 
 .progress-container::before {
