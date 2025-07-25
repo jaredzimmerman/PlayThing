@@ -60,8 +60,8 @@ onUnmounted(() => {
   text-align: start;
 }
 
-.container span:first-child {
-  text-align: end !important;
+.time-text:first-child {
+  text-align: end;
 }
 
 .colon {

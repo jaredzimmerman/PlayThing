@@ -321,9 +321,9 @@ h3 {
   }
 }
 
-.colorless-active {
+.setting-container li span.colorless-active {
   color: #5c5c5c;
-  margin-left: 5px !important;
+  margin-left: 5px;
 }
 
 .setting-container li span.active {

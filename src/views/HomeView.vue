@@ -27,9 +27,9 @@ function openSettings() {
 <style lang="scss" scoped>
 #app {
   position: relative;
-  width: 100vw !important;
-  height: 100vh !important;
-  overflow-x: hidden !important;
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
   overflow-y: hidden;
 }
 
