@@ -43,7 +43,6 @@ const appStore = useAppStore()
 const { miscellaneousOption } = storeToRefs(settingsStore)
 const { trackName, artistName } = storeToRefs(spotifyStore)
 const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
-
 </script>
 
 <style lang="scss" scoped>
@@ -63,8 +62,8 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
   }
 
   &__cover {
-    width: 20rem;
-    height: 20rem;
+    width: 24rem;
+    height: 24rem;
     margin-top: auto;
     margin-bottom: auto;
     position: relative;
@@ -146,7 +145,7 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 2.5vmin;
   width: 100%;
   max-width: 1024px;
   margin-left: auto;
