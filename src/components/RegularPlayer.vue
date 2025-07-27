@@ -1,10 +1,7 @@
 <template>
   <div class="now-playing" :class="'now-playing-active'">
     <div class="container">
-      <div
-        class="now-playing__cover"
-        :style="{ width: albumArtSize + 'px', height: albumArtSize + 'px' }"
-      >
+      <div class="now-playing__cover">
         <AlbumArt />
         <ProgressBar v-if="miscellaneousOption.includes('show-progress-bar')" />
       </div>
@@ -12,7 +9,7 @@
         class="now-playing__details"
         :style="`justify-content: ${hideControls ? 'center' : 'space-between'}`"
       >
-        <div ref="textRef">
+        <div>
           <h1 class="now-playing__track">
             <TextClamp :text="trackName" :max-lines="lineNumber" />
           </h1>
@@ -20,7 +17,7 @@
             <TextClamp :text="artistName" :max-lines="lineNumberArtist" />
           </h2>
         </div>
-        <div class="now-playing__controls" v-show="!hideControls" ref="controlsRef">
+        <div class="now-playing__controls" v-show="!hideControls">
           <PlayerControls />
         </div>
       </div>
@@ -37,42 +34,16 @@ import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
 import { useAppStore } from '@/stores/app'
 import AlbumArt from './AlbumArt.vue'
-import { onMounted, onUnmounted, ref, watch, nextTick } from 'vue'
+import { ref } from 'vue'
 
 const settingsStore = useSettingsStore()
 const spotifyStore = useSpotifyStore()
 const appStore = useAppStore()
 
 const { miscellaneousOption } = storeToRefs(settingsStore)
-const { trackName, artistName, albumArtURL } = storeToRefs(spotifyStore)
+const { trackName, artistName } = storeToRefs(spotifyStore)
 const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
 
-const textRef = ref<HTMLElement | null>(null)
-const controlsRef = ref<HTMLElement | null>(null)
-const albumArtSize = ref(0)
-
-function updateAlbumArtSize() {
-  nextTick(() => {
-    const textHeight = textRef.value?.offsetHeight || 0
-    const controlsHeight = controlsRef.value?.offsetHeight || 0
-    const calculatedSize = textHeight + controlsHeight
-    const maxSize = window.innerHeight * 2 / 3
-    albumArtSize.value = Math.min(calculatedSize, maxSize)
-  })
-}
-
-onMounted(() => {
-  updateAlbumArtSize()
-  window.addEventListener('resize', updateAlbumArtSize)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', updateAlbumArtSize)
-})
-
-watch([trackName, artistName, lineNumber, lineNumberArtist, hideControls], () =>
-  updateAlbumArtSize()
-)
 </script>
 
 <style lang="scss" scoped>
@@ -92,10 +63,11 @@ watch([trackName, artistName, lineNumber, lineNumberArtist, hideControls], () =>
   }
 
   &__cover {
-    grid-row: 1 / span 3;
-    max-width: 95vmin;
+    width: 20rem;
+    height: 20rem;
     margin-top: auto;
     margin-bottom: auto;
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -110,14 +82,18 @@ watch([trackName, artistName, lineNumber, lineNumberArtist, hideControls], () =>
   }
 
   &__details {
-    grid-row: 1 / span 3;
-    text-align: left;
-
+    text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     flex: 1;
     min-width: 0;
+  }
+
+  @media (min-width: 768px) {
+    &__details {
+      text-align: left;
+    }
   }
 
   &__details > div:first-child {
@@ -142,7 +118,7 @@ watch([trackName, artistName, lineNumber, lineNumberArtist, hideControls], () =>
     //font-size: var(--artist-text-size);
     font-size: 0.8em;
     max-width: 100%;
-    margin-top: 30px;
+    margin-top: 0.75em;
     //max-height: 275px;
   }
 
@@ -168,16 +144,23 @@ watch([trackName, artistName, lineNumber, lineNumberArtist, hideControls], () =>
 
 .container {
   position: relative;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: min-content 1fr min-content;
-  column-gap: 2.5vmin;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
   width: 100%;
-  max-width: 1200px;
-  margin: auto;
+  max-width: 1024px;
+  margin-left: auto;
+  margin-right: auto;
   padding: 5vmin;
   align-items: center;
-  justify-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .container {
+    flex-direction: row;
+    align-items: center;
+  }
 }
 
 .multiline-ellipsis {
