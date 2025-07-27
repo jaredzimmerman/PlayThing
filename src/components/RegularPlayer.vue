@@ -145,7 +145,7 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 2.5vmin;
+  gap: 5vmin;
   width: 100%;
   max-width: 1024px;
   margin-left: auto;
