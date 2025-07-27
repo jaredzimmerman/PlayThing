@@ -29,5 +29,5 @@
 
   --body-line-height: 1.1;
   /* Album art should never be smaller than 640px and no larger than 2/3 of the viewport height */
-  --album-art-size: min(max(640px, 32vmin), 66.67vh);
+  --album-art-size: min(max(768px, 38.4vmin), 80vh);
 }
