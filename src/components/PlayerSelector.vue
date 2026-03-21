@@ -2,7 +2,7 @@
   <TextOnlyPlayer v-if="textOption === 'text-only'" />
   <NoTextPlayer v-else-if="textOption === 'none'" />
   <RegularPlayer v-else />
-  <div class="touch-screen" v-if="hideControls">
+  <div class="touch-screen" v-if="hideControls && textOption !== 'none'">
     <TouchScreen />
   </div>
 </template>
@@ -22,4 +22,14 @@ const { textOption } = storeToRefs(settingsStore);
 const { hideControls } = storeToRefs(appStore)
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.touch-screen {
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+</style>

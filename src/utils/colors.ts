@@ -169,7 +169,7 @@ function getBlackOledColors(imageBlobUrl: string) {
         `rgb(${adjustColorIfTooDark(suitableColor).join(',')})`
       )
     } else {
-      document.documentElement.style.setProperty('--primary-color', `#ff`)
+      document.documentElement.style.setProperty('--controls-color', `#fff`)
     }
   }
 
@@ -217,6 +217,7 @@ function getBlackOledColors(imageBlobUrl: string) {
 }
 
 export async function setAppColours(settings: any, imageUrl: string) {
+  if (!imageUrl) return
   const response = await fetch(imageUrl)
   const blob = await response.blob()
 

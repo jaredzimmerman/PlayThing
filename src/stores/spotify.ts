@@ -68,7 +68,7 @@ export const useSpotifyStore = defineStore(
     const albumArtURL = computed(() => {
       if (playbackState.value == null) return ''
       const item = playbackState.value.item as any
-      return item.album.images[0].url
+      return item?.album?.images?.[0]?.url ?? ''
     })
 
     const shuffleState = computed(() => {
@@ -297,7 +297,7 @@ export const useSpotifyStore = defineStore(
   },
   {
     persist: {
-      paths: ['accessToken']
+      paths: ['accessToken', 'authenticated']
     }
   }
 )

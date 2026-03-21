@@ -153,11 +153,14 @@ export function useSpotifyPlaybackState(
       //const data = await client.player.getPlaybackState()
       // console.log('response : ', response)
 
+      if (response.status === 204) {
+        playbackState.value = null // No playback
+        return
+      }
+
       if (!response.ok) {
         if (response.status === 401) {
           error.value = 'Unauthorized: Token expired or invalid.'
-        } else if (response.status === 204) {
-          playbackState.value = null // No playback
         } else {
           error.value = `Error: ${response.status} ${response.statusText}`
         }

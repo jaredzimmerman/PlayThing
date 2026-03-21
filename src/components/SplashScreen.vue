@@ -124,12 +124,11 @@ onMounted(() => {
 }
 
 .logo {
-  aspect-ratio: 1;
   z-index: 1;
   width: 95vmin;
   height: auto;
-  max-width: 95vmin;
-  max-height: 95vmin;
+  max-width: 95vw;
+  max-height: 95vh;
 }
 
 .fade-out {
