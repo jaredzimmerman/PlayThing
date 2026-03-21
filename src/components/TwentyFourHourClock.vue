@@ -24,6 +24,7 @@ function getNow() {
 }
 
 onMounted(() => {
+  getNow()
   interval = setInterval(getNow, 1000);
 })
 

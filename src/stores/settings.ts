@@ -1,3 +1,22 @@
+/**
+ * Store: settings
+ *
+ * Persists all user-configurable display preferences (fully persisted).
+ *
+ * Options:
+ *   nothingPlayingOption  What to show when nothing is playing:
+ *                         'blank' | 'regular-clock-12' | 'regular-clock-24' | 'word-clock' | 'recents'
+ *                         Note: selecting 'regular-clock' toggles between 12h and 24h on each call.
+ *   textOption            How track/artist text is displayed:
+ *                         'none' | 'small' | 'medium' | 'large' | 'extra-large' | 'text-only'
+ *   backgroundOption      Background theme:
+ *                         'black-oled' | 'match' | 'match-dark' | 'contrast' | 'blur' | 'spotlight'
+ *   miscellaneousOption   Array of enabled feature flags:
+ *                         'show-progress-bar' | 'autohide-playback-controls' | 'animate-blur-spotlight'
+ *
+ * The *Options arrays exported alongside the store are used to render
+ * the settings UI in SettingsView.vue.
+ */
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 

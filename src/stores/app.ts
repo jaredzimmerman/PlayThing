@@ -1,3 +1,22 @@
+/**
+ * Store: app
+ *
+ * Manages UI state that spans the whole application:
+ * - showSplashScreen / showPlayer / fadePlayer — controls which top-level view is visible.
+ * - showRecentlyPlayed — toggles the recently-played overlay.
+ * - showSettingButton — shows the settings shortcut (auto-hides after 15s).
+ * - hideControls — hides playback controls (auto-hide if 'autohide-playback-controls' is set).
+ * - showShortcuts — toggles the keyboard shortcut overlay.
+ * - lineNumber / lineNumberArtist — max lines for TextClamp, recalculated by updateTextStyle().
+ *
+ * Keyboard shortcuts are registered globally on the document via
+ * registerKeyboardShortcuts / unregisterKeyboardShortcuts (called from App.vue).
+ *
+ * Theme colours are updated via setAppColours whenever albumArtURL or
+ * backgroundOption changes.
+ *
+ * Persisted state (via pinia-plugin-persistedstate): isFirstTimeUsage.
+ */
 import { ref, watch } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useSettingsStore } from './settings'

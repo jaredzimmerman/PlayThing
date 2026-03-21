@@ -85,8 +85,8 @@ function animateBlob(currentTime: number) {
     if (animate && isPlaying.value) {
       for (let i = 0; i < points.length; i++) {
         const point = points[i]
-        const nX = noise(point.noiseOffsetX, point.noiseOffsetX)
-        const nY = noise(point.noiseOffsetY, point.noiseOffsetY)
+        const nX = noise(point.noiseOffsetX, point.noiseOffsetY)
+        const nY = noise(point.noiseOffsetY, point.noiseOffsetX)
         const x = map(nX, -1, 1, point.originX - 20, point.originX + 20)
         const y = map(nY, -1, 1, point.originY - 20, point.originY + 20)
         point.x = x

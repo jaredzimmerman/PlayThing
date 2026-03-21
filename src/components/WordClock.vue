@@ -137,6 +137,7 @@ function timeToWords(hours: number, minutes: number) {
 }
 
 onMounted(() => {
+  getNow()
   interval = setInterval(getNow, 1000)
 })
 

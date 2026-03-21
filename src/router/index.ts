@@ -1,3 +1,17 @@
+/**
+ * Router
+ *
+ * Three routes, all guarded by authentication state from the Spotify store:
+ *
+ *   /            HomeView    — requires authenticated; redirects to /authorise if not.
+ *   /authorise   AuthoriseView — accessible only when NOT authenticated; redirects back on
+ *                               attempted access while already logged in.
+ *   /settings    SettingsView  — requires authenticated; redirects to /authorise if not.
+ *
+ * On app boot, App.vue calls authenticate() which verifies/refreshes the stored
+ * token and sets authenticated = true, after which the watcher in App.vue
+ * navigates away from /authorise to /.
+ */
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import SettingsView from '../views/SettingsView.vue'

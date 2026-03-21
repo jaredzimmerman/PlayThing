@@ -1,3 +1,18 @@
+/**
+ * Store: spotify
+ *
+ * Manages Spotify authentication, playback state, and player controls.
+ *
+ * Authentication uses Spotify's PKCE OAuth flow via @spotify/web-api-ts-sdk.
+ * Playback state is polled via useSpotifyPlaybackState and drives all computed
+ * track/artist/art/shuffle/repeat/isPlaying values exposed to the UI.
+ *
+ * Progress tracking runs via requestAnimationFrame so the progress bar updates
+ * smoothly between API polls. It is started/reset whenever isPlaying or
+ * trackID changes, and cancelled when playback pauses.
+ *
+ * Persisted state (via pinia-plugin-persistedstate): accessToken, authenticated.
+ */
 import { ref, computed, shallowRef, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { SpotifyApi, type AccessToken, type SavedTrack } from '@spotify/web-api-ts-sdk'
@@ -127,13 +142,10 @@ export const useSpotifyStore = defineStore(
       if (isPlaying.value) {
         const elapsedTime = Date.now() - startTime
         progressPosition.value = Math.min(elapsedTime, progressDuration.value)
-        if (elapsedTime == progressDuration.value) {
-          progressPosition.value = 0
-        }
-        // if (progressPosition.value > progressDuration.value) progressPosition.value = 0
         if (progressPosition.value < progressDuration.value) {
           progressAnimationFrameId = requestAnimationFrame(() => updateProgress(startTime))
         } else {
+          progressAnimationFrameId = null
           // when repeat mode is on track, we restart the whole progress
           if (playbackState.value?.repeat_state === 'track') {
             startProgress(true)
@@ -238,12 +250,14 @@ export const useSpotifyStore = defineStore(
         startProgress()
       } else {
         cancelAnimationFrame(progressAnimationFrameId)
+        progressAnimationFrameId = null
       }
     })
 
     watch(trackID, () => {
       //clearInterval(interval);
       cancelAnimationFrame(progressAnimationFrameId)
+      progressAnimationFrameId = null
       resetProgress()
       startProgress()
     })

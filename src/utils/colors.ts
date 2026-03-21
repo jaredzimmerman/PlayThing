@@ -1,3 +1,27 @@
+/**
+ * Utility: colors
+ *
+ * Extracts palette colours from album art and applies them as CSS custom
+ * properties so the UI can adapt its colours to the current track.
+ *
+ * Entry point: setAppColours(settings, imageUrl)
+ *   - Fetches the image and creates a blob URL (revoked after 5s).
+ *   - Dispatches to one of the theme helpers below based on backgroundOption.
+ *
+ * CSS properties set:
+ *   --primary-color      Background fill colour (match / match-dark / contrast themes).
+ *   --controls-color     Colour used for playback controls and progress bar.
+ *   --color-text-primary Primary text colour.
+ *   --album-image        The raw album art URL for CSS backgrounds.
+ *   --start-color        Gradient start colour (spotlight theme).
+ *   --end-color          Gradient end colour (spotlight theme).
+ *
+ * Themes:
+ *   match / match-dark   Dominant non-black/white palette colour as background.
+ *   contrast             Complementary or third palette colour as background.
+ *   spotlight            Two dominant colours as a gradient (fires BlobBackgroundColorChanged).
+ *   black-oled           OLED black bg; brightens a suitable palette colour for controls.
+ */
 import ColorThief, { type RGBColor } from 'colorthief'
 
 export function getMatchColors(imageBlobUrl: string) {

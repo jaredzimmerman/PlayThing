@@ -125,9 +125,20 @@ export interface Disallows {
   pausing: boolean
 }
 
+/**
+ * Composable that polls the Spotify Web API for the current playback state.
+ *
+ * Polling is started on mount and stopped on unmount. A 429 rate-limit
+ * response pauses polling for the duration specified in the Retry-After header
+ * before resuming automatically.
+ *
+ * @param getAccessToken - Async function that returns a valid bearer token.
+ * @param pollingInterval - How often (ms) to poll. Defaults to 5000ms.
+ * @returns playbackState ref, isLoading ref, error ref, and fetchPlaybackState
+ *          for manual on-demand fetches.
+ */
 export function useSpotifyPlaybackState(
   getAccessToken: () => Promise<string>,
-  // getApiClient: () => Promise<SpotifyApi>,
   pollingInterval = 5000
 ) {
   const playbackState = ref<PlaybackState | null>(null)
@@ -155,6 +166,14 @@ export function useSpotifyPlaybackState(
 
       if (response.status === 204) {
         playbackState.value = null // No playback
+        return
+      }
+
+      if (response.status === 429) {
+        // Rate limited — pause polling for the duration Spotify specifies
+        const retryAfter = parseInt(response.headers.get('Retry-After') ?? '5', 10)
+        stopPolling()
+        setTimeout(startPolling, retryAfter * 1000)
         return
       }
 
