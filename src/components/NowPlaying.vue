@@ -6,7 +6,7 @@
 
     <!-- if v-if or v-show use, TextClamp not working; so we put it out of viewport -->
     <div
-      :style="`transform: ${showRecentlyPlayed ? 'auto' : 'translateY(-100%)'}; opacity:${showRecentlyPlayed ? '1' : '0'}; backdrop-filter: ${showRecentlyPlayed ? 'blur(15px)' : 'blur(0px)'} `"
+      :style="`transform: ${showRecentlyPlayed ? 'none' : 'translateY(-100%)'}; opacity:${showRecentlyPlayed ? '1' : '0'}; backdrop-filter: ${showRecentlyPlayed ? 'blur(15px)' : 'none'} `"
       class="recent-page">
       <RecentScreen />
     </div>

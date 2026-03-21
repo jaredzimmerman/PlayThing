@@ -232,4 +232,6 @@ export async function setAppColours(settings: any, imageUrl: string) {
   } else if (['black-oled'].includes(settings?.backgroundOption)) {
     getBlackOledColors(blobUrl)
   }
+  // Revoke after a short delay to ensure image has loaded and ColorThief has read it
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 5000)
 }
