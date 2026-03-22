@@ -6,6 +6,24 @@
 </template>
 
 <script lang="ts" setup>
+/**
+ * TouchScreen — transparent gesture capture layer.
+ *
+ * Sits as an absolute overlay over the player UI and translates touch gestures
+ * (via vue3-touch-events) into app-level actions:
+ *
+ *   Tap             → show the settings button (auto-hides after 15 s)
+ *   Swipe left      → previous track
+ *   Swipe right     → next track
+ *   Swipe up        → toggle playback controls visibility (hideControls)
+ *   Swipe down      → toggle recently-played overlay
+ *
+ * The component itself is fully transparent and pointer-events-all so it
+ * captures all touch input without visually obscuring the content beneath it.
+ *
+ * NOTE: swipe up/down are restricted to the top/bottom 25 % zones to reduce
+ * accidental triggers when the user is scrolling vertically in an inner view.
+ */
 import { useSpotifyStore } from '@/stores/spotify';
 import { useAppStore } from '@/stores/app';
 import { storeToRefs } from 'pinia';

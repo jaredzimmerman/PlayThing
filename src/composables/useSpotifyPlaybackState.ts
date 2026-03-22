@@ -165,12 +165,13 @@ export function useSpotifyPlaybackState(
       // console.log('response : ', response)
 
       if (response.status === 204) {
-        playbackState.value = null // No playback
+        // 204 means no active playback device; clear state so the UI shows idle
+        playbackState.value = null
         return
       }
 
       if (response.status === 429) {
-        // Rate limited — pause polling for the duration Spotify specifies
+        // Rate limited; Retry-After header value is in seconds
         const retryAfter = parseInt(response.headers.get('Retry-After') ?? '5', 10)
         stopPolling()
         setTimeout(startPolling, retryAfter * 1000)

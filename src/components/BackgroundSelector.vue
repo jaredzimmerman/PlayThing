@@ -8,6 +8,21 @@
 </template>
 
 <script lang="ts" setup>
+/**
+ * BackgroundSelector — thin routing component that mounts the correct
+ * background based on `settings.backgroundOption`.
+ *
+ * Background modes and their components:
+ *   spotlight  → BlobBackground      — animated simplex-noise blob with album-art gradient
+ *   match      → MatchBackground     — solid colour matched to album art
+ *   match-dark → MatchDarkBackground — darker variant of the match colour
+ *   contrast   → MatchContrastBackground — high-contrast palette from album art
+ *   blur       → BlurBackground      — album art scaled & blurred
+ *   (default)  → BlackBackground     — plain black / OLED
+ *
+ * Colour data for all modes is populated by setAppColours() (colors.ts) which
+ * sets CSS custom properties whenever the track or background option changes.
+ */
 import BlobBackground from './BlobBackground.vue'
 import MatchBackground from './MatchBackground.vue'
 import BlackBackground from './BlackBackground.vue'

@@ -17,12 +17,33 @@
 </template>
 
 <script lang="ts" setup>
+/**
+ * BlobBackground — the "spotlight" background mode.
+ *
+ * Renders an organic animated SVG blob whose shape is driven by 2-D simplex
+ * noise and whose gradient colours track the `--start-color` / `--end-color`
+ * CSS custom properties set by the colour-extraction pipeline in colors.ts.
+ *
+ * Animation behaviour:
+ *   - Shape morphing only occurs when `isPlaying` is true AND the
+ *     `animate-blur-spotlight` miscellaneous option is enabled.
+ *   - The RAF loop always runs so that gradient colour changes are picked up
+ *     immediately even when the blob shape is static.
+ *   - `slowDownFactor` throttles the effective frame-rate to fps/slowDownFactor
+ *     (≈7.5 fps) to reduce CPU usage while keeping transitions smooth.
+ *   - `noiseStep` controls how quickly noise coordinates advance each frame;
+ *     lower values = slower, more gentle morphing.
+ *
+ * CSS custom properties consumed:
+ *   --start-color   hex colour for the gradient start stop (set by colors.ts)
+ *   --end-color     hex colour for the gradient end stop   (set by colors.ts)
+ */
 // @ts-ignore
 import { spline } from '@georgedoescode/spline'
 import { createNoise2D } from 'simplex-noise'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useSpotifyStore } from '@/stores/spotify';
 
 const settingsStore = useSettingsStore()
@@ -36,15 +57,23 @@ const stopColor = ref('')
 const path = ref('')
 
 let blobBackgroundColor = ''
-let animate = false
+/**
+ * Reactive computed flag — true when the `animate-blur-spotlight` option is
+ * active.  Using `computed` ensures the animation loop immediately sees the
+ * updated value whenever the setting is toggled after mount.
+ */
+const animate = computed(() => miscellaneousOption.value?.includes('animate-blur-spotlight') ?? false)
 let lastTime = 0
 let animationId: any = null
 
+/** Divisor applied to fps to reduce CPU load; effective rate = fps/slowDownFactor ≈ 7.5 fps. */
 const slowDownFactor = 16
 const fps = 120
+/** How far noise coordinates advance each frame — lower = smoother/slower morphing. */
 const noiseStep = 0.005
 const points = createPoints()
 const noise2D = createNoise2D()
+/** Minimum milliseconds between shape updates derived from the throttled frame-rate. */
 const frameInterval = 1000 / (fps / slowDownFactor);
 
 function run() {
@@ -62,8 +91,8 @@ function animateBlob(currentTime: number) {
     lastTime = currentTime
     path.value = spline(points, 1, true)
 
-    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--start-color')
-    const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue('--end-color')
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--start-color').trim()
+    const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue('--end-color').trim()
 
     const startHsl = hexToHsl(primaryColor)
     const endHsl = hexToHsl(secondaryColor)
@@ -71,18 +100,19 @@ function animateBlob(currentTime: number) {
     const startHue = startHsl.h
     const endHue = endHsl.h
 
+    // t=0 keeps hues fixed; t could be animated in future for colour cycling
     const currentStartHue = interpolateHue(startHue, endHue, 0)
     const currentEndHue = interpolateHue(endHue, startHue, 0)
     const currentStartColor = `hsl(${currentStartHue}, ${startHsl.s}%, ${startHsl.l}%)`
     const currentStopColor = `hsl(${currentEndHue}, ${endHsl.s}%, ${endHsl.l}%)`
 
-    //console.log(currentStartHue, currentEndHue)
     if (startColor.value !== currentStartColor && stopColor.value !== currentStopColor) {
       startColor.value = currentStartColor
       stopColor.value = currentStopColor
     }
 
-    if (animate && isPlaying.value) {
+    // Only morph blob shape when animation is enabled and music is playing
+    if (animate.value && isPlaying.value) {
       for (let i = 0; i < points.length; i++) {
         const point = points[i]
         const nX = noise(point.noiseOffsetX, point.noiseOffsetY)
@@ -100,6 +130,10 @@ function animateBlob(currentTime: number) {
   animationId = requestAnimationFrame(animateBlob)
 }
 
+/**
+ * Linearly interpolates between two hue angles, wrapping around the 0°/360°
+ * boundary so the result is always a valid hue in [0, 360).
+ */
 function interpolateHue(startHue: number, endHue: number, t: number) {
   let hue = startHue + (endHue - startHue) * t
   if (hue > 360) {
@@ -114,6 +148,11 @@ function noise(x: number, y: number) {
   return noise2D(x, y);
 }
 
+/**
+ * Creates the initial set of evenly-spaced control points arranged on a circle.
+ * Each point stores its origin coordinates plus independent noise offsets so
+ * that each vertex morphs independently.
+ */
 function createPoints() {
   const points = []
   // how many points do we need
@@ -143,7 +182,18 @@ function createPoints() {
   return points
 }
 
+/**
+ * Converts a CSS hex colour string (e.g. `#ff6ec4`) to HSL components.
+ * Returns `{ h: 0, s: 0, l: 0 }` (black) if the input is empty or malformed,
+ * which can happen before `--start-color` / `--end-color` are first set.
+ *
+ * @param hex - Hex colour string starting with `#`, e.g. `#rrggbb`.
+ * @returns Object with `h` (0–360), `s` (0–100), `l` (0–100).
+ */
 function hexToHsl(hex: string) {
+  // Guard: CSS variable may be empty before colours are extracted
+  if (!hex || hex.length < 4) return { h: 0, s: 0, l: 0 }
+
   let bigint = parseInt(hex.slice(1), 16)
   let r = (bigint >> 16) & 255
   let g = (bigint >> 8) & 255
@@ -183,9 +233,6 @@ function hexToHsl(hex: string) {
 }
 
 onMounted(() => {
-  if (miscellaneousOption.value?.includes('animate-blur-spotlight')) {
-    animate = true
-  }
   run()
 });
 onUnmounted(() => {

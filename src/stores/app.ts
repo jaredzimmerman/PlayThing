@@ -58,6 +58,30 @@ export const useAppStore = defineStore(
       autoHideControls()
     }
 
+    /**
+     * Translates the current `textOption` setting into CSS custom properties so
+     * that the NowPlaying component can display text at the right scale.
+     *
+     * CSS custom properties set:
+     *   --display-text        'none' | 'inherit'  — shows/hides the text block
+     *   --display-album-art   'none' | 'inherit'  — shows/hides the album art
+     *   --text-size           base font-size for the text block
+     *   --track-text-size     max font-size for the track title (px)
+     *   --artist-text-size    max font-size for the artist name (px)
+     *
+     * `lineNumber` / `lineNumberArtist` are also updated here; they control
+     * vue3-text-clamp's max-lines prop.  The values differ based on whether
+     * `hideControls` is active because hidden controls free up vertical space
+     * allowing an extra line of text.
+     *
+     * Text option → approximate font sizes:
+     *   none        — hides text, album art visible
+     *   small       — title 60px, artist 50px
+     *   medium      — title 80px, artist 50px
+     *   large       — title 110px, artist 50px
+     *   extra-large — title 130px, artist 50px
+     *   text-only   — hides album art, font unsized (fills available space)
+     */
     function updateTextStyle() {
       const value = textOption.value
 
@@ -132,6 +156,32 @@ export const useAppStore = defineStore(
       document.documentElement.style.setProperty('--artist-text-size', artistSize)
     }
 
+    /**
+     * Global keyboard shortcut handler registered on `document`.
+     *
+     * Arrow keys without modifier → playback / UI controls:
+     *   ArrowRight  next track
+     *   ArrowLeft   previous track
+     *   ArrowUp     toggle playback controls visibility
+     *   ArrowDown   toggle recently-played overlay
+     *   Space       play / pause
+     *
+     * Arrow keys with Ctrl or Alt → cycle settings:
+     *   Ctrl/Alt+ArrowRight  cycle background forward
+     *                        (black-oled → match → match-dark → contrast → blur → spotlight → …)
+     *   Ctrl/Alt+ArrowLeft   cycle background backward
+     *   Ctrl/Alt+ArrowUp     decrease text size option
+     *   Ctrl/Alt+ArrowDown   increase text size option
+     *
+     * Other keys:
+     *   P    toggle progress bar visibility
+     *   A    toggle blob/blur animation (animate-blur-spotlight option)
+     *   ?    show/hide keyboard shortcuts overlay
+     *   Esc  close keyboard shortcuts overlay
+     *
+     * NOTE: The shortcut list in KeyboardShortcuts.vue must be kept in sync
+     * with this function manually.
+     */
     function onKeyDown(event: KeyboardEvent) {
       switch (event.key) {
         case 'ArrowRight':

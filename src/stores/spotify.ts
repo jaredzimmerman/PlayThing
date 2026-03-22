@@ -109,15 +109,22 @@ export const useSpotifyStore = defineStore(
           authenticated.value = res.authenticated
           accessToken.value = res.accessToken
           initPlayer()
+        }).catch((err) => {
+          console.error('Spotify OAuth authentication failed:', err)
+          authenticated.value = false
         })
       } else {
-        // call just to trigger authentication
+        // Verify existing token by hitting a lightweight endpoint
         apiClient.currentUser.profile().then(() => {
           apiClient.getAccessToken().then((res) => {
             accessToken.value = res
             authenticated.value = true
             initPlayer()
           })
+        }).catch((err) => {
+          console.error('Spotify token verification failed:', err)
+          authenticated.value = false
+          accessToken.value = null
         })
       }
     }

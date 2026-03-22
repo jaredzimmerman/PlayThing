@@ -18,6 +18,16 @@
 </template>
 
 <script lang="ts" setup>
+/**
+ * KeyboardShortcuts — modal overlay listing all keyboard shortcuts.
+ *
+ * Toggled by pressing `?` or via appStore.showShortcuts.
+ * Clicking the backdrop (the overlay div itself, not its content) dismisses
+ * the panel via the @click.self handler.
+ *
+ * IMPORTANT: The shortcut list here is hardcoded HTML and must be kept in
+ * sync with the `onKeyDown` handler in src/stores/app.ts manually.
+ */
 import { useAppStore } from '@/stores/app'
 const appStore = useAppStore()
 function close() {

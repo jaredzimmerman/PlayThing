@@ -1,5 +1,16 @@
 <template>
   <div id="app">
+    <!--
+      CSS class switches reactively between two modes:
+        animate-rotate-circle  — slow 120s rotation (CSS animation) used when
+                                 animate-blur-spotlight is enabled; play state
+                                 is controlled by the isPlaying watcher below.
+        scale-120-rotate-180   — static scaled & rotated position, no animation.
+
+      CSS custom properties consumed:
+        --album-image   url() of the current track's artwork (set by spotify store)
+        --primary-color fallback background colour
+    -->
     <div :class="`album-art ${miscellaneousOption.includes('animate-blur-spotlight')
       ? 'animate-rotate-circle'
       : 'scale-120-rotate-180'
@@ -10,6 +21,16 @@
 </template>
 
 <script lang="ts" setup>
+/**
+ * BlurBackground — the "blur" background mode.
+ *
+ * Displays the current track's album art scaled up and heavily blurred via a
+ * CSS `backdrop-filter` scrim, creating a frosted-glass effect.
+ *
+ * When the `animate-blur-spotlight` miscellaneous option is active the artwork
+ * slowly rotates (120 s per revolution).  Playback state pauses/resumes the
+ * CSS animation so the background is visually static when nothing is playing.
+ */
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
 import { useSpotifyStore } from '@/stores/spotify';
@@ -23,14 +44,17 @@ const spotifyStore = useSpotifyStore()
 const { miscellaneousOption } = storeToRefs(settingsStore);
 const { isPlaying } = storeToRefs(spotifyStore)
 
-// only animate background if playing
-if (miscellaneousOption.value.includes('animate-blur-spotlight')) {
-  watch(isPlaying, (playing) => {
-    if (albumArtRef.value) {
-      albumArtRef.value.style.animationPlayState = playing ? 'running' : 'paused'
-    }
-  })
-}
+/**
+ * Pause/resume the CSS rotation animation whenever playback state changes.
+ * The check for `animate-blur-spotlight` is performed inside the callback
+ * rather than wrapping the `watch` call so that toggling the setting after
+ * mount is correctly reflected without needing a full component remount.
+ */
+watch(isPlaying, (playing) => {
+  if (albumArtRef.value && miscellaneousOption.value.includes('animate-blur-spotlight')) {
+    albumArtRef.value.style.animationPlayState = playing ? 'running' : 'paused'
+  }
+})
 
 </script>
 

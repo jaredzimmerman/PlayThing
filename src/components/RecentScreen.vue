@@ -37,6 +37,23 @@
 </template>
 
 <script lang="ts" setup>
+/**
+ * RecentScreen — slide-up overlay showing recently played tracks and liked songs.
+ *
+ * Displays two sections:
+ *   Favorites — a single tile that queues the user's full Liked Songs library.
+ *   Recents   — a horizontally scrollable Splide carousel of recently played tracks.
+ *
+ * Clicking any tile immediately starts playback via `play()` and closes the overlay.
+ *
+ * Duplicate handling: Spotify's recently-played API can return the same track
+ * multiple times if it was played in back-to-back succession.
+ * `recentlyPlayedTracksNoDuplicates` deduplicates by track ID while preserving
+ * chronological (most-recent-first) order.
+ *
+ * The overlay also embeds a TouchScreen component so that swipe gestures
+ * remain functional while the recents panel is open.
+ */
 import TouchScreen from './TouchScreen.vue'
 import TextClamp from 'vue3-text-clamp';
 // @ts-ignore
@@ -56,6 +73,11 @@ const { recentlyPlayedTracks, savedTracks } = storeToRefs(spotifyStore);
 const { play } = spotifyStore
 const { showPlayer, showRecentlyPlayed } = storeToRefs(appStore);
 
+/**
+ * Deduplicates the recently-played list by track ID.
+ * Spotify may return the same track multiple times when it was played
+ * consecutively; this keeps only the first (most-recent) occurrence.
+ */
 const recentlyPlayedTracksNoDuplicates = computed(() => {
   const seen = new Set();
   return recentlyPlayedTracks.value.filter((item) => {

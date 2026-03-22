@@ -19,7 +19,7 @@
  * Themes:
  *   match / match-dark   Dominant non-black/white palette colour as background.
  *   contrast             Complementary or third palette colour as background.
- *   spotlight            Two dominant colours as a gradient (fires BlobBackgroundColorChanged).
+ *   spotlight            Two dominant colours as a gradient (sets --start-color / --end-color).
  *   black-oled           OLED black bg; brightens a suitable palette colour for controls.
  */
 import ColorThief, { type RGBColor } from 'colorthief'
@@ -145,7 +145,6 @@ function getSpotlightColors(imageBlobUrl: string) {
       const stopColor = rgbToHex(backgroundColors[1])
       document.documentElement.style.setProperty('--start-color', startColor)
       document.documentElement.style.setProperty('--end-color', stopColor)
-      document.dispatchEvent(new CustomEvent('BlobBackgroundColorChanged'))
     }
   }
 
@@ -243,6 +242,10 @@ function getBlackOledColors(imageBlobUrl: string) {
 export async function setAppColours(settings: any, imageUrl: string) {
   if (!imageUrl) return
   const response = await fetch(imageUrl)
+  if (!response.ok) {
+    console.error(`setAppColours: failed to fetch album art (${response.status})`)
+    return
+  }
   const blob = await response.blob()
 
   const blobUrl = URL.createObjectURL(blob)
