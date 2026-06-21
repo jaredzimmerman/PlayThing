@@ -15,21 +15,20 @@
 </template>
 
 <script lang="ts" setup>
-import Player from './Player.vue'
 import BlobBackground from './BlobBackground.vue'
 import MatchBackground from './MatchBackground.vue'
 import BlackBackground from './BlackBackground.vue'
 import MatchContrastBackground from './MatchContrastBackground.vue'
 import MatchDarkBackground from './MatchDarkBackground.vue'
 import BlurBackground from './BlurBackground.vue'
+import Player from './Player.vue'
 import { useAppStore } from '@/stores/app';
 import { useSettingsStore } from '@/stores/settings';
 import { storeToRefs } from 'pinia'
 
 const appStore = useAppStore()
-const { fadePlayer } = storeToRefs(appStore)
-
 const settingsStore = useSettingsStore()
+const { fadePlayer } = storeToRefs(appStore)
 const { backgroundOption } = storeToRefs(settingsStore)
 </script>
 
