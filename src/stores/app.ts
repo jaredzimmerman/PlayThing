@@ -248,7 +248,7 @@ export const useAppStore = defineStore(
     watch(showSettingButton, (show) => {
       if (settingButtonTimeout) clearTimeout(settingButtonTimeout)
       if (show) {
-        settingButtonTimeout = setInterval(() => {
+        settingButtonTimeout = setTimeout(() => {
           showSettingButton.value = false
         }, 15 * 1000)
       }

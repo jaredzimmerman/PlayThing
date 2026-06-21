@@ -6,7 +6,7 @@
     <div class="tracks-container">
       <div>
         <h1>Favorites</h1>
-        <img src="@/assets/liked-songs.png" @click="playSaved" alt="Liked songs" />
+        <img src="@/assets/liked-songs.png" alt="Liked songs" />
         <h2>Liked Songs</h2>
       </div>
       <div>
@@ -52,7 +52,7 @@ const spotifyStore = useSpotifyStore();
 const appStore = useAppStore();
 const options = ref({ rewind: false, autoWidth: false, arrows: false, pagination: false, perPage: 5, perMove: 1, padding: { right: 200 } })
 
-const { recentlyPlayedTracks, savedTracks } = storeToRefs(spotifyStore);
+const { recentlyPlayedTracks } = storeToRefs(spotifyStore);
 const { play } = spotifyStore
 const { showPlayer, showRecentlyPlayed } = storeToRefs(appStore);
 
@@ -67,11 +67,6 @@ const recentlyPlayedTracksNoDuplicates = computed(() => {
 
 function playRecent(track: typeof recentlyPlayedTracks.value[number]) {
   play([track.track.uri])
-  showRecentlyPlayed.value = false
-}
-
-function playSaved() {
-  play(savedTracks.value.map((item) => item.track.uri))
   showRecentlyPlayed.value = false
 }
 
