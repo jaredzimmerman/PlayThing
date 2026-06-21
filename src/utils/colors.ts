@@ -1,5 +1,64 @@
 import ColorThief, { type RGBColor } from 'colorthief'
 
+// ── Module-level shared helpers ──────────────────────────────────────────────
+
+function isNearBlackOrWhite(color: RGBColor) {
+  const [r, g, b] = color
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000
+  return brightness < 30 || brightness > 220
+}
+
+function getSuitableColor(colors: RGBColor[]) {
+  return colors.find((color) => !isNearBlackOrWhite(color))
+}
+
+function getComplementaryColor([r, g, b]: RGBColor): RGBColor {
+  return [255 - r, 255 - g, 255 - b]
+}
+
+function isColorInPalette(colors: RGBColor[], color: RGBColor) {
+  return colors.some((c) => color[0] === c[0] && color[1] === c[1] && color[2] === c[2])
+}
+
+function getDominantColors(colors: RGBColor[]) {
+  const filteredColors = colors.filter((color) => !isNearBlackOrWhite(color))
+  if (filteredColors.length >= 2) {
+    return [filteredColors[0], filteredColors[1]]
+  }
+  return null
+}
+
+function rgbToHex([r, g, b]: RGBColor) {
+  const toHex = (value: number) => value.toString(16).padStart(2, '0')
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`
+}
+
+function rgbToLuminance(r: number, g: number, b: number) {
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
+function brightenColor(r: number, g: number, b: number, percentage: number): RGBColor {
+  r = Math.min(255, r + (r * percentage) / 100)
+  g = Math.min(255, g + (g * percentage) / 100)
+  b = Math.min(255, b + (b * percentage) / 100)
+  return [r, g, b]
+}
+
+function adjustColorIfTooDark(rgb: RGBColor): RGBColor {
+  const [r, g, b] = rgb
+  const luminance = rgbToLuminance(r, g, b)
+  const threshold = 50
+
+  if (luminance < threshold) {
+    const brightenPercentage = (luminance / threshold) * 50 + 25
+    return brightenColor(r, g, b, brightenPercentage)
+  }
+
+  return [r, g, b]
+}
+
+// ── Exported functions ──────────────────────────────────────────────────────
+
 export function getMatchColors(imageBlobUrl: string) {
   const colorThief = new ColorThief()
   const img = new Image()
@@ -19,16 +78,6 @@ export function getMatchColors(imageBlobUrl: string) {
     } else {
       document.documentElement.style.setProperty('--primary-color', `#000`)
     }
-  }
-
-  function getSuitableColor(colors: RGBColor[]) {
-    return colors.find((color) => !isNearBlackOrWhite(color))
-  }
-
-  function isNearBlackOrWhite(color: RGBColor) {
-    const [r, g, b] = color
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000
-    return brightness < 30 || brightness > 220
   }
 
   img.onload = function () {
@@ -80,22 +129,6 @@ function getMatchContrastColors(imageBlob: string) {
     return null
   }
 
-  function getComplementaryColor([r, g, b]: RGBColor) {
-    // Calculate complementary color
-    const compColor: RGBColor = [255 - r, 255 - g, 255 - b]
-    return compColor
-  }
-
-  function isColorInPalette(colors: RGBColor[], color: RGBColor) {
-    return colors.some((c) => color[0] === c[0] && color[1] === c[1] && color[2] === c[2])
-  }
-
-  function isNearBlackOrWhite(color: RGBColor) {
-    const [r, g, b] = color
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000
-    return brightness < 30 || brightness > 220
-  }
-
   img.onload = function () {
     handleImageLoad()
   }
@@ -125,24 +158,6 @@ function getSpotlightColors(imageBlobUrl: string) {
     }
   }
 
-  function getDominantColors(colors: RGBColor[]) {
-    const filteredColors = colors.filter((color) => !isNearBlackOrWhite(color))
-    if (filteredColors.length >= 2) {
-      return [filteredColors[0], filteredColors[1]]
-    }
-    return null
-  }
-
-  function isNearBlackOrWhite(color: RGBColor) {
-    const [r, g, b] = color
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000
-    return brightness < 30 || brightness > 220
-  }
-
-  function rgbToHex([r, g, b]: RGBColor) {
-    const toHex = (value: number) => value.toString(16).padStart(2, '0')
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`
-  }
   img.onload = function () {
     handleImageLoad()
   }
@@ -153,7 +168,6 @@ function getSpotlightColors(imageBlobUrl: string) {
 }
 
 function getBlackOledColors(imageBlobUrl: string) {
-  //const img = document.getElementById('albumCover');
   const colorThief = new ColorThief()
   const img = new Image()
   img.src = imageBlobUrl
@@ -173,41 +187,6 @@ function getBlackOledColors(imageBlobUrl: string) {
     }
   }
 
-  function getSuitableColor(colors: RGBColor[]) {
-    return colors.find((color) => !isNearBlackOrWhite(color))
-  }
-
-  function isNearBlackOrWhite(color: RGBColor) {
-    const [r, g, b] = color
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000
-    return brightness < 30 || brightness > 220
-  }
-
-  function adjustColorIfTooDark(rgb: RGBColor) {
-    function rgbToLuminance(r: number, g: number, b: number) {
-      return 0.2126 * r + 0.7152 * g + 0.0722 * b
-    }
-
-    function brightenColor(r: number, g: number, b: number, percentage: number): RGBColor {
-      r = Math.min(255, r + (r * percentage) / 100)
-      g = Math.min(255, g + (g * percentage) / 100)
-      b = Math.min(255, b + (b * percentage) / 100)
-      return [r, g, b]
-    }
-
-    const [r, g, b] = rgb
-
-    const luminance = rgbToLuminance(r, g, b)
-
-    const threshold = 50 // Adjust as needed
-
-    if (luminance < threshold) {
-      const brightenPercentage = (luminance / threshold) * 50 + 25
-      return brightenColor(r, g, b, brightenPercentage)
-    }
-
-    return [r, g, b]
-  }
   img.onload = function () {
     handleImageLoad()
   }
