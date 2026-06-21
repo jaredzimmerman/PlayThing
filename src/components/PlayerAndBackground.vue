@@ -1,7 +1,12 @@
 <template>
   <div class="container">
     <div class="background" :style="`opacity: ${fadePlayer ? 0.5 : 1}`">
-      <BackgroundSelector />
+      <BlobBackground v-if="backgroundOption === 'spotlight'" />
+      <MatchBackground v-else-if="backgroundOption === 'match'" />
+      <MatchDarkBackground v-else-if="backgroundOption === 'match-dark'" />
+      <MatchContrastBackground v-else-if="backgroundOption === 'contrast'" />
+      <BlurBackground v-else-if="backgroundOption === 'blur'" />
+      <BlackBackground v-else />
     </div>
     <div class="player" :style="`opacity: ${fadePlayer ? 0.5 : 1}`">
       <PlayerSelector />
@@ -10,13 +15,21 @@
 </template>
 
 <script lang="ts" setup>
-import BackgroundSelector from './BackgroundSelector.vue'
+import BlobBackground from './BlobBackground.vue'
+import MatchBackground from './MatchBackground.vue'
+import BlackBackground from './BlackBackground.vue'
+import MatchContrastBackground from './MatchContrastBackground.vue'
+import MatchDarkBackground from './MatchDarkBackground.vue'
+import BlurBackground from './BlurBackground.vue'
 import PlayerSelector from './PlayerSelector.vue'
 import { useAppStore } from '@/stores/app';
+import { useSettingsStore } from '@/stores/settings';
 import { storeToRefs } from 'pinia'
 
 const appStore = useAppStore()
+const settingsStore = useSettingsStore()
 const { fadePlayer } = storeToRefs(appStore)
+const { backgroundOption } = storeToRefs(settingsStore)
 </script>
 
 <style lang="scss" scoped>
