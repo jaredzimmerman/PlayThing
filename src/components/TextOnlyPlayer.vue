@@ -3,10 +3,10 @@
     <!--<div class="ruler"></div>-->
     <div class="top-details">
       <h1 class="now-playing__track">
-        <TextClamp :text="trackName" :max-lines="2" autoresize />
+        <div class="line-clamp-2">{{ trackName }}</div>
       </h1>
       <h2 class="now-playing__artists">
-        <TextClamp :text="artistName" :max-lines="2" autoresize />
+        <div class="line-clamp-2">{{ artistName }}</div>
       </h2>
     </div>
 
@@ -26,7 +26,6 @@
 <script lang="ts" setup>
 import ProgressBar from '@/components/ProgressBar.vue'
 import PlayerControls from '@/components/PlayerControls.vue'
-import TextClamp from 'vue3-text-clamp';
 import { useSpotifyStore } from '@/stores/spotify'
 import { useSettingsStore } from '@/stores/settings'
 import { useAppStore } from '@/stores/app'
@@ -187,6 +186,21 @@ const { hideControls, showSettingButton } = storeToRefs(appStore);
 }
 
 .multiline-ellipsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.line-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.line-clamp-2 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;

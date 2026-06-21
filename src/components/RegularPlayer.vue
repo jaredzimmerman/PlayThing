@@ -11,10 +11,10 @@
       >
         <div>
           <h1 class="now-playing__track">
-            <TextClamp :text="trackName" :max-lines="lineNumber" />
+            <div class="line-clamp" :style="`-webkit-line-clamp: ${lineNumber}`">{{ trackName }}</div>
           </h1>
           <h2 class="now-playing__artists">
-            <TextClamp :text="artistName" :max-lines="lineNumberArtist" />
+            <div class="line-clamp" :style="`-webkit-line-clamp: ${lineNumberArtist}`">{{ artistName }}</div>
           </h2>
         </div>
         <div class="now-playing__controls" v-show="!hideControls">
@@ -28,7 +28,6 @@
 <script lang="ts" setup>
 import ProgressBar from '@/components/ProgressBar.vue'
 import PlayerControls from '@/components/PlayerControls.vue'
-import TextClamp from 'vue3-text-clamp'
 import { useSpotifyStore } from '@/stores/spotify'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
@@ -160,6 +159,13 @@ const { lineNumber, lineNumberArtist, hideControls } = storeToRefs(appStore)
     flex-direction: row;
     align-items: center;
   }
+}
+
+.line-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .multiline-ellipsis {
