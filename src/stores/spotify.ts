@@ -1,6 +1,6 @@
-import { ref, computed, shallowRef, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { defineStore } from 'pinia'
-import { SpotifyApi, type AccessToken, type SavedTrack } from '@spotify/web-api-ts-sdk'
+import { SpotifyApi, type AccessToken } from '@spotify/web-api-ts-sdk'
 import type { PlayHistory } from 'node_modules/@spotify/web-api-ts-sdk/dist/cjs'
 import { useSpotifyPlaybackState } from '@/composables/useSpotifyPlaybackState'
 
@@ -24,7 +24,6 @@ export const useSpotifyStore = defineStore(
     const authenticated = ref(false)
     const currentDeviceID = ref('')
     const recentlyPlayedTracks = ref<PlayHistory[]>([])
-    const savedTracks = ref<SavedTrack[]>([])
     const { playbackState } = useSpotifyPlaybackState(
       async () => {
         const accessToken = await apiClient.getAccessToken()
@@ -222,7 +221,6 @@ export const useSpotifyStore = defineStore(
 
     function initPlayer() {
       loadRecents()
-      loadSavedTracks()
     }
 
     watch(playbackState, () => {
@@ -254,12 +252,6 @@ export const useSpotifyStore = defineStore(
       })
     }
 
-    function loadSavedTracks() {
-      apiClient?.currentUser.tracks.savedTracks().then((response) => {
-        savedTracks.value = response.items
-      })
-    }
-
     function logout() {
       // player.disconnect()
       accessToken.value = null
@@ -281,7 +273,6 @@ export const useSpotifyStore = defineStore(
       playbackState,
       progressPercentage,
       recentlyPlayedTracks,
-      savedTracks,
       initPlayer,
       authenticate,
       play,
