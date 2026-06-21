@@ -6,11 +6,11 @@
     <!-- Text-only layout (TextOnlyPlayer) -->
     <template v-if="isTextOnly">
       <div class="top-details">
-        <h1 class="now-playing__track">
-          <TextClamp :text="trackName" :max-lines="2" autoresize />
+        <h1 class="now-playing__track text-clamp-2">
+          {{ trackName }}
         </h1>
-        <h2 class="now-playing__artists">
-          <TextClamp :text="artistName" :max-lines="2" autoresize />
+        <h2 class="now-playing__artists text-clamp-2">
+          {{ artistName }}
         </h2>
       </div>
 
@@ -58,11 +58,11 @@
           :style="`justify-content: ${hideControls ? 'center' : 'space-between'}`"
         >
           <div>
-            <h1 class="now-playing__track">
-              <TextClamp :text="trackName" :max-lines="lineNumber" />
+            <h1 class="now-playing__track text-clamp-2">
+              {{ trackName }}
             </h1>
-            <h2 class="now-playing__artists">
-              <TextClamp :text="artistName" :max-lines="lineNumberArtist" />
+            <h2 class="now-playing__artists text-clamp-2">
+              {{ artistName }}
             </h2>
           </div>
           <div class="now-playing__controls" v-show="!hideControls">
@@ -82,7 +82,6 @@
 <script lang="ts" setup>
 import ProgressBar from '@/components/ProgressBar.vue'
 import PlayerControls from '@/components/PlayerControls.vue'
-import TextClamp from 'vue3-text-clamp'
 import { useSpotifyStore } from '@/stores/spotify'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
@@ -328,6 +327,13 @@ const isNoText = computed(() => textOption.value === 'none')
   text-overflow: ellipsis;
   width: 100%;
   display: block;
+}
+
+.text-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 </style>
 
