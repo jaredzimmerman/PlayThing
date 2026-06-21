@@ -18,7 +18,6 @@ export const useAppStore = defineStore(
     const showRecentlyPlayed = ref(false)
     const showPlayer = ref(false)
     const fadePlayer = ref(false)
-    const isFirstTimeUsage = ref(true)
     const showShortcuts = ref(false)
 
     const lineNumber = ref(10)
@@ -300,16 +299,10 @@ export const useAppStore = defineStore(
       showSplashScreen,
       showPlayer,
       fadePlayer,
-      isFirstTimeUsage,
       showRecentlyPlayed,
       showShortcuts,
       registerKeyboardShortcuts,
       unregisterKeyboardShortcuts
-    }
-  },
-  {
-    persist: {
-      paths: ['isFirstTimeUsage']
     }
   }
 )
