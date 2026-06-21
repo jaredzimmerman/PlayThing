@@ -1,8 +1,6 @@
 <template>
   <div id="app">
-    <FirstTimeUsage v-show="isFirstTimeUsage" />
     <svg
-      v-show="!isFirstTimeUsage"
       width="603"
       height="363"
       viewBox="0 0 603 363"
@@ -80,34 +78,20 @@
 import { ref, onMounted } from 'vue'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
-import FirstTimeUsage from './FirstTimeUsage.vue'
 
 const playText = ref<HTMLElement | null>(null)
 const thingText = ref<HTMLElement | null>(null)
 const appStore = useAppStore()
-const { isFirstTimeUsage, showSplashScreen } = storeToRefs(appStore)
+const { showSplashScreen } = storeToRefs(appStore)
 
 onMounted(() => {
-  if (isFirstTimeUsage.value) {
+  setTimeout(() => {
+    playText.value?.classList.add('fade-out')
+    thingText.value?.classList.add('fade-out')
     setTimeout(() => {
-      isFirstTimeUsage.value = false
-      setTimeout(() => {
-        playText.value?.classList.add('fade-out')
-        thingText.value?.classList.add('fade-out')
-        setTimeout(() => {
-          showSplashScreen.value = false
-        }, 1000)
-      }, 1000)
-    }, 5000)
-  } else {
-    setTimeout(() => {
-      playText.value?.classList.add('fade-out')
-      thingText.value?.classList.add('fade-out')
-      setTimeout(() => {
-        showSplashScreen.value = false
-      }, 1000)
+      showSplashScreen.value = false
     }, 1000)
-  }
+  }, 1000)
 })
 </script>
 
