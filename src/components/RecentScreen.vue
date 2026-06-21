@@ -16,10 +16,10 @@
             <SplideSlide v-for="item in recentlyPlayedTracksNoDuplicates" :key="item.track.id">
               <div class="carousel-item" @click="playRecent(item)">
                 <img :src="item.track.album.images[0].url" :alt="`${item.track.name} album art`" />
-                <h2 class="text-clamp-1">
+                <h2 class="ellipsis">
                   {{ item.track.name }}
                 </h2>
-                <h3 class="text-clamp-1">
+                <h3 class="ellipsis">
                   {{ artistName(item) }}
                 </h3>
               </div>
