@@ -1,128 +1,26 @@
-import type { SpotifyApi } from '@spotify/web-api-ts-sdk'
+import type {
+  PlaybackState,
+  Device,
+  Context,
+  ExternalUrls,
+  Actions,
+  Album,
+  Artist,
+  Image,
+  ExternalIds,
+  TrackItem
+} from '@spotify/web-api-ts-sdk'
 import { ref, onMounted, onUnmounted } from 'vue'
 
-export interface PlaybackState {
-  device: Device
-  shuffle_state: boolean
-  smart_shuffle: boolean
-  repeat_state: string
-  timestamp: number
-  context: Context
-  progress_ms: number
-  item: Item
-  currently_playing_type: string
-  actions: Actions
-  is_playing: boolean
-}
+// SDK uses TrackItem for playback state items; re-export for consumers
+export type { TrackItem }
 
-export interface Device {
-  id: string
-  is_active: boolean
-  is_private_session: boolean
-  is_restricted: boolean
-  name: string
-  supports_volume: boolean
-  type: string
-  volume_percent: number
-}
+// Re-export SDK types so consumers can import from this module
+export type { PlaybackState, Device, Context, ExternalUrls, Actions, Album, Artist, Image, ExternalIds }
 
-export interface Context {
-  external_urls: ExternalUrls
-  href: string
-  type: string
-  uri: string
-}
-
-export interface ExternalUrls {
-  spotify: string
-}
-
-export interface Item {
-  album: Album
-  artists: Artist2[]
-  available_markets: string[]
-  disc_number: number
-  duration_ms: number
-  explicit: boolean
-  external_ids: ExternalIds
-  external_urls: ExternalUrls5
-  href: string
-  id: string
-  is_local: boolean
-  name: string
-  popularity: number
-  preview_url: string
-  track_number: number
-  type: string
-  uri: string
-}
-
-export interface Album {
-  album_type: string
-  artists: Artist[]
-  available_markets: string[]
-  external_urls: ExternalUrls3
-  href: string
-  id: string
-  images: Image[]
-  name: string
-  release_date: string
-  release_date_precision: string
-  total_tracks: number
-  type: string
-  uri: string
-}
-
-export interface Artist {
-  external_urls: ExternalUrls2
-  href: string
-  id: string
-  name: string
-  type: string
-  uri: string
-}
-
-export interface ExternalUrls2 {
-  spotify: string
-}
-
-export interface ExternalUrls3 {
-  spotify: string
-}
-
-export interface Image {
-  height: number
-  url: string
-  width: number
-}
-
-export interface Artist2 {
-  external_urls: ExternalUrls4
-  href: string
-  id: string
-  name: string
-  type: string
-  uri: string
-}
-
-export interface ExternalUrls4 {
-  spotify: string
-}
-
-export interface ExternalIds {
-  isrc: string
-}
-
-export interface ExternalUrls5 {
-  spotify: string
-}
-
-export interface Actions {
-  disallows: Disallows
-}
-
-export interface Disallows {
-  pausing: boolean
+// Extended Device type matching what the API actually returns (supports_volume field)
+export interface PlaybackDevice extends Device {
+  supports_volume?: boolean
 }
 
 export function useSpotifyPlaybackState(
@@ -134,7 +32,7 @@ export function useSpotifyPlaybackState(
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
-  let pollingTimer: NodeJS.Timeout | null = null
+  let pollingTimer: ReturnType<typeof setInterval> | null = null
 
   const fetchPlaybackState = async () => {
     try {
@@ -148,11 +46,6 @@ export function useSpotifyPlaybackState(
         }
       })
 
-      //const client = await getApiClient()
-
-      //const data = await client.player.getPlaybackState()
-      // console.log('response : ', response)
-
       if (!response.ok) {
         if (response.status === 401) {
           error.value = 'Unauthorized: Token expired or invalid.'
@@ -165,17 +58,7 @@ export function useSpotifyPlaybackState(
       }
 
       const data = await response.json()
-      //console.log(data)
-      playbackState.value = data
-      /*playbackState.value = {
-        isPlaying: data.is_playing,
-        track: data.item?.name || 'Unknown track',
-        artist:
-          data.item?.artists?.map((artist: any) => artist.name).join(', ') || 'Unknown artist',
-        album: data.item?.album?.name || 'Unknown album',
-        progress: data.progress_ms || 0,
-        duration: data.item?.duration_ms || 0
-      }*/
+      playbackState.value = data as PlaybackState
     } catch (err) {
       console.error(err)
       error.value = 'Failed to fetch playback state.'
@@ -185,7 +68,7 @@ export function useSpotifyPlaybackState(
   }
 
   const startPolling = () => {
-    stopPolling() // Ensure no duplicate timers
+    stopPolling()
     pollingTimer = setInterval(fetchPlaybackState, pollingInterval)
   }
 
@@ -208,6 +91,6 @@ export function useSpotifyPlaybackState(
     playbackState,
     isLoading,
     error,
-    fetchPlaybackState // Allow manual fetching
+    fetchPlaybackState
   }
 }
