@@ -16,17 +16,10 @@
             <SplideSlide v-for="item in recentlyPlayedTracksNoDuplicates" :key="item.track.id">
               <div class="carousel-item" @click="playRecent(item)">
                 <img :src="item.track.album.images[0].url" :alt="`${item.track.name} album art`" />
-<<<<<<< HEAD
                 <h2 class="ellipsis">
                   {{ item.track.name }}
                 </h2>
                 <h3 class="ellipsis">
-=======
-                <h2 class="ellipsis">
-                  {{ item.track.name }}
-                </h2>
-                <h3 class="ellipsis">
->>>>>>> c21a2a1 (fix: replace vue3-text-clamp with native CSS line-clamp)
                   {{ artistName(item) }}
                 </h3>
               </div>
