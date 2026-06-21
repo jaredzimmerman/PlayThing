@@ -112,7 +112,7 @@
           <p>
             Open Source Libraries in use: @georgedoescode/spline, @spotify/web-api-ts-sdk,
             colorthief, pinia, pinia-plugin-persistedstate, simplex-noise, vue-router, vue-splide,
-            vue3-text-clamp, vue3-touch-events, vueJS.
+            vue3-touch-events, vueJS.
           </p>
         </section>
       </div>
