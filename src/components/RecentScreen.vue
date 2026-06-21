@@ -16,11 +16,11 @@
             <SplideSlide v-for="item in recentlyPlayedTracksNoDuplicates" :key="item.track.id">
               <div class="carousel-item" @click="playRecent(item)">
                 <img :src="item.track.album.images[0].url" :alt="`${item.track.name} album art`" />
-                <h2>
-                  <TextClamp :text="item.track.name" :max-lines="1" />
+                <h2 class="ellipsis">
+                  {{ item.track.name }}
                 </h2>
-                <h3>
-                  <TextClamp :text="artistName(item)" :max-lines="1" />
+                <h3 class="ellipsis">
+                  {{ artistName(item) }}
                 </h3>
               </div>
             </SplideSlide>
@@ -38,7 +38,6 @@
 
 <script lang="ts" setup>
 import TouchScreen from './TouchScreen.vue'
-import TextClamp from 'vue3-text-clamp';
 // @ts-ignore
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import '@splidejs/vue-splide/css';
