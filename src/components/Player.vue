@@ -88,7 +88,11 @@ import { useSettingsStore } from '@/stores/settings'
 import { useAppStore } from '@/stores/app'
 import AlbumArt from './AlbumArt.vue'
 import TouchScreen from './TouchScreen.vue'
-import { computed } from 'vue'
+import { computed, defineOptions } from 'vue'
+
+defineOptions({
+  name: 'NowPlayingPlayer'
+})
 
 const settingsStore = useSettingsStore()
 const spotifyStore = useSpotifyStore()
@@ -96,7 +100,7 @@ const appStore = useAppStore()
 
 const { textOption, miscellaneousOption } = storeToRefs(settingsStore)
 const { trackName, artistName } = storeToRefs(spotifyStore)
-const { lineNumber, lineNumberArtist, hideControls, showSettingButton } = storeToRefs(appStore)
+const { hideControls, showSettingButton } = storeToRefs(appStore)
 
 const isTextOnly = computed(() => textOption.value === 'text-only')
 const isNoText = computed(() => textOption.value === 'none')
