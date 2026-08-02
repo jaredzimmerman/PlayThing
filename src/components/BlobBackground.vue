@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="blob" :style="`background-color: ${blobBackgroundColor};`">
+    <div class="blob">
       <svg viewBox="0 0 200 200">
         <defs>
           <linearGradient id="gradient" gradientTransform="rotate(90)">
@@ -22,7 +22,7 @@ import { spline } from '@georgedoescode/spline'
 import { createNoise2D } from 'simplex-noise'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useSpotifyStore } from '@/stores/spotify';
 
 const settingsStore = useSettingsStore()
@@ -35,7 +35,6 @@ const startColor = ref('')
 const stopColor = ref('')
 const path = ref('')
 
-let blobBackgroundColor = ''
 let animate = false
 let lastTime = 0
 let animationId: any = null
@@ -48,6 +47,7 @@ const noise2D = createNoise2D()
 const frameInterval = 1000 / (fps / slowDownFactor);
 
 function run() {
+  if (animationId) cancelAnimationFrame(animationId)
   animationId = requestAnimationFrame(animateBlob)
 }
 
@@ -97,7 +97,13 @@ function animateBlob(currentTime: number) {
     }
   }
 
-  animationId = requestAnimationFrame(animateBlob)
+  // Self-terminating loop: only keep scheduling frames while the animation
+  // is enabled, so a Raspberry Pi isn't doing constant work for nothing.
+  if (animate) {
+    animationId = requestAnimationFrame(animateBlob)
+  } else {
+    animationId = null
+  }
 }
 
 function interpolateHue(startHue: number, endHue: number, t: number) {
@@ -186,10 +192,28 @@ onMounted(() => {
   if (miscellaneousOption.value?.includes('animate-blur-spotlight')) {
     animate = true
   }
-  run()
+  if (animate) {
+    run()
+  } else {
+    // Render a single static frame so the blob is still visible
+    path.value = spline(points, 1, true)
+  }
 });
+
+watch(miscellaneousOption, (options) => {
+  const shouldAnimate = options.includes('animate-blur-spotlight')
+  if (shouldAnimate && !animate) {
+    animate = true
+    run()
+  } else if (!shouldAnimate && animate) {
+    animate = false
+    if (animationId) cancelAnimationFrame(animationId)
+    animationId = null
+  }
+})
+
 onUnmounted(() => {
-  cancelAnimationFrame(animationId)
+  if (animationId) cancelAnimationFrame(animationId)
 })
 
 </script>

@@ -195,19 +195,38 @@ function getBlackOledColors(imageBlobUrl: string) {
   }
 }
 
-export async function setAppColours(settings: any, imageUrl: string) {
-  const response = await fetch(imageUrl)
-  const blob = await response.blob()
+let currentBlobUrl: string | null = null
 
-  const blobUrl = URL.createObjectURL(blob)
-  document.documentElement.style.setProperty('--album-image', `url(${imageUrl})`)
-  document.documentElement.style.setProperty('--controls-color', `#fff`)
-  document.documentElement.style.setProperty('--color-text-primary', '#fff')
-  if (['match', 'match-dark'].includes(settings?.backgroundOption)) getMatchColors(blobUrl)
-  else if (['contrast'].includes(settings?.backgroundOption)) getMatchContrastColors(blobUrl)
-  else if (['spotlight'].includes(settings?.backgroundOption)) {
-    getSpotlightColors(blobUrl)
-  } else if (['black-oled'].includes(settings?.backgroundOption)) {
-    getBlackOledColors(blobUrl)
+export async function setAppColours(settings: any, imageUrl: string) {
+  // No track loaded yet (e.g. right after startup or when playback stops)
+  // — there is nothing to derive colours from.
+  if (!imageUrl) return
+
+  try {
+    // Release the previous blob URL so long-running devices (like a
+    // Raspberry Pi) don't leak memory on every track change.
+    if (currentBlobUrl) {
+      URL.revokeObjectURL(currentBlobUrl)
+      currentBlobUrl = null
+    }
+
+    const response = await fetch(imageUrl)
+    if (!response.ok) return
+    const blob = await response.blob()
+
+    const blobUrl = URL.createObjectURL(blob)
+    currentBlobUrl = blobUrl
+    document.documentElement.style.setProperty('--album-image', `url(${imageUrl})`)
+    document.documentElement.style.setProperty('--controls-color', `#fff`)
+    document.documentElement.style.setProperty('--color-text-primary', '#fff')
+    if (['match', 'match-dark'].includes(settings?.backgroundOption)) getMatchColors(blobUrl)
+    else if (['contrast'].includes(settings?.backgroundOption)) getMatchContrastColors(blobUrl)
+    else if (['spotlight'].includes(settings?.backgroundOption)) {
+      getSpotlightColors(blobUrl)
+    } else if (['black-oled'].includes(settings?.backgroundOption)) {
+      getBlackOledColors(blobUrl)
+    }
+  } catch (err) {
+    console.error('Failed to set app colours:', err)
   }
 }

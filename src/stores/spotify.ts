@@ -26,6 +26,9 @@ export const useSpotifyStore = defineStore(
     const recentlyPlayedTracks = ref<PlayHistory[]>([])
     const { playbackState } = useSpotifyPlaybackState(
       async () => {
+        // Don't hit the Spotify API (or trigger SDK auth redirects) while
+        // unauthenticated — otherwise the poller spams errors every second.
+        if (!authenticated.value) return ''
         const accessToken = await apiClient.getAccessToken()
         return accessToken?.access_token ?? ''
       },
@@ -65,8 +68,10 @@ export const useSpotifyStore = defineStore(
     })
 
     const albumArtURL = computed(() => {
-      if (playbackState.value == null) return ''
-      const item = playbackState.value.item as any
+      // The API can return a state with item == null (e.g. during transitions)
+      // and some tracks have no album images — guard against both.
+      const item = playbackState.value?.item as any
+      if (item == null || item.album == null || item.album.images?.length === 0) return ''
       return item.album.images[0].url
     })
 
@@ -89,20 +94,29 @@ export const useSpotifyStore = defineStore(
 
     function authenticate(code: any = null) {
       if (code) {
-        apiClient.authenticate().then((res) => {
-          authenticated.value = res.authenticated
-          accessToken.value = res.accessToken
-          initPlayer()
-        })
+        apiClient
+          .authenticate()
+          .then((res) => {
+            authenticated.value = res.authenticated
+            accessToken.value = res.accessToken
+            initPlayer()
+          })
+          .catch((err) => {
+            console.error('Spotify authentication failed:', err)
+          })
       } else {
-        // call just to trigger authentication
-        apiClient.currentUser.profile().then(() => {
-          apiClient.getAccessToken().then((res) => {
+        // Attempt a silent re-authentication using any stored tokens.
+        apiClient.currentUser
+          .profile()
+          .then(() => apiClient.getAccessToken())
+          .then((res) => {
             accessToken.value = res
             authenticated.value = true
             initPlayer()
           })
-        })
+          .catch((err) => {
+            console.error('Spotify authentication failed:', err)
+          })
       }
     }
 
@@ -126,10 +140,7 @@ export const useSpotifyStore = defineStore(
       if (isPlaying.value) {
         const elapsedTime = Date.now() - startTime
         progressPosition.value = Math.min(elapsedTime, progressDuration.value)
-        if (elapsedTime == progressDuration.value) {
-          progressPosition.value = 0
-        }
-        // if (progressPosition.value > progressDuration.value) progressPosition.value = 0
+
         if (progressPosition.value < progressDuration.value) {
           progressAnimationFrameId = requestAnimationFrame(() => updateProgress(startTime))
         } else {
@@ -226,7 +237,18 @@ export const useSpotifyStore = defineStore(
     watch(playbackState, () => {
       if (playbackState.value?.device.id) {
         currentDeviceID.value = playbackState.value.device.id
-        resetProgress()
+      }
+
+      // Gently re-sync the progress bar when it drifts far from the position
+      // reported by the API (e.g. playback was controlled from another
+      // device). Resetting on every poll would make the bar visibly jump
+      // backwards, so only rebase when the difference is significant.
+      if (isPlaying.value && playbackState.value?.item) {
+        const serverPosition = playbackState.value.progress_ms ?? 0
+        if (Math.abs(progressPosition.value - serverPosition) > 2000) {
+          resetProgress()
+          startProgress()
+        }
       }
     })
 
@@ -236,20 +258,26 @@ export const useSpotifyStore = defineStore(
         startProgress()
       } else {
         cancelAnimationFrame(progressAnimationFrameId)
+        progressAnimationFrameId = null
       }
     })
 
     watch(trackID, () => {
-      //clearInterval(interval);
       cancelAnimationFrame(progressAnimationFrameId)
+      progressAnimationFrameId = null
       resetProgress()
       startProgress()
     })
 
     function loadRecents() {
-      apiClient?.player.getRecentlyPlayedTracks().then((response) => {
-        recentlyPlayedTracks.value = response.items
-      })
+      apiClient?.player
+        .getRecentlyPlayedTracks()
+        .then((response) => {
+          recentlyPlayedTracks.value = response.items
+        })
+        .catch((err) => {
+          console.error('Failed to load recently played tracks:', err)
+        })
     }
 
     function logout() {

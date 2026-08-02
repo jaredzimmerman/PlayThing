@@ -33,10 +33,16 @@ watch(authenticated, (auth) => {
 
 onMounted(() => {
   router.isReady().then(() => {
-    let code = route.query.code
-    //if (code) {
-    authenticate(code)
-    //}
+    const code = route.query.code
+    if (code) {
+      // Complete the OAuth flow after Spotify redirects back with a code
+      authenticate(code)
+    } else if (spotifyStore.accessToken) {
+      // Silently restore an existing session without forcing a redirect
+      authenticate()
+    }
+    // Otherwise stay on the /authorise screen and wait for the user to
+    // click "Login with Spotify" — don't auto-redirect to Spotify.
   })
   registerKeyboardShortcuts()
 })

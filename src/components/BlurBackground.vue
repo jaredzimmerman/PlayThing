@@ -13,7 +13,7 @@
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
 import { useSpotifyStore } from '@/stores/spotify';
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 
 const albumArtRef = ref<HTMLDivElement | null>(null)
 
@@ -23,14 +23,17 @@ const spotifyStore = useSpotifyStore()
 const { miscellaneousOption } = storeToRefs(settingsStore);
 const { isPlaying } = storeToRefs(spotifyStore)
 
-// only animate background if playing
-if (miscellaneousOption.value.includes('animate-blur-spotlight')) {
-  watch(isPlaying, (playing) => {
-    if (albumArtRef.value) {
-      albumArtRef.value.style.animationPlayState = playing ? 'running' : 'paused'
-    }
-  })
+// Pause/resume the rotating background animation based on playback state,
+// but only while the 'animate-blur-spotlight' option is enabled.
+function updateAnimationState(playing: boolean) {
+  if (miscellaneousOption.value.includes('animate-blur-spotlight') && albumArtRef.value) {
+    albumArtRef.value.style.animationPlayState = playing ? 'running' : 'paused'
+  }
 }
+
+onMounted(() => updateAnimationState(isPlaying.value))
+watch(isPlaying, (playing) => updateAnimationState(playing))
+watch(miscellaneousOption, () => updateAnimationState(isPlaying.value))
 
 </script>
 
@@ -62,6 +65,7 @@ if (miscellaneousOption.value.includes('animate-blur-spotlight')) {
   backdrop-filter: blur(100px);
   position: absolute;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   //background: linear-gradient(10deg, #ff6ec4, #7873f5);

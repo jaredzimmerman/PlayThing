@@ -15,7 +15,7 @@
           <Splide :options="options" aria-label="My Favorite Images">
             <SplideSlide v-for="item in recentlyPlayedTracksNoDuplicates" :key="item.track.id">
               <div class="carousel-item" @click="playRecent(item)">
-                <img :src="item.track.album.images[0].url" :alt="`${item.track.name} album art`" />
+                <img :src="item.track.album.images[0]?.url ?? ''" :alt="`${item.track.name} album art`" />
                 <h2 class="ellipsis">
                   {{ item.track.name }}
                 </h2>

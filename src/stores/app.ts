@@ -163,7 +163,9 @@ export const useAppStore = defineStore(
           }
           break
         case ' ':
-          // Play/pause functionality
+          // Play/pause functionality. preventDefault stops the space key from
+          // also activating a focused button or scrolling the page.
+          event.preventDefault()
           if (isPlaying.value) {
             pause()
           } else {
@@ -177,7 +179,8 @@ export const useAppStore = defineStore(
                 (option) => option != 'show-progress-bar'
               )
             } else {
-              miscellaneousOption.value.push('show-progress-bar')
+              // Replace the array (not push) so Pinia watchers fire
+              miscellaneousOption.value = [...miscellaneousOption.value, 'show-progress-bar']
             }
           }
           break
@@ -188,7 +191,8 @@ export const useAppStore = defineStore(
                 (option) => option != 'animate-blur-spotlight'
               )
             } else {
-              miscellaneousOption.value.push('animate-blur-spotlight')
+              // Replace the array (not push) so Pinia watchers fire
+              miscellaneousOption.value = [...miscellaneousOption.value, 'animate-blur-spotlight']
             }
           }
           break

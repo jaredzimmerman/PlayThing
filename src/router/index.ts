@@ -24,7 +24,9 @@ const router = createRouter({
       beforeEnter: (to, from, next) => {
         const spotifyStore = useSpotifyStore()
         if (!spotifyStore.authenticated) next()
-        else next(from)
+        // Navigating to /authorise while already authenticated: send the user
+        // home instead of trying to re-navigate to the start location.
+        else next('/')
       }
     },
     {

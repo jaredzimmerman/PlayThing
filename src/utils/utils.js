@@ -43,18 +43,18 @@ export function getPlayThingSettings() {
         nothingPlayingOption: 'blank',
         miscellaneousOption: ['show-progress-bar']
       }
-    settings.selectedBackgroundOption = settings?.backgroundOption ?? 'blank'
+    settings.selectedBackgroundOption = settings?.backgroundOption ?? 'black-oled'
     settings.selectedTextOption = settings?.textOption ?? 'none'
     settings.selectedNothingPlayingOption =
-      settings?.nothingPlayingOption ?? 'black-oled'
+      settings?.nothingPlayingOption ?? 'blank'
     settings.selectedMiscellaneousOption = settings?.miscellaneousOption ?? [
       'show-progress-bar'
     ]
   } catch (e) {
     // default values
-    settings.selectedBackgroundOption = 'blank'
+    settings.selectedBackgroundOption = 'black-oled'
     settings.selectedTextOption = 'none'
-    settings.selectedNothingPlayingOption = 'black-oled'
+    settings.selectedNothingPlayingOption = 'blank'
     settings.selectedMiscellaneousOption = [
       'show-progress-bar',
       'animate-blur-spotlight'

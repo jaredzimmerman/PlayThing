@@ -40,6 +40,11 @@ export function useSpotifyPlaybackState(
       error.value = null
 
       const accessToken = await getAccessToken()
+      if (!accessToken) {
+        // Not authenticated — don't fire an API call (or SDK redirect) here.
+        playbackState.value = null
+        return
+      }
       const response = await fetch('https://api.spotify.com/v1/me/player', {
         headers: {
           Authorization: `Bearer ${accessToken}`
