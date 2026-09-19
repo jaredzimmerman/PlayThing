@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="now-playing"
-    :class="{ 'now-playing--active': isTextOnly }"
-  >
+  <div class="now-playing" :class="{ 'now-playing--active': isTextOnly }">
     <!-- Text-only layout (TextOnlyPlayer) -->
     <template v-if="isTextOnly">
       <div class="top-details">
@@ -15,13 +12,22 @@
       </div>
 
       <transition name="fade-up">
-        <div class="bottom-controls" v-show="!hideControls" :style="showSettingButton ? 'translate: 0px -20px;' : ''">
+        <div
+          class="bottom-controls"
+          v-show="!hideControls"
+          :style="showSettingButton ? 'translate: 0px -20px;' : ''"
+        >
           <PlayerControls />
         </div>
       </transition>
 
-      <div class="bottom-progress" v-if="miscellaneousOption.includes('show-progress-bar')"
-        :style="showSettingButton ? ' opacity: 0.5; translate: 0px -20px;' : 'opacity: 1; translate: 0px;'">
+      <div
+        class="bottom-progress"
+        v-if="miscellaneousOption.includes('show-progress-bar')"
+        :style="
+          showSettingButton ? ' opacity: 0.5; translate: 0px -20px;' : 'opacity: 1; translate: 0px;'
+        "
+      >
         <ProgressBar />
       </div>
     </template>
@@ -314,7 +320,9 @@ const isNoText = computed(() => textOption.value === 'none')
   transform: translateX(-50%);
   gap: 0px;
   border-radius: 2px 0px 0px 0px;
-  transition: opacity 0.5s ease, translate 0.5s ease;
+  transition:
+    opacity 0.5s ease,
+    translate 0.5s ease;
 }
 
 .multiline-ellipsis {

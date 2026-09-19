@@ -15,7 +15,10 @@
           <Splide :options="options" aria-label="My Favorite Images">
             <SplideSlide v-for="item in recentlyPlayedTracksNoDuplicates" :key="item.track.id">
               <div class="carousel-item" @click="playRecent(item)">
-                <img :src="item.track.album.images[0]?.url ?? ''" :alt="`${item.track.name} album art`" />
+                <img
+                  :src="item.track.album.images[0]?.url ?? ''"
+                  :alt="`${item.track.name} album art`"
+                />
                 <h2 class="ellipsis">
                   {{ item.track.name }}
                 </h2>
@@ -24,8 +27,7 @@
                 </h3>
               </div>
             </SplideSlide>
-            <SplideSlide v-for="i in [1, 2]" :key="i">
-            </SplideSlide>
+            <SplideSlide v-for="i in [1, 2]" :key="i"> </SplideSlide>
           </Splide>
         </div>
       </div>
@@ -39,40 +41,47 @@
 <script lang="ts" setup>
 import TouchScreen from './TouchScreen.vue'
 // @ts-ignore
-import { Splide, SplideSlide } from '@splidejs/vue-splide';
-import '@splidejs/vue-splide/css';
-import { useSpotifyStore } from '@/stores/spotify';
-import { useAppStore } from '@/stores/app';
-import { storeToRefs } from 'pinia';
-import { computed, ref } from 'vue';
-import Logo from "@/assets/text-logo.svg?component"
+import { Splide, SplideSlide } from '@splidejs/vue-splide'
+import '@splidejs/vue-splide/css'
+import { useSpotifyStore } from '@/stores/spotify'
+import { useAppStore } from '@/stores/app'
+import { storeToRefs } from 'pinia'
+import { computed, ref } from 'vue'
+import Logo from '@/assets/text-logo.svg?component'
 
-const spotifyStore = useSpotifyStore();
-const appStore = useAppStore();
-const options = ref({ rewind: false, autoWidth: false, arrows: false, pagination: false, perPage: 5, perMove: 1, padding: { right: 200 } })
-
-const { recentlyPlayedTracks } = storeToRefs(spotifyStore);
-const { play } = spotifyStore
-const { showPlayer, showRecentlyPlayed } = storeToRefs(appStore);
-
-const recentlyPlayedTracksNoDuplicates = computed(() => {
-  const seen = new Set();
-  return recentlyPlayedTracks.value.filter((item) => {
-    const duplicate = seen.has(item.track.id);
-    seen.add(item.track.id);
-    return !duplicate;
-  });
+const spotifyStore = useSpotifyStore()
+const appStore = useAppStore()
+const options = ref({
+  rewind: false,
+  autoWidth: false,
+  arrows: false,
+  pagination: false,
+  perPage: 5,
+  perMove: 1,
+  padding: { right: 200 }
 })
 
-function playRecent(track: typeof recentlyPlayedTracks.value[number]) {
+const { recentlyPlayedTracks } = storeToRefs(spotifyStore)
+const { play } = spotifyStore
+const { showPlayer, showRecentlyPlayed } = storeToRefs(appStore)
+
+const recentlyPlayedTracksNoDuplicates = computed(() => {
+  const seen = new Set()
+  return recentlyPlayedTracks.value.filter((item) => {
+    const duplicate = seen.has(item.track.id)
+    seen.add(item.track.id)
+    return !duplicate
+  })
+})
+
+function playRecent(track: (typeof recentlyPlayedTracks.value)[number]) {
   play([track.track.uri])
   showRecentlyPlayed.value = false
 }
 
-function artistName(track: typeof recentlyPlayedTracks.value[number]) {
-  return track.track.artists.map(artist => artist.name).join(', ')
+function artistName(track: (typeof recentlyPlayedTracks.value)[number]) {
+  return track.track.artists.map((artist) => artist.name).join(', ')
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -101,7 +110,7 @@ function artistName(track: typeof recentlyPlayedTracks.value[number]) {
   //background-color: #000;
 }
 
-.tracks-container>div {
+.tracks-container > div {
   z-index: 5;
 }
 

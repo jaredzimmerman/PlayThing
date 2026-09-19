@@ -22,13 +22,13 @@ import { spline } from '@georgedoescode/spline'
 import { createNoise2D } from 'simplex-noise'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
-import { ref, onMounted, onUnmounted, watch } from 'vue';
-import { useSpotifyStore } from '@/stores/spotify';
+import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { useSpotifyStore } from '@/stores/spotify'
 
 const settingsStore = useSettingsStore()
 const spotifyStore = useSpotifyStore()
 
-const { miscellaneousOption } = storeToRefs(settingsStore);
+const { miscellaneousOption } = storeToRefs(settingsStore)
 const { isPlaying } = storeToRefs(spotifyStore)
 
 const startColor = ref('')
@@ -44,7 +44,7 @@ const fps = 120
 const noiseStep = 0.005
 const points = createPoints()
 const noise2D = createNoise2D()
-const frameInterval = 1000 / (fps / slowDownFactor);
+const frameInterval = 1000 / (fps / slowDownFactor)
 
 function run() {
   if (animationId) cancelAnimationFrame(animationId)
@@ -62,8 +62,12 @@ function animateBlob(currentTime: number) {
     lastTime = currentTime
     path.value = spline(points, 1, true)
 
-    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--start-color')
-    const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue('--end-color')
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue(
+      '--start-color'
+    )
+    const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue(
+      '--end-color'
+    )
 
     const startHsl = hexToHsl(primaryColor)
     const endHsl = hexToHsl(secondaryColor)
@@ -117,7 +121,7 @@ function interpolateHue(startHue: number, endHue: number, t: number) {
 }
 
 function noise(x: number, y: number) {
-  return noise2D(x, y);
+  return noise2D(x, y)
 }
 
 function createPoints() {
@@ -155,7 +159,7 @@ function hexToHsl(hex: string) {
   let g = (bigint >> 8) & 255
   let b = bigint & 255
 
-    ; (r /= 255), (g /= 255), (b /= 255)
+  ;((r /= 255), (g /= 255), (b /= 255))
   let max = Math.max(r, g, b),
     min = Math.min(r, g, b)
   let h = 0,
@@ -198,7 +202,7 @@ onMounted(() => {
     // Render a single static frame so the blob is still visible
     path.value = spline(points, 1, true)
   }
-});
+})
 
 watch(miscellaneousOption, (options) => {
   const shouldAnimate = options.includes('animate-blur-spotlight')
@@ -215,7 +219,6 @@ watch(miscellaneousOption, (options) => {
 onUnmounted(() => {
   if (animationId) cancelAnimationFrame(animationId)
 })
-
 </script>
 
 <style lang="scss" scoped>

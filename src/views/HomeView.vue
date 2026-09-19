@@ -1,7 +1,12 @@
 <template>
   <div id="app">
     <NowPlaying />
-    <div v-show="showSettingButton" class="settings-container fade-slide-up" ref="settingButton" @click="openSettings">
+    <div
+      v-show="showSettingButton"
+      class="settings-container fade-slide-up"
+      ref="settingButton"
+      @click="openSettings"
+    >
       <img src="@/assets/SettingIcon.svg?url" alt="Settings" />
       <span>SETTINGS</span>
     </div>
@@ -11,18 +16,16 @@
 <script lang="ts" setup>
 import NowPlaying from '@/components/NowPlaying.vue'
 import { useRouter } from 'vue-router'
-import { useAppStore } from '@/stores/app';
-import { storeToRefs } from 'pinia';
-const router = useRouter();
-const appStore = useAppStore();
+import { useAppStore } from '@/stores/app'
+import { storeToRefs } from 'pinia'
+const router = useRouter()
+const appStore = useAppStore()
 const { showSettingButton } = storeToRefs(appStore)
 
 function openSettings() {
   showSettingButton.value = false
-  router.push('/settings');
+  router.push('/settings')
 }
-
-
 </script>
 <style lang="scss" scoped>
 #app {

@@ -4,56 +4,114 @@
       <TouchScreen />
     </div>
     <div class="controls">
-      <span v-show="!shuffleState" @click="shuffle(true)" style="opacity: 0.5;">
+      <button
+        type="button"
+        class="control-btn"
+        v-show="!shuffleState"
+        @click="shuffle(true)"
+        aria-label="Enable shuffle"
+        style="opacity: 0.5"
+      >
         <Shuffle />
-      </span>
-      <span v-show="shuffleState" @click="shuffle(false)" style="opacity: 1">
+      </button>
+      <button
+        type="button"
+        class="control-btn"
+        v-show="shuffleState"
+        @click="shuffle(false)"
+        aria-label="Disable shuffle"
+        style="opacity: 1"
+      >
         <Shuffle1 />
-      </span>
+      </button>
 
-      <span @click="previousTrack()" class="backButton">
+      <button
+        type="button"
+        class="control-btn backButton"
+        @click="previousTrack()"
+        aria-label="Previous track"
+      >
         <Back />
-      </span>
-      <span @click="pause()" v-show="isPlaying">
+      </button>
+      <button
+        type="button"
+        class="control-btn"
+        @click="pause()"
+        v-show="isPlaying"
+        aria-label="Pause"
+      >
         <Pause />
-      </span>
-      <span @click="play()" v-show="!isPlaying">
+      </button>
+      <button
+        type="button"
+        class="control-btn"
+        @click="play()"
+        v-show="!isPlaying"
+        aria-label="Play"
+      >
         <Play />
-      </span>
-      <span @click="nextTrack()" class="nextButton">
+      </button>
+      <button
+        type="button"
+        class="control-btn nextButton"
+        @click="nextTrack()"
+        aria-label="Next track"
+      >
         <Next />
-      </span>
-      <span v-show="repeatState === 'off'" @click="repeat('context')" style="opacity: 0.5;">
+      </button>
+
+      <button
+        type="button"
+        class="control-btn"
+        v-show="repeatState === 'off'"
+        @click="repeat('context')"
+        aria-label="Enable repeat mode"
+        style="opacity: 0.5"
+      >
         <Repeat />
-      </span>
-      <span v-show="repeatState === 'context'" @click="repeat('track')" style="opacity: 1;">
+      </button>
+      <button
+        type="button"
+        class="control-btn"
+        v-show="repeatState === 'context'"
+        @click="repeat('track')"
+        aria-label="Enable repeat track mode"
+        style="opacity: 1"
+      >
         <Repeat1 />
-      </span>
-      <span v-show="repeatState === 'track'" @click="repeat('off')" style="opacity: 1">
+      </button>
+      <button
+        type="button"
+        class="control-btn"
+        v-show="repeatState === 'track'"
+        @click="repeat('off')"
+        aria-label="Disable repeat"
+        style="opacity: 1"
+      >
         <Repeat2 />
-      </span>
+      </button>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import TouchScreen from './TouchScreen.vue'
-import Shuffle from '@/assets/controls/Shuffle.svg?component';
-import Shuffle1 from '@/assets/controls/Shuffle-1.svg?component';
-import Back from '@/assets/controls/Back.svg?component';
-import Pause from '@/assets/controls/Pause.svg?component';
-import Play from '@/assets/controls/Play.svg?component';
-import Next from '@/assets/controls/Next.svg?component';
-import Repeat from '@/assets/controls/Repeat.svg?component';
-import Repeat1 from '@/assets/controls/Repeat-1.svg?component';
-import Repeat2 from '@/assets/controls/Repeat-2.svg?component';
-import { useSpotifyStore } from '@/stores/spotify';
+import Shuffle from '@/assets/controls/Shuffle.svg?component'
+import Shuffle1 from '@/assets/controls/Shuffle-1.svg?component'
+import Back from '@/assets/controls/Back.svg?component'
+import Pause from '@/assets/controls/Pause.svg?component'
+import Play from '@/assets/controls/Play.svg?component'
+import Next from '@/assets/controls/Next.svg?component'
+import Repeat from '@/assets/controls/Repeat.svg?component'
+import Repeat1 from '@/assets/controls/Repeat-1.svg?component'
+import Repeat2 from '@/assets/controls/Repeat-2.svg?component'
+import { useSpotifyStore } from '@/stores/spotify'
 import { storeToRefs } from 'pinia'
 
-const spotifyStore = useSpotifyStore();
+const spotifyStore = useSpotifyStore()
 
-const { play, pause, shuffle, repeat, nextTrack, previousTrack } = spotifyStore;
-const { isPlaying, shuffleState, repeatState } = storeToRefs(spotifyStore);
+const { play, pause, shuffle, repeat, nextTrack, previousTrack } = spotifyStore
+const { isPlaying, shuffleState, repeatState } = storeToRefs(spotifyStore)
 
 /*
 
@@ -63,7 +121,6 @@ const { isPlaying, shuffleState, repeatState } = storeToRefs(spotifyStore);
       }, 200)
 
 */
-
 
 /*export default {
   name: 'Controls',
@@ -177,7 +234,11 @@ const { isPlaying, shuffleState, repeatState } = storeToRefs(spotifyStore);
   stroke: var(--controls-color);
 }
 
-.controls span {
+.controls button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
   width: 88px;
   //width: 4.583333333333333vw;
   //height: 8.148148148148149vh;
@@ -185,9 +246,13 @@ const { isPlaying, shuffleState, repeatState } = storeToRefs(spotifyStore);
   // border: 1px solid red;
 }
 
+.controls button:focus-visible {
+  outline: 2px solid var(--controls-color);
+  outline-offset: 2px;
+}
 
-.controls span:active svg {}
-
+.controls button:active svg {
+}
 
 /*@media only screen and (min-width: 767px) {
   .controls {

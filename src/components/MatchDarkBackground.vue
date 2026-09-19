@@ -2,8 +2,7 @@
   <div id="app" class="scrim"></div>
 </template>
 
-<script lang="ts" setup>
-</script>
+<script lang="ts" setup></script>
 
 <style scoped>
 #app {
@@ -19,8 +18,6 @@
 }
 
 .scrim {
-  background: linear-gradient(to bottom,
-      rgba(0, 0, 0, 0.4),
-      rgba(0, 0, 0, 0.6));
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
 }
 </style>

@@ -10,8 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const hours = ref<string | null>(null)
 const minutes = ref<string | null>(null)
@@ -31,13 +30,12 @@ function getNow() {
 
 onMounted(() => {
   getNow()
-  interval = setInterval(getNow, 1000);
+  interval = setInterval(getNow, 1000)
 })
 
 onUnmounted(() => {
   clearInterval(interval)
 })
-
 </script>
 
 <style lang="scss" scoped>

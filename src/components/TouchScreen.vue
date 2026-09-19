@@ -1,20 +1,25 @@
 <template>
-  <div id="screen" v-touch:tap="tap" v-touch:swipe.left="previousTrack" v-touch:swipe.right="nextTrack">
+  <div
+    id="screen"
+    v-touch:tap="tap"
+    v-touch:swipe.left="previousTrack"
+    v-touch:swipe.right="nextTrack"
+  >
     <div class="top" v-touch:swipe.down="swipeDown"></div>
     <div class="bottom" v-touch:swipe.up="swipeUp"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useSpotifyStore } from '@/stores/spotify';
-import { useAppStore } from '@/stores/app';
-import { storeToRefs } from 'pinia';
+import { useSpotifyStore } from '@/stores/spotify'
+import { useAppStore } from '@/stores/app'
+import { storeToRefs } from 'pinia'
 
-const spotifyStore = useSpotifyStore();
-const appStore = useAppStore();
+const spotifyStore = useSpotifyStore()
+const appStore = useAppStore()
 
-const { showSettingButton, showRecentlyPlayed, hideControls } = storeToRefs(appStore);
-const { nextTrack, previousTrack } = spotifyStore;
+const { showSettingButton, showRecentlyPlayed, hideControls } = storeToRefs(appStore)
+const { nextTrack, previousTrack } = spotifyStore
 
 function tap() {
   showSettingButton.value = true
@@ -27,7 +32,6 @@ function swipeUp() {
 function swipeDown() {
   showRecentlyPlayed.value = !showRecentlyPlayed.value
 }
-
 
 /*export default {
   name: 'TouchScreen',
