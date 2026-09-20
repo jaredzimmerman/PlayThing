@@ -1,20 +1,18 @@
 <template>
   <div id="app">
     <div class="container">
-      <span class="time-text">{{ time }}</span>&nbsp;
-      <span class="time-text" style="color: rgb(255,255, 255, 0.5);">{{
-        meridian
-      }}</span>
+      <span class="time-text">{{ time }}</span
+      >&nbsp;
+      <span class="time-text" style="color: rgb(255, 255, 255, 0.5)">{{ meridian }}</span>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const time = ref('')
 const meridian = ref('')
-let interval: any = null;
+let interval: any = null
 
 function getNow() {
   const now = new Date()
@@ -25,7 +23,6 @@ function getNow() {
   meridian.value = result[1]
 }
 function timeToWords(hours: number, minutes: number) {
-
   const numbersToWords: Record<number, string> = {
     0: 'Twelve',
     1: 'One',
@@ -130,8 +127,7 @@ function timeToWords(hours: number, minutes: number) {
   hours = hours ? hours : 12 // the hour '0' should be '12'
 
   let hourWord = numbersToWords[hours]
-  let minuteWord =
-    minutes === 0 ? minutesToWords[0] : minutesToWords[minutes]
+  let minuteWord = minutes === 0 ? minutesToWords[0] : minutesToWords[minutes]
 
   return [`${hourWord} ${minuteWord}`, period]
 }
@@ -144,7 +140,6 @@ onMounted(() => {
 onUnmounted(() => {
   clearInterval(interval)
 })
-
 </script>
 
 <style scoped>

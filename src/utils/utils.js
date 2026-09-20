@@ -45,20 +45,14 @@ export function getPlayThingSettings() {
       }
     settings.selectedBackgroundOption = settings?.backgroundOption ?? 'black-oled'
     settings.selectedTextOption = settings?.textOption ?? 'none'
-    settings.selectedNothingPlayingOption =
-      settings?.nothingPlayingOption ?? 'blank'
-    settings.selectedMiscellaneousOption = settings?.miscellaneousOption ?? [
-      'show-progress-bar'
-    ]
+    settings.selectedNothingPlayingOption = settings?.nothingPlayingOption ?? 'blank'
+    settings.selectedMiscellaneousOption = settings?.miscellaneousOption ?? ['show-progress-bar']
   } catch (e) {
     // default values
     settings.selectedBackgroundOption = 'black-oled'
     settings.selectedTextOption = 'none'
     settings.selectedNothingPlayingOption = 'blank'
-    settings.selectedMiscellaneousOption = [
-      'show-progress-bar',
-      'animate-blur-spotlight'
-    ]
+    settings.selectedMiscellaneousOption = ['show-progress-bar', 'animate-blur-spotlight']
   }
 
   return settings

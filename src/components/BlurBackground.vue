@@ -1,10 +1,13 @@
 <template>
   <div id="app">
-    <div :class="`album-art ${miscellaneousOption.includes('animate-blur-spotlight')
-      ? 'animate-rotate-circle'
-      : 'scale-120-rotate-180'
-      }`
-      " ref="albumArtRef" />
+    <div
+      :class="`album-art ${
+        miscellaneousOption.includes('animate-blur-spotlight')
+          ? 'animate-rotate-circle'
+          : 'scale-120-rotate-180'
+      }`"
+      ref="albumArtRef"
+    />
     <div class="scrim"></div>
   </div>
 </template>
@@ -12,15 +15,15 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
-import { useSpotifyStore } from '@/stores/spotify';
-import { ref, watch, onMounted } from 'vue';
+import { useSpotifyStore } from '@/stores/spotify'
+import { ref, watch, onMounted } from 'vue'
 
 const albumArtRef = ref<HTMLDivElement | null>(null)
 
 const settingsStore = useSettingsStore()
 const spotifyStore = useSpotifyStore()
 
-const { miscellaneousOption } = storeToRefs(settingsStore);
+const { miscellaneousOption } = storeToRefs(settingsStore)
 const { isPlaying } = storeToRefs(spotifyStore)
 
 // Pause/resume the rotating background animation based on playback state,
@@ -34,7 +37,6 @@ function updateAnimationState(playing: boolean) {
 onMounted(() => updateAnimationState(isPlaying.value))
 watch(isPlaying, (playing) => updateAnimationState(playing))
 watch(miscellaneousOption, () => updateAnimationState(isPlaying.value))
-
 </script>
 
 <style lang="scss" scoped>
@@ -57,7 +59,9 @@ watch(miscellaneousOption, () => updateAnimationState(isPlaying.value))
   background-position: center;
   width: 100vw;
   height: 100vh;
-  transition: background-image 3s ease-in-out, opacity 3s ease-in-out;
+  transition:
+    background-image 3s ease-in-out,
+    opacity 3s ease-in-out;
 }
 
 .scrim::before {
@@ -75,9 +79,7 @@ watch(miscellaneousOption, () => updateAnimationState(isPlaying.value))
   position: absolute;
   width: 100%;
   height: 100vh;
-  background: linear-gradient(to bottom,
-      rgba(0, 0, 0, 0.4),
-      rgba(0, 0, 0, 0.6));
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
 }
 
 .scale-120-rotate-180 {

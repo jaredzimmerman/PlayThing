@@ -22,8 +22,8 @@ import MatchContrastBackground from './MatchContrastBackground.vue'
 import MatchDarkBackground from './MatchDarkBackground.vue'
 import BlurBackground from './BlurBackground.vue'
 import Player from './Player.vue'
-import { useAppStore } from '@/stores/app';
-import { useSettingsStore } from '@/stores/settings';
+import { useAppStore } from '@/stores/app'
+import { useSettingsStore } from '@/stores/settings'
 import { storeToRefs } from 'pinia'
 
 const appStore = useAppStore()
@@ -57,7 +57,9 @@ const { backgroundOption } = storeToRefs(settingsStore)
 <style lang="scss">
 .fade-up-enter-active,
 .fade-up-leave-active {
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
 }
 
 .fade-up-enter-from,

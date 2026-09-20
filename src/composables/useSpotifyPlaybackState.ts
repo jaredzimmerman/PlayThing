@@ -16,7 +16,17 @@ import { ref, onMounted, onUnmounted } from 'vue'
 export type { TrackItem }
 
 // Re-export SDK types so consumers can import from this module
-export type { PlaybackState, Device, Context, ExternalUrls, Actions, Album, Artist, Image, ExternalIds }
+export type {
+  PlaybackState,
+  Device,
+  Context,
+  ExternalUrls,
+  Actions,
+  Album,
+  Artist,
+  Image,
+  ExternalIds
+}
 
 // Extended Device type matching what the API actually returns (supports_volume field)
 export interface PlaybackDevice extends Device {
